@@ -294,6 +294,15 @@ def test_drift009_skips_when_no_trae(tmp_path: Path) -> None:
     assert "skipped" in result.detail.lower() or "absent" in result.detail.lower()
 
 
+def test_drift009_skips_when_trae_ssot(tmp_path: Path) -> None:
+    trae_rules = tmp_path / ".trae" / "rules"
+    trae_rules.mkdir(parents=True)
+    (trae_rules / "governance.md").write_text("rule\n", encoding="utf-8")
+    result = check_drift009(drift_paths(tmp_path))
+    assert result.passed
+    assert "skipped" in result.detail.lower()
+
+
 def test_drift009_passes_when_counts_match(tmp_path: Path) -> None:
     import shutil
 

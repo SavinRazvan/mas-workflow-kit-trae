@@ -111,7 +111,7 @@ ADR: [ADR-006](../decisions/ADR-006-agent-integration-model.md)
 
 | Concern | Kit-dev repo | Consumer project |
 |---------|--------------|------------------|
-| Tests | `tests/modules/` (486) | Optional copy via scaffold |
+| Tests | `tests/modules/` (487) | Optional copy via scaffold |
 | Handoff docs | `docs/handoff/` | Not copied |
 | `.trae/` | Tracked SSOT | Copied from payload |
 | Gates | 4 (kit-dev append) | 2 universal + optional drift |

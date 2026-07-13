@@ -44,7 +44,7 @@ mas-workflow-kit-trae/
 │   ├── docs/                 # operations, governance, decisions, architecture
 │   └── templates/            # local-workspace, user-settings, agent-integration
 ├── trae_workflow/            # Editable install entry (pyproject.toml)
-├── tests/modules/            # Kit test suite (486 tests)
+├── tests/modules/            # Kit test suite (487 tests)
 ├── AGENTS.md                 # Onboarding hub
 └── .local/                   # Runtime (gitignored) — trackers, PR artifacts
 ```

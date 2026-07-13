@@ -16,7 +16,7 @@ Notes:
 # Implementation status (MAS Workflow Kit)
 
 **Last updated:** 2026-07-13 (Trae hygiene — IMPLEMENTATION-STATUS Trae table)  
-**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit-trae`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 486
+**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit-trae`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 487
 
 ## Shipped (confirmed in repo)
 
@@ -43,7 +43,7 @@ Notes:
 | User MCP registry | ADR-004 | `.trae/mcp.registry.yaml.example`, `mcp_manage.py` |
 | Cursor Marketplace plugin | **N/A Trae edition** — upstream [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit) | see [ADR-009](../decisions/ADR-009-trae-only-edition.md) |
 | Kit version on install | `kit_version` 0.4.0 | `.ai_infra/manifest.yaml`, `.ai_infra/.kit-version` |
-| Tests | 486 | `tests/modules/` |
+| Tests | 487 | `tests/modules/` |
 
 ## Coverage scope (shipped source)
 
@@ -77,9 +77,12 @@ trae-workflow drift validate
 
 ## Not yet shipped
 
-| Item | Target |
-|------|--------|
-| PyPI publish (`trae-workflow` on PyPI) | out of scope — editable install via `pyproject.toml` is shipped |
+| Item | Target | When to ship |
+|------|--------|--------------|
+| PyPI publish (`trae-workflow` on PyPI) | out of scope for now | When external consumers need `pip install trae-workflow` without git clone |
+| GitHub release tarball | optional | Tag + `python -m build` sdist/wheel attached to GitHub Release when version cadence warrants (no PyPI required) |
+
+**Current distribution (shipped):** editable install via `pip install -e ".[dev,mcp]"` from git clone; `trae-workflow activate` for consumer layout. See [trae-consumer-quickstart.md](../operations/trae-consumer-quickstart.md).
 
 ## Maintainer doc sync
 
