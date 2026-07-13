@@ -1,7 +1,7 @@
 """
 File: sync_trae_contract.py
 Path: .ai_infra/scripts/release/sync_trae_contract.py
-Role: Sync .trae/ contract plane from SSOT (.trae/ Trae edition or .cursor/ dual-IDE).
+Role: Sync .trae/ contract plane from SSOT (.trae/ Trae edition; dual-IDE legacy upstream).
 Used By:
  - sync_plugin_bundle.py
  - check_trae_parity.py

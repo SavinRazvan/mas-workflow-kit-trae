@@ -11,7 +11,7 @@
 
 version: 1
 
-# Kit server (installed with --with-mcp-json / with_mcp profile)
+# Kit server (installed with `default` profile — manifest `mcp_json: true`)
 kit:
   server_key: workflow-kit
   description: PR workflow, trackers, gates (workflow_mcp)

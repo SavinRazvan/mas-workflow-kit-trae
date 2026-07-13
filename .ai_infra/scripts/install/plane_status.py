@@ -28,7 +28,6 @@ from ide_contract_paths import TRAE, plane_prefix  # noqa: E402
 
 @dataclass(frozen=True)
 class PlaneStatus:
-    cursor_contract: bool
     trae_contract: bool
     infrastructure: bool
     runtime: bool
@@ -127,7 +126,6 @@ def assess_planes(root: Path, *, profile: str = "default") -> PlaneStatus:
             plane_hits[plane] = False
 
     return PlaneStatus(
-        cursor_contract=True,
         trae_contract=plane_hits["trae"],
         infrastructure=plane_hits["infrastructure"],
         runtime=plane_hits["runtime"],

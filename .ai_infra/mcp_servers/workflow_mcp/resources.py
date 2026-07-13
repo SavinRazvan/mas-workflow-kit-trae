@@ -9,7 +9,7 @@ Depends On:
  - ide_contract_paths (via sys.path bootstrap)
 Notes:
  - P1 resources per IMPLEMENTATION-STATUS.md. No second GATES list in inventory.
- - Agents resolved from .cursor/agents and .trae/agents when present (ADR-008).
+ - Agents resolved from `.trae/agents` (Trae edition SSOT per ADR-009).
 """
 
 from __future__ import annotations

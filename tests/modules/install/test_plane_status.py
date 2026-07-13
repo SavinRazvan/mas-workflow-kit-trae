@@ -56,7 +56,6 @@ def test_plane_for_path_fallback_infrastructure() -> None:
 def test_format_plane_report_truncates_missing_over_twelve() -> None:
     plane_status = _load_plane_status()
     status = plane_status.PlaneStatus(
-        cursor_contract=False,
         trae_contract=False,
         infrastructure=False,
         runtime=False,
