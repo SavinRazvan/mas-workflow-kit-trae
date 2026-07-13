@@ -155,7 +155,7 @@ Record PASS/FAIL in `change-index.md` and `updates-log.md`.
 - Duplicating `prepare.py` GATES in skills or agent prose
 - New agents without Anchor / MCP integration section
 - Skipping `change-index.md` Agent column (breaks PR `--agents-from-session`)
-- `Made-with:` or fake human sign-off in commits
+- `Assisted-by:`, `Co-authored-by:`, `Made-with:`, or fake human sign-off in commits
 - Loading entire `.local/` or megadocs when a checklist suffices
 - Independent agents that bypass governance scripts
 

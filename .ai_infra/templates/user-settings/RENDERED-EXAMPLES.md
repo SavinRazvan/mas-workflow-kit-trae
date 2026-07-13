@@ -1,14 +1,12 @@
 # Rendered examples — GitHub collaboration
 
-Side-by-side: **legacy external-product style** vs **MAS Workflow Kit default** (from `github.collaboration.yaml`).
-
-Replace `Your Full Name` and `@yourhandle` with values from `.local/user_settings/github.collaboration.yaml`.
+Examples from `github.collaboration.yaml` after install. Replace `Your Full Name` and `@yourhandle` with values from `.local/user_settings/github.collaboration.yaml`.
 
 ---
 
 ## Commit message
 
-### Kit default (`ai_disclosure_mode: assisted_by`)
+### Kit default (`ai_disclosure_mode: none`)
 
 ```text
 docs(notebooks): frame notebooks as assertion-backed proof artifacts
@@ -19,30 +17,13 @@ what governed vs live notebooks demonstrate for reviewers.
 
 Author: Your Full Name
 GitHub-User: @yourhandle
-Assisted-by: Cursor
 ```
 
-### Legacy opt-in (`ai_disclosure_mode: co_author_trailer`)
-
-Only enable if your org requires Git `Co-authored-by` for tools:
-
-```text
-docs(adapters): close PyPI extraction handoff and update strategy references
-
-Replace in-tree adapter package references with external repo pins
-and lockstep version pins across handoffs, strategy, operations, and architecture docs.
-
-Author: Your Full Name
-GitHub-User: @yourhandle
-Assisted-by: Cursor
-Co-authored-by: Cursor <cursoragent@cursor.com>
-```
+**Do not** append `Assisted-by:`, `Co-authored-by:`, or editor `Made with …` footers.
 
 ---
 
 ## Pull request body
-
-### Kit default (no `Made with Cursor`)
 
 ```markdown
 ## Summary
@@ -89,7 +70,7 @@ Scripts stamp this; values should match `.local/user_settings/github.collaborati
 
 ## Multi-agent feature slice
 
-When several agents touch one PR, list the pipeline (not fake human co-authors):
+When several agents touch one PR, list the pipeline in PR artifacts (not commit trailers):
 
 ```yaml
 # github.collaboration.yaml
@@ -98,12 +79,8 @@ pipelines:
     agents: [implementer, test-runner, verifier, review-pr, prepare-pr]
 ```
 
-```text
-Assisted-by: Cursor:implementer
-Assisted-by: Cursor:test-runner
-Assisted-by: Cursor:verifier
-```
-
 ```markdown
 - Agent/s: implementer | test-runner | verifier | review-pr | prepare-pr
 ```
+
+Commit trailers remain **Author + GitHub-User only**.

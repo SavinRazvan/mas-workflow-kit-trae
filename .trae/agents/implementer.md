@@ -34,7 +34,7 @@ When the slice touches tests or ownership: `test-plan.md`, `test-index.md`. Afte
 3. **Gates:** run `python .ai_infra/scripts/pr/prepare.py` (or its `GATES` when validating before handoff). Add `python .ai_infra/scripts/architecture/check_governance_consistency.py` if governance/workflows/policy docs changed.
 4. **Commits:** complete **`.local/user_settings/github.collaboration.yaml`**; append trailers via  
    `python -m trae_workflow contributors commit-trailers` (policy: `.trae/rules/commit-trailer-format.md`).  
-   Optional `Assisted-by:` when AI materially helped. No tool-generated human sign-off.
+   **Author + GitHub-User only** — no `Assisted-by`, `Co-authored-by`, or editor footers.
 5. **Close:** `session-pointer.md`, `change-index.md`, `work-tracker.md`, `history/updates-log.md` (short — no pasted gate lists; see `.ai_infra/docs/operations/token-efficiency.md`), test trackers + **`make coverage-index`** when coverage changed + `agents-control-center/config/pages.json` when tabs change. **Dashboard check:** serve project root with `python3 -m http.server 8000` and confirm ICC tabs load (trackers + artifacts under `.local/`). Run **`make drift-validate`**; hand off to **`workflow-drift-guard`** when P0/P1 drift findings need artifacts.
 
 ## Architecture

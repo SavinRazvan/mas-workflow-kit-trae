@@ -9,6 +9,7 @@ Depends On:
  - user_settings_resolve.py
 Notes:
  - Does not perform network calls; output is copy/paste or gh pr create body.
+ - Commit trailers: Author + GitHub-User only (no AI or co-author attribution).
 """
 
 from __future__ import annotations
@@ -29,19 +30,6 @@ from user_settings_resolve import (
 )
 
 
-def _format_assisted_by(entry: dict[str, Any]) -> str:
-    tool = str(entry.get("tool", "")).strip()
-    if not tool:
-        return ""
-    model = entry.get("model")
-    agent = entry.get("agent")
-    if model:
-        return f"Assisted-by: {tool}:{model}"
-    if agent:
-        return f"Assisted-by: {tool}:{agent}"
-    return f"Assisted-by: {tool}"
-
-
 def render_commit_trailers(root: Path | None = None) -> str:
     cfg = load_github_collaboration(root)
     if not cfg:
@@ -57,31 +45,6 @@ def render_commit_trailers(root: Path | None = None) -> str:
         f"Author: {owner['display_name']}",
         f"GitHub-User: {normalize_github_user(str(owner['github_user']))}",
     ]
-
-    prov = cfg.get("commit_provenance") or {}
-    mode = prov.get("ai_disclosure_mode", "assisted_by")
-
-    if mode == "assisted_by":
-        for entry in prov.get("assisted_by") or []:
-            if isinstance(entry, dict):
-                line = _format_assisted_by(entry)
-                if line:
-                    lines.append(line)
-    elif mode == "co_author_trailer":
-        trailer = prov.get("co_author_trailer") or {}
-        name = trailer.get("name")
-        email = trailer.get("email")
-        if name and email:
-            lines.append(f"Co-authored-by: {name} <{email}>")
-        for entry in prov.get("assisted_by") or []:
-            if isinstance(entry, dict):
-                line = _format_assisted_by(entry)
-                if line:
-                    lines.append(line)
-
-    for co in prov.get("human_coauthors") or []:
-        if isinstance(co, dict) and co.get("display_name") and co.get("email"):
-            lines.append(f"Co-authored-by: {co['display_name']} <{co['email']}>")
 
     return "\n".join(lines)
 

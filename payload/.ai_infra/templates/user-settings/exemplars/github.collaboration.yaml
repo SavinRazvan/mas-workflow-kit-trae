@@ -3,11 +3,8 @@
 # Role: GitHub commit + PR collaboration settings for humans and AI agents.
 #
 # Two surfaces (do not conflate):
-#   - Git commits     → commit_provenance (Author, GitHub-User, Assisted-by)
+#   - Git commits     → commit_provenance (Author, GitHub-User only)
 #   - GitHub PR       → pr_collaboration (Action-By, Agent/s, body template)
-#
-# Kit default: AI uses Assisted-by (not Co-authored-by: cursoragent@...).
-# Opt-in legacy mode below if your org requires Git co-author trailers for tools.
 
 version: 1
 
@@ -18,30 +15,8 @@ owner:
 
 # ── Git commit provenance ────────────────────────────────────────────────────
 commit_provenance:
-  # assisted_by (recommended) | co_author_trailer (legacy) | none
-  ai_disclosure_mode: assisted_by
-
-  # Repeat one line per AI/agent that materially shaped the change
-  assisted_by:
-    - tool: Cursor
-      model: null                         # e.g. composer-2.5 — optional
-      agent: null                         # e.g. implementer — optional
-    # - tool: cursor-agent
-    #   agent: test-runner
-
-  # Real human co-authors only (Git Co-authored-by: convention)
-  # Keep [] unless adding entries UNDER human_coauthors (do not uncomment lines below as siblings of []).
-  human_coauthors: []
-  # - display_name: "Alice Example"
-  #   email: alice@example.com
-
-  # Legacy opt-in: use instead of assisted_by when ai_disclosure_mode: co_author_trailer
-  # co_author_trailer:
-  #   name: Cursor
-  #   email: cursoragent@cursor.com
-
-  forbid_in_commits:
-    - "Made-with:"                      # kit policy — use Author + Assisted-by instead
+  # Kit policy: Author + GitHub-User only — no Assisted-by, Co-authored-by, or Made-with
+  ai_disclosure_mode: none
 
 # ── PR collaboration (GitHub + local phase artifacts) ────────────────────────
 pr_collaboration:
@@ -109,7 +84,7 @@ pr_collaboration:
       - Agent/s: review-pr | prepare-pr | merge-pr
 
 # ── Rendered commit trailer (copy/paste or script-rendered) ──────────────────
-# Replace placeholders after editing owner + assisted_by above.
+# Replace placeholders after editing owner above.
 #
 # docs(scope): short subject line
 #
@@ -117,4 +92,3 @@ pr_collaboration:
 #
 # Author: Your Full Name
 # GitHub-User: @yourhandle
-# Assisted-by: Cursor

@@ -1,5 +1,5 @@
 ---
-description: Required git commit trailers + optional Assisted-by (AI)
+description: Required git commit trailers (Author + GitHub-User only)
 alwaysApply: true
 ---
 
@@ -7,29 +7,30 @@ alwaysApply: true
 
 ## Required (git commits)
 
-- Every commit message body **must** include these two lines **in this order**, with **no other lines between them**:
+- Every commit message body **must** include exactly these two lines **in this order**, with **no other lines between them**:
   - `Author: <Your Full Name>`
   - `GitHub-User: @<yourhandle>`
 - Values **must** match `.local/user_settings/github.collaboration.yaml` (`owner.display_name`, `owner.github_user`).
-
-## Optional provenance (after the required pair)
-
-- `Assisted-by: <tool>[:<model>]` — repeat on separate lines when AI **materially** shaped code, tests, docs, or migration logic. Skip for trivial autocomplete, formatting-only, or mechanical boilerplate.
 - **Render from config:** `python -m trae_workflow contributors commit-trailers` reads **`.local/user_settings/github.collaboration.yaml`** (copied at install).
-- **Do not use `Made-with:`** — human accountability is already expressed by **`Author:`** / **`GitHub-User:`**; an extra editor/tool line is redundant with that contract.
-- `Co-authored-by:` — optional; only for real human co-authors (Git convention).
+
+## Forbidden in commits
+
+Do **not** add any of the following to commit messages:
+
+- `Assisted-by:`
+- `Co-authored-by:`
+- `Made-with:` or `Made with …` (editor footers)
+
+Human accountability is expressed by **`Author:`** / **`GitHub-User:`** only.
 
 ## Responsibility
 
 - The human author remains responsible for reviewing and validating the change.
 - **Do not** use AI or scripts to insert human certification, approval, or DCO-style assertions the person did not explicitly intend.
 
-## Order
-
-Typical tail (required lines first, then optional):
+## Example
 
 ```text
 Author: Your Full Name
 GitHub-User: @yourhandle
-Assisted-by: <tool>[:<model>]
 ```

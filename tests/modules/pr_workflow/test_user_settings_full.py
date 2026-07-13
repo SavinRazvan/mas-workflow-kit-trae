@@ -45,13 +45,7 @@ owner:
   display_name: "Example Author"
   github_user: "@example"
 commit_provenance:
-  ai_disclosure_mode: assisted_by
-  assisted_by:
-    - tool: Cursor
-      agent: implementer
-  human_coauthors:
-    - display_name: "Jane Human"
-      email: "jane@example.com"
+  ai_disclosure_mode: none
 pr_collaboration:
   pipelines:
     default:
@@ -160,15 +154,28 @@ def test_validate_github_collaboration_non_dict_yaml(tmp_path: Path) -> None:
     assert any("invalid YAML" in e for e in errors)
 
 
-def test_validate_github_collaboration_made_with_forbidden_skipped(tmp_path: Path) -> None:
+def test_validate_github_collaboration_rejects_assisted_by_mode(tmp_path: Path) -> None:
     _write(
         tmp_path,
         ".local/user_settings/github.collaboration.yaml",
-        GOOD_CONFIG + "\ncommit_provenance:\n  forbid_in_commits: ['Made-with']\n",
+        """
+version: 1
+owner:
+  display_name: "Example Author"
+  github_user: "@example"
+commit_provenance:
+  ai_disclosure_mode: assisted_by
+  assisted_by:
+    - tool: Cursor
+pr_collaboration:
+  pipelines:
+    default:
+      agents: [review-pr]
+""",
     )
     errors = us.validate_github_collaboration(tmp_path)
-    # "Made-with" forbidden entries are intentionally skipped (continue) — no crash, no false error.
-    assert isinstance(errors, list)
+    assert any("ai_disclosure_mode must be 'none'" in e for e in errors)
+    assert any("remove commit_provenance.assisted_by" in e for e in errors)
 
 
 def test_validate_github_collaboration_yaml_syntax_error(tmp_path: Path) -> None:
@@ -298,39 +305,12 @@ def test_render_commit_trailers_placeholder_owner_raises(tmp_path: Path) -> None
         usr.render_commit_trailers(tmp_path)
 
 
-def test_render_commit_trailers_co_author_mode(tmp_path: Path) -> None:
-    _write(
-        tmp_path,
-        ".local/user_settings/github.collaboration.yaml",
-        """
-owner:
-  display_name: "Example Author"
-  github_user: "@example"
-commit_provenance:
-  ai_disclosure_mode: co_author_trailer
-  co_author_trailer:
-    name: "AI Bot"
-    email: "bot@example.com"
-  assisted_by:
-    - tool: Cursor
-""",
-    )
-    block = usr.render_commit_trailers(tmp_path)
-    assert "Co-authored-by: AI Bot <bot@example.com>" in block
-    assert "Assisted-by: Cursor" in block
-
-
-def test_render_commit_trailers_human_coauthors(tmp_path: Path) -> None:
+def test_render_commit_trailers_author_only(tmp_path: Path) -> None:
     _write(tmp_path, ".local/user_settings/github.collaboration.yaml", GOOD_CONFIG)
     block = usr.render_commit_trailers(tmp_path)
-    assert "Co-authored-by: Jane Human <jane@example.com>" in block
-
-
-def test_format_assisted_by_variants() -> None:
-    assert usr._format_assisted_by({"tool": ""}) == ""
-    assert usr._format_assisted_by({"tool": "Cursor", "model": "sonnet"}) == "Assisted-by: Cursor:sonnet"
-    assert usr._format_assisted_by({"tool": "Cursor", "agent": "implementer"}) == "Assisted-by: Cursor:implementer"
-    assert usr._format_assisted_by({"tool": "Cursor"}) == "Assisted-by: Cursor"
+    assert block == "Author: Example Author\nGitHub-User: @example"
+    assert "Assisted-by" not in block
+    assert "Co-authored-by" not in block
 
 
 def test_render_pr_body_missing_config_raises(tmp_path: Path) -> None:

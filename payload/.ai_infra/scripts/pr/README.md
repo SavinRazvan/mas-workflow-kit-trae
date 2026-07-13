@@ -26,5 +26,5 @@ Notes:
 
 ## Git commits vs PR markdown
 
-- **Git** trailers live only in **commit messages**: **`.trae/rules/commit-trailer-format.md`** — required **`Author:`** / **`GitHub-User:`**, optional **`Assisted-by:`**; **do not** use **`Made-with:`**. See **`AGENTS.md`** § Commits.
+- **Git** trailers live only in **commit messages**: **`.trae/rules/commit-trailer-format.md`** — required **`Author:`** / **`GitHub-User:`** only. See **`AGENTS.md`** § Commits.
 - **`review.md` / `prep.md` / `merge.md`** use **PR-phase** headers (`Action-By`, `Agent/s`, …). Scripts write those paths via **`local_workflow_paths.py`**; they are **not** git trailers.

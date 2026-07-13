@@ -20,7 +20,7 @@ Notes:
 | `pr-workflow-enforcement.md` | PR-first, artifacts, merge gates | `workflow-complete.md`, `pr-workflow/SKILL.md` | **Short pointer** to `local_workflow_paths.py` + `prepare.py` `GATES` |
 | `implementation-workflow-governance.md` | Slice lifecycle, planning, testing | `agent-implementer.md`, `token-efficiency.md` | **Keep** |
 | `advisory-audit-alignment-enforcement.md` | Alignment artifacts (`enterprise-auditor`) | `agent-workflow-procedures.md` | **Keep** |
-| `commit-trailer-format.md` | Required commit trailers + optional `Assisted-by` | `README.md`, `AGENTS.md` § Commits | **Keep separate** |
+| `commit-trailer-format.md` | Required commit trailers (`Author` + `GitHub-User` only) | `README.md`, `AGENTS.md` § Commits | **Keep separate** |
 | `file-docstring-header-relations.md` | File headers on new sources | All new source files | **Keep** |
 | `local-artifact-protection.md` | `.coverage`, `.env` | ops runbooks | **Keep** |
 

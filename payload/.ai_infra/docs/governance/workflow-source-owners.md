@@ -47,4 +47,4 @@ Notes:
 
 **Rule:** If text disagrees with `prepare.py` or `local_workflow_paths.py`, update the text in the **same PR** as the script change, or immediately after.
 
-**PR artifacts vs git commits:** `.local/workflow-artifacts/pr/*.md` use `Action-By` / `Prepared-By` headers. Git commits use `Author:` / `GitHub-User:` (+ optional `Assisted-by:`) per commit-trailer rule — never conflate the two.
+**PR artifacts vs git commits:** `.local/workflow-artifacts/pr/*.md` use `Action-By` / `Prepared-By` headers. Git commits use `Author:` / `GitHub-User:` only per commit-trailer rule — never conflate the two.
