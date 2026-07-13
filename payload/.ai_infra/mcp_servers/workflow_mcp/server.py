@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import io
+import sys
 from contextlib import redirect_stdout
 from pathlib import Path
 
@@ -117,12 +118,15 @@ def workflow_check_governance() -> str:
 
 @mcp.tool()
 def workflow_list_agents() -> str:
-    """List agent ids from .cursor/agents/*.md."""
+    """List agent ids from the contract plane (.trae/agents or .cursor/agents)."""
     root = workspace_root()
-    agents_dir = root / ".cursor" / "agents"
-    if not agents_dir.is_dir():
-        return "No .cursor/agents directory found"
-    names = sorted(p.stem for p in agents_dir.glob("*.md"))
+    sys.path.insert(0, str(root / ".ai_infra"))
+    from ide_contract_paths import agents_dir, ssot_ide
+
+    agents = agents_dir(root, ssot_ide(root))
+    if not agents.is_dir():
+        return f"No {agents.relative_to(root)} directory found"
+    names = sorted(p.stem for p in agents.glob("*.md"))
     return "\n".join(names) if names else "(no agents)"
 
 
@@ -358,7 +362,7 @@ def resource_inventory() -> str:
 
 @mcp.resource("workflow://agents/{agent_id}")
 def resource_agent(agent_id: str) -> str:
-    """Agent prompt from .cursor/agents/{agent_id}.md."""
+    """Agent prompt from contract plane agents/{agent_id}.md."""
     try:
         return read_agent(workspace_root(), agent_id)
     except FileNotFoundError as exc:

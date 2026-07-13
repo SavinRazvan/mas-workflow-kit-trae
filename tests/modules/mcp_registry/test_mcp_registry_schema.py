@@ -24,6 +24,6 @@ def test_example_registry_validates_against_schema() -> None:
     schema = json.loads(
         (REPO_ROOT / ".ai_infra" / "schemas" / "mcp-registry.schema.json").read_text(encoding="utf-8")
     )
-    example_path = REPO_ROOT / ".cursor" / "mcp.registry.yaml.example"
+    example_path = REPO_ROOT / ".trae" / "mcp.registry.yaml.example"
     data = yaml.safe_load(example_path.read_text(encoding="utf-8"))
     jsonschema.validate(instance=data, schema=schema)

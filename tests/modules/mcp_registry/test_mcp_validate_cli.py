@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import importlib.util
 import json
-import shutil
 import sys
 from pathlib import Path
 
@@ -31,12 +30,12 @@ def _load_cli():
     return module
 
 
-def _seed_mcp_layout(root: Path) -> None:
-    cursor = root / ".cursor"
-    cursor.mkdir(parents=True)
-    kit = json.loads((REPO_ROOT / ".cursor" / "mcp.json.kit.example").read_text(encoding="utf-8"))
+def _seed_trae_mcp_layout(root: Path) -> None:
+    trae = root / ".trae"
+    trae.mkdir(parents=True)
+    kit = json.loads((REPO_ROOT / ".trae" / "mcp.json.kit.example").read_text(encoding="utf-8"))
     registry = yaml.safe_load(
-        (REPO_ROOT / ".cursor" / "mcp.registry.yaml.example").read_text(encoding="utf-8")
+        (REPO_ROOT / ".trae" / "mcp.registry.yaml.example").read_text(encoding="utf-8")
     )
     user = {
         "mcpServers": {
@@ -49,42 +48,24 @@ def _seed_mcp_layout(root: Path) -> None:
         "agents": ["implementer"],
         "tools_hint": [],
     }
-    (cursor / "mcp.json.kit.example").write_text(json.dumps(kit, indent=2), encoding="utf-8")
-    (cursor / "mcp.user.json").write_text(json.dumps(user, indent=2), encoding="utf-8")
-    (cursor / "mcp.registry.yaml").write_text(yaml.dump(registry), encoding="utf-8")
-
-
-def _seed_default_layout(root: Path) -> None:
-    _seed_mcp_layout(root)
-    trae = root / ".trae"
-    trae.mkdir(parents=True)
-    for name in (
-        "mcp.json.kit.example",
-        "mcp.registry.yaml.example",
-        "mcp.user.example.json",
-    ):
-        src = REPO_ROOT / ".cursor" / name
-        if src.is_file():
-            shutil.copy2(src, trae / name)
-    (trae / "mcp.registry.yaml").write_text(
-        (root / ".cursor" / "mcp.registry.yaml").read_text(encoding="utf-8"),
-        encoding="utf-8",
-    )
+    (trae / "mcp.json.kit.example").write_text(json.dumps(kit, indent=2), encoding="utf-8")
+    (trae / "mcp.user.json").write_text(json.dumps(user, indent=2), encoding="utf-8")
+    (trae / "mcp.registry.yaml").write_text(yaml.dump(registry), encoding="utf-8")
 
 
 def test_mcp_validate_passes_with_mock_external(tmp_path: Path) -> None:
     cli = _load_cli()
-    _seed_mcp_layout(tmp_path)
+    _seed_trae_mcp_layout(tmp_path)
     code = cli.main(["mcp", "validate", "--directory", str(tmp_path)])
     assert code == 0
-    merged = json.loads((tmp_path / ".cursor" / "mcp.json").read_text(encoding="utf-8"))
+    merged = json.loads((tmp_path / ".trae" / "mcp.json").read_text(encoding="utf-8"))
     assert "my-custom-server" in merged["mcpServers"]
 
 
 def test_mcp_validate_fails_when_registry_key_missing_from_mcp_json(tmp_path: Path) -> None:
     cli = _load_cli()
-    _seed_mcp_layout(tmp_path)
-    registry_path = tmp_path / ".cursor" / "mcp.registry.yaml"
+    _seed_trae_mcp_layout(tmp_path)
+    registry_path = tmp_path / ".trae" / "mcp.registry.yaml"
     registry = yaml.safe_load(registry_path.read_text(encoding="utf-8"))
     registry["servers"]["orphan-server"] = {
         "tier": "kit",
@@ -97,14 +78,11 @@ def test_mcp_validate_fails_when_registry_key_missing_from_mcp_json(tmp_path: Pa
     assert code == 1
 
 
-def test_mcp_validate_default_writes_both_planes(tmp_path: Path) -> None:
+def test_mcp_validate_default_writes_trae_plane(tmp_path: Path) -> None:
     cli = _load_cli()
-    _seed_default_layout(tmp_path)
+    _seed_trae_mcp_layout(tmp_path)
     code = cli.main(["mcp", "validate", "--directory", str(tmp_path)])
     assert code == 0
-    assert (tmp_path / ".cursor" / "mcp.json").is_file()
     assert (tmp_path / ".trae" / "mcp.json").is_file()
-    cursor_mcp = json.loads((tmp_path / ".cursor" / "mcp.json").read_text(encoding="utf-8"))
     trae_mcp = json.loads((tmp_path / ".trae" / "mcp.json").read_text(encoding="utf-8"))
-    assert "workflow-kit" in cursor_mcp["mcpServers"]
     assert "workflow-kit" in trae_mcp["mcpServers"]

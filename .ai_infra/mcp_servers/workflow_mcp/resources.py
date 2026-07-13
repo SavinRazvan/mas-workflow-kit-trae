@@ -56,7 +56,7 @@ def _read_text(path: Path) -> str:
 
 
 def _find_agent_path(root: Path, agent_id: str) -> Path:
-    for ide in (CURSOR, TRAE):
+    for ide in (TRAE, CURSOR):
         candidate = agents_dir(root, ide) / f"{agent_id}.md"
         if candidate.is_file():
             return candidate
@@ -69,8 +69,8 @@ def read_agent(root: Path, agent_id: str) -> str:
 
 def _find_skill_path(root: Path, skill_id: str) -> Path:
     candidates = [
-        skills_dir(root, CURSOR) / skill_id / "SKILL.md",
         skills_dir(root, TRAE) / skill_id / "SKILL.md",
+        skills_dir(root, CURSOR) / skill_id / "SKILL.md",
         maintainer_skills_dir(root) / skill_id / "SKILL.md",
         maintainer_skills_dir(root) / f"{skill_id}.md",
     ]
@@ -103,7 +103,7 @@ def read_tracker(root: Path, name: str) -> str:
 
 def _list_agent_ids(root: Path) -> list[str]:
     ids: set[str] = set()
-    for ide in (CURSOR, TRAE):
+    for ide in (TRAE, CURSOR):
         agents = agents_dir(root, ide)
         if agents.is_dir():
             ids.update(p.stem for p in agents.glob("*.md"))
@@ -112,7 +112,7 @@ def _list_agent_ids(root: Path) -> list[str]:
 
 def _list_skill_ids(root: Path) -> list[str]:
     ids: set[str] = set()
-    for base in (skills_dir(root, CURSOR), skills_dir(root, TRAE), maintainer_skills_dir(root)):
+    for base in (skills_dir(root, TRAE), skills_dir(root, CURSOR), maintainer_skills_dir(root)):
         if not base.is_dir():
             continue
         for skill_md in base.rglob("SKILL.md"):
@@ -144,10 +144,10 @@ def read_project_config(root: Path) -> str:
 
 def _load_registry_yaml(root: Path) -> dict:
     for candidate in (
-        root / ".cursor" / "mcp.registry.yaml",
-        root / ".cursor" / "mcp.registry.yaml.example",
         root / ".trae" / "mcp.registry.yaml",
         root / ".trae" / "mcp.registry.yaml.example",
+        root / ".cursor" / "mcp.registry.yaml",
+        root / ".cursor" / "mcp.registry.yaml.example",
     ):
         if candidate.is_file():
             data = yaml.safe_load(candidate.read_text(encoding="utf-8"))

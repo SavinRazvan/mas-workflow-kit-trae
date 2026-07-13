@@ -38,11 +38,12 @@ def test_merge_preserves_user_servers() -> None:
 
 def test_write_merged_mcp_from_examples(tmp_path: Path) -> None:
     mod = _load_mcp_manage()
-    cursor = tmp_path / ".cursor"
-    cursor.mkdir(parents=True)
+    trae = tmp_path / ".trae"
+    trae.mkdir(parents=True)
     shutil_copy = __import__("shutil").copy2
-    shutil_copy(REPO_ROOT / ".cursor" / "mcp.json.kit.example", cursor / "mcp.json.kit.example")
-    dest = mod.write_merged_mcp(tmp_path)
+    shutil_copy(REPO_ROOT / ".trae" / "mcp.json.kit.example", trae / "mcp.json.kit.example")
+    dest = mod.write_merged_mcp(tmp_path, ide="trae")
     assert dest.is_file()
+    assert dest == trae / "mcp.json"
     text = dest.read_text(encoding="utf-8")
     assert "workflow-kit" in text

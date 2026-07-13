@@ -10,7 +10,7 @@ Depends On:
  - .ai_infra/ide_contract_paths.py
 Notes:
  - Never overwrites existing mcp.user.json on install.
- - default: emits merged MCP for both .cursor/ and .trae/ (ADR-008).
+ - Trae edition: default merged MCP under `.trae/` when SSOT is Trae (ADR-009).
 """
 
 from __future__ import annotations
@@ -38,7 +38,20 @@ from ide_contract_paths import (  # noqa: E402
     mcp_user_example,
     mcp_user_json,
     normalize_ide,
+    uses_trae_ssot,
 )
+
+
+def _default_ide(root: Path) -> str:
+    if (root / ".ai_infra" / "docs" / "handoff" / "IMPLEMENTATION-STATUS.md").is_file():
+        return TRAE
+    if (root / ".trae" / "mcp.json.kit.example").is_file():
+        return TRAE
+    return TRAE if uses_trae_ssot(root) else CURSOR
+
+
+def _default_ides(root: Path) -> tuple[str, ...]:
+    return (TRAE,) if uses_trae_ssot(root) else all_ides()
 
 
 def _kit_fragment(ide: str) -> Path:
@@ -94,8 +107,8 @@ def merge_mcp_configs(kit: dict[str, Any], user: dict[str, Any] | None = None) -
     return merged
 
 
-def write_merged_mcp(root: Path, *, ide: str = CURSOR, dry_run: bool = False) -> Path:
-    ide_key = normalize_ide(ide)
+def write_merged_mcp(root: Path, *, ide: str | None = None, dry_run: bool = False) -> Path:
+    ide_key = normalize_ide(ide or _default_ide(root))
     kit_path = mcp_kit_example(root, ide_key)
     if not kit_path.is_file():
         raise FileNotFoundError(f"missing kit MCP fragment: {kit_path}")
@@ -112,7 +125,7 @@ def write_merged_mcp(root: Path, *, ide: str = CURSOR, dry_run: bool = False) ->
 
 
 def write_merged_mcp_all(root: Path, *, ides: tuple[str, ...] | None = None, dry_run: bool = False) -> list[Path]:
-    targets = ides if ides is not None else all_ides()
+    targets = ides if ides is not None else _default_ides(root)
     written: list[Path] = []
     for ide in targets:
         kit_path = mcp_kit_example(root, ide)
@@ -121,8 +134,8 @@ def write_merged_mcp_all(root: Path, *, ides: tuple[str, ...] | None = None, dry
     return written
 
 
-def load_registry(root: Path, *, ide: str = CURSOR) -> dict[str, Any]:
-    ide_key = normalize_ide(ide)
+def load_registry(root: Path, *, ide: str | None = None) -> dict[str, Any]:
+    ide_key = normalize_ide(ide or _default_ide(root))
     path = mcp_registry(root, ide_key)
     if not path.is_file():
         example = mcp_registry_example(root, ide_key)
@@ -135,9 +148,9 @@ def load_registry(root: Path, *, ide: str = CURSOR) -> dict[str, Any]:
     return data
 
 
-def validate_registry(root: Path, *, ide: str = CURSOR) -> list[str]:
+def validate_registry(root: Path, *, ide: str | None = None) -> list[str]:
     errors: list[str] = []
-    ide_key = normalize_ide(ide)
+    ide_key = normalize_ide(ide or _default_ide(root))
     registry_path = mcp_registry(root, ide_key)
     if not registry_path.is_file():
         return []
