@@ -1,10 +1,12 @@
 # Install scripts
 
-Scaffold the universal **MAS Workflow Kit** into a consumer project.
+Scaffold the **MAS Workflow Kit for Trae** into a consumer project.
+
+> **Trae edition:** This repository is [mas-workflow-kit-trae](https://github.com/SavinRazvan/mas-workflow-kit-trae). Contract plane is `.trae/` (see [ADR-009](../../docs/decisions/ADR-009-trae-only-edition.md)). Upstream Cursor plugin flow lives in [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit).
 
 ## Usage
 
-From the **mas-workflow-kit** repo root:
+From the **kit repo root** (or after `python -m trae_workflow activate` in a consumer tree):
 
 ```bash
 # Preview
@@ -25,6 +27,12 @@ python .ai_infra/scripts/install/scaffold.py \
   --verify
 ```
 
+**Activate (Trae):** from the consumer project root:
+
+```bash
+python -m trae_workflow activate --directory . --profile default
+```
+
 Copies `project.config.yaml.example` to the target (rename to `project.config.yaml` after install). See [`docs/operations/project-config.md`](../../docs/operations/project-config.md).
 
 ## Options
@@ -38,13 +46,9 @@ Copies `project.config.yaml.example` to the target (rename to `project.config.ya
 | `--with-tests` | Copy full kit `tests/` (kit dev only; consumer default uses minimal smoke scaffold) |
 | `--with-venv` | Create `.venv`, install pytest + mcp |
 | `--with-mcp-json` | Merge `mcp.json.kit.example` (+ `mcp.user.json` if present) → `mcp.json` |
-| `--verify` | Run `check_testing_artifacts`, `pytest -q`, governance + debrand |
+| `--verify` | Run `check_testing_artifacts`, `pytest -q`, governance + debrand (4 steps) |
 
-After install, apply product rules manually:
-
-```bash
-cp overlays/rules/*.mdc /path/to/target/.cursor/rules/
-```
+**Product rules:** optional overlays under `overlays/rules/` apply to Trae via `.trae/rules/` after install — not `.cursor/rules/`.
 
 ## Makefile
 

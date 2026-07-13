@@ -26,7 +26,7 @@ trae-workflow mcp link --name my-api --file .trae/mcp.d/my-api.json
 trae-workflow mcp validate
 ```
 
-6. Enable MCP in Cursor settings for the workspace.
+6. Reload Trae MCP for the workspace (Trae MCP panel — enable servers and reload window).
 
 ## Success
 

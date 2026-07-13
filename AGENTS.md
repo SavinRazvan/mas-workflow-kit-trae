@@ -69,4 +69,4 @@ Required trailers: `.trae/rules/commit-trailer-format.md` — set identity in `g
 
 ## Quality gates
 
-`GATES` in `.ai_infra/scripts/pr/prepare.py` — kit-dev runs **4** gates (testing artifacts, pytest, drift, doc facts). Say *prepare gates green* in chat; do not paste full gate lists.
+`GATES` in `.ai_infra/scripts/pr/prepare.py` — kit-dev runs **4** gates (testing artifacts, pytest, drift, doc facts) for PR merge prep. Maintainer hygiene uses **`make gates`** / **`trae-workflow gates`** (**5–6** steps on kit-dev; see [gate-matrix.md](.ai_infra/docs/operations/gate-matrix.md)). Say *prepare gates green* in chat; do not paste full gate lists.
