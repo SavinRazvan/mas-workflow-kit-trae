@@ -84,7 +84,7 @@ make gates
 ### Contract plane (kit-dev)
 
 - **SSOT:** edit [`.trae/`](.trae/) only — agents, skills, rules, MCP config.
-- **Payload:** `make sync-plugin` copies committed `.trae/` → `payload/.trae/`.
+- **Payload:** `make sync-plugin` copies committed `.trae/` → `payload/.trae/` (run after editing `.trae/mcp.json` or other contract JSON — `make check-plugin` fails on payload drift).
 - **Legacy trees:** `.cursor/`, `.agents/`, `.cursor-plugin/` are **gitignored** remnants from upstream Cursor kit-dev. Do not edit them; they may drift from `.trae/`. Safe to remove locally:
 
 ```bash
