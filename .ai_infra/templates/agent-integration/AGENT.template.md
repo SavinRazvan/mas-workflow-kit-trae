@@ -42,7 +42,7 @@ description: {{ONE_LINE_DESCRIPTION}}
 | Tier | Server | Use when |
 |------|--------|----------|
 | Kit | `workflow-kit` | {{kit tools}} |
-| External | See `.cursor/mcp.registry.yaml` | Only if listed for `{{AGENT_ID}}` |
+| External | See `.trae/mcp.registry.yaml` | Only if listed for `{{AGENT_ID}}` |
 
 Before **CallMcpTool**: read tool descriptor schema. Do not invent tool names.
 User setup: `.ai_infra/docs/operations/connect-external-mcp.md`

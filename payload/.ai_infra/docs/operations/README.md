@@ -22,8 +22,9 @@ Depends On:
 
 ## Universal runbooks
 
-- [`PLUGIN-USER-GUIDE.md`](PLUGIN-USER-GUIDE.md) — **start here** — plugin vs activate, file tree, use-case matrix
-- [`consumer-quickstart.md`](consumer-quickstart.md) — adopt the kit in under five minutes (includes [install screenshot](assets/mas-workflow-kit-install.png) for `/add-plugin`)
+- [`PLUGIN-USER-GUIDE.md`](PLUGIN-USER-GUIDE.md) — **start here** — activate, file tree, use-case matrix (Trae edition)
+- [`trae-consumer-quickstart.md`](trae-consumer-quickstart.md) — adopt the kit in Trae in under five minutes
+- [`consumer-quickstart.md`](consumer-quickstart.md) — redirect stub (legacy links)
 - [`install-dry-run.md`](install-dry-run.md) — detailed install verification checklist
 - [`connect-external-mcp.md`](connect-external-mcp.md) — link external MCP servers
 - [`mas-infrastructure-integration.md`](mas-infrastructure-integration.md) — add agents/skills/MCP to kit
@@ -40,4 +41,4 @@ Depends On:
 
 ## Product overlays (not in core)
 
-Copy `overlays/rules/*.mdc` into target `.cursor/rules/` at install.
+Copy `overlays/rules/*.md` into target `.trae/rules/` at install when using project-specific governance extensions.

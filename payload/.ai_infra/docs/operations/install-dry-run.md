@@ -5,28 +5,30 @@ Role: Manual install verification checklist for consuming the MAS Workflow Kit i
 Used By:
  - README.md Quick install
 Depends On:
- - .ai_infra/docs/maintainer/local-anchoring-patterns.md
  - .ai_infra/templates/local-workspace/
 Notes:
  - Automated: `python -m trae_workflow install` and `make install-dry-run`.
- - Entry doc: `.ai_infra/docs/operations/consumer-quickstart.md`.
+ - Entry doc: `.ai_infra/docs/operations/trae-consumer-quickstart.md`.
+ - Trae edition: contract plane is `.trae/` (ADR-009).
 -->
 
 # Install dry-run (manual or automated)
 
-Verify the kit installs into an empty or greenfield project **without** product-specific rule contamination in core `.cursor/rules/`.
+Verify the kit installs into an empty or greenfield project **without** product-specific rule contamination in core `.trae/rules/`.
 
-**Consumer path:** [`consumer-quickstart.md`](consumer-quickstart.md) — recommended first read.
+**Consumer path:** [`trae-consumer-quickstart.md`](trae-consumer-quickstart.md) — recommended first read.
 
 ## Automated (recommended)
 
-From the **MAS Workflow Kit** repo:
+From the **MAS Workflow Kit for Trae** repo:
 
 ```bash
 make install-dry-run
 # or:
 python -m trae_workflow install \
   --target /path/to/new-project \
+  --source payload \
+  --profile default \
   --with-venv \
   --with-mcp-json \
   --verify
@@ -36,17 +38,9 @@ python -m trae_workflow install \
   --with-tests \
   --with-venv \
   --verify
-# legacy:
-python .ai_infra/scripts/install/scaffold.py \
-  --target /path/to/new-project \
-  --with-venv \
-  --with-mcp-json \
-  --verify
 ```
 
 See [`scripts/install/README.md`](../../scripts/install/README.md).
-
-**Marketplace / plugin smoke (Track A + B):** kit repo [`marketplace-publish.md`](https://github.com/SavinRazvan/mas-workflow-kit/blob/main/.ai_infra/docs/handoff/marketplace-publish.md) § Automated smoke, or `make smoke-consumer` from kit repo.
 
 ## Manual steps
 
@@ -56,18 +50,16 @@ Use the sections below if you prefer hand-copying or need to debug scaffold beha
 
 - Python 3.11+ with `venv`
 - Git
-- Cursor IDE (for agents + optional MCP)
+- Trae IDE (for rules, skills, optional MCP)
 
 ## 1. Copy core (manual — deprecated)
 
-> **Prefer the [Automated](#automated-recommended) section above.** Hand-copy paths drift from `manifest.yaml` and `trae_workflow install`. Do **not** copy deprecated `project-rules/` — use `overlays/rules/` only.
-
-If you must debug scaffold behavior, install from **`payload/`** (not repo root):
+> **Prefer the [Automated](#automated-recommended) section above.** Hand-copy paths drift from `manifest.yaml` and `trae_workflow install`.
 
 ```bash
 TARGET=/tmp/workflow-kit-dry-run
-SOURCE=/path/to/mas-workflow-kit/payload
-python3 -m trae_workflow install --target "$TARGET" --source "$SOURCE" --dry-run
+SOURCE=/path/to/mas-workflow-kit-trae/payload
+python3 -m trae_workflow install --target "$TARGET" --source "$SOURCE" --profile default --dry-run
 ```
 
 ## 2. Scaffold `.local/` (prefer automated)
@@ -75,7 +67,7 @@ python3 -m trae_workflow install --target "$TARGET" --source "$SOURCE" --dry-run
 **Recommended:** use `scaffold.py` / `trae_workflow install` — do not hand-mkdir buckets.
 
 ```bash
-python -m trae_workflow install --target "$TARGET" --source "$SOURCE"
+python -m trae_workflow install --target "$TARGET" --source "$SOURCE" --profile default
 ```
 
 Tier 1 base layout created by scaffold (see [local-workspace-layout.md](local-workspace-layout.md) § Artifact tiers):
@@ -116,7 +108,7 @@ cp -r "$SOURCE/tests" "$TARGET/"
 - [ ] `.ai_infra/scripts/pr/prepare.py` — `GATES` (default 2 gates OK)
 - [ ] `.ai_infra/scripts/pr/local_workflow_paths.py` — `DEFAULT_GITHUB_USER`
 - [ ] `AGENTS.md` — project first-reads
-- [ ] Optional: overlay rules via `cp overlays/rules/*.mdc .cursor/rules/`
+- [ ] Optional: overlay rules via `cp overlays/rules/*.md .trae/rules/`
 
 ## 5. Verification gates
 
@@ -132,34 +124,34 @@ Expected: all PASS (governance may skip CI workflow if `.github/` absent).
 ## 6. MCP smoke (optional)
 
 ```bash
-cp .cursor/mcp.json.kit.example .cursor/mcp.json
-# or: trae-workflow install --with-mcp-json (merges kit + mcp.user.json)
-# Edit python path to $TARGET/.venv/bin/python
+# activate --with-mcp-json merges kit MCP into .trae/mcp.json
+python3 -m trae_workflow mcp validate --directory "$TARGET"
 WORKFLOW_KIT_ROOT="$TARGET" .venv/bin/python -m workflow_mcp
 ```
 
-In Cursor: enable MCP server; call `workflow_list_agents` and `workflow_gate_count`.
+In Trae: enable MCP server; call `workflow_list_agents` and `workflow_gate_count`.
 
-## 7. Cursor agents
+## 7. Trae contract plane
 
-- [ ] Seven agent files under `.cursor/agents/` (no mapper)
-- [ ] Six universal rules under `.cursor/rules/*.mdc`
-- [ ] Maintainer skills under `.agents/skills/`
+- [ ] Seven agent files under `.trae/agents/`
+- [ ] Thirteen rules under `.trae/rules/` (6 universal + 7 agent-requested)
+- [ ] Fifteen skills under `.trae/skills/` (including PR skills)
 
 ## Success criteria
 
 | Check | Pass |
 |-------|------|
 | `prepare.py` has 2 default gates | |
-| No product overlay rules in core `.cursor/rules/` (6 universal only) | |
+| No product overlay rules in core `.trae/rules/` (universal only) | |
 | `.local/index-and-planning/current/session-pointer.md` exists | |
 | All six `workflow-artifacts/*/README.md` stubs (recommended_paths) | |
 | `AGENTS.md` present | |
 | `pytest -q` green | |
 | `workflow_mcp` imports and `workflow_gate_count` → `2` | |
 
-## Cleanup
+## Trae IDE smoke (manual)
 
-```bash
-rm -rf /tmp/workflow-kit-dry-run
-```
+1. Open `$TARGET` in Trae
+2. Enable **Include AGENTS.md**
+3. Confirm rules/skills load from `.trae/`
+4. Ask Trae to follow `agent-implementer` and read `session-pointer.md`

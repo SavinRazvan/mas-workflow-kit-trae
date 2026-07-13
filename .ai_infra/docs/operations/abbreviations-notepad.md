@@ -17,7 +17,7 @@ Quick reference for reading `README.md`, `AGENTS.md`, and kit docs.
 
 ## MAS Workflow Kit flow (plain language)
 
-1. Install kit via `trae_workflow activate` (plugin) or `trae_workflow install` (kit clone).
+1. Install kit via `python3 -m trae_workflow activate --profile default` (Trae edition).
 2. Agents read `.local/` trackers (`session-pointer.md` → `plan.md` → `work-tracker.md`).
 3. Maintainer PR workflow runs via `.ai_infra/scripts/pr/*` (Pattern A).
 4. Optional MCP (`workflow-kit`) wraps the same scripts.
@@ -26,7 +26,7 @@ Quick reference for reading `README.md`, `AGENTS.md`, and kit docs.
 
 | Abbreviation | Meaning |
 |---|---|
-| MCP | Model Context Protocol — Cursor tool server integration |
+| MCP | Model Context Protocol — Trae / IDE tool server integration |
 | PR | Pull request — maintainer merge workflow |
 | ADR | Architecture Decision Record — `.ai_infra/docs/decisions/` |
 | GATES | Hardcoded subprocess list in `prepare.py` |
@@ -36,7 +36,7 @@ Quick reference for reading `README.md`, `AGENTS.md`, and kit docs.
 
 | Term | Path |
 |------|------|
-| Cursor contract | `.cursor/`, `.agents/` |
+| Trae contract | `.trae/` |
 | Infrastructure | `.ai_infra/` |
 | Runtime | `.local/` (gitignored) |
 

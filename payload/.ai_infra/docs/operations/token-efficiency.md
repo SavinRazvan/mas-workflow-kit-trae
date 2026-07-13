@@ -3,7 +3,7 @@ File: token-efficiency.md
 Path: .ai_infra/docs/operations/token-efficiency.md
 Role: Token-saving contract for agents — what to read, write, and never paste.
 Used By:
- - AGENTS.md, .cursor/agents/*.md, agent-workflow-procedures.md
+ - AGENTS.md, .trae/agents/*.md, agent-workflow-procedures.md
 Depends On:
  - .ai_infra/scripts/pr/prepare.py
  - docs/governance/workflow-source-owners.md
@@ -53,7 +53,7 @@ Do **not** run individual gates in chat when `prepare.py` exists unless `verifie
 
 ## Maintainer lane
 
-Use slash skills (`/review-pr`, `/prepare-pr`, `/merge-pr`) — `disable-model-invocation: true` — not subagents.
+Use PR skills in order (`.trae/skills/review-pr/`, `prepare-pr/`, `merge-pr/`) or terminal `prepare.py` — not ad-hoc gate reruns in chat.
 
 ## Gate source of truth
 

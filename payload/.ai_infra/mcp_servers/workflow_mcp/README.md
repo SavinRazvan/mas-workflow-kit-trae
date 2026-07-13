@@ -11,9 +11,9 @@ Stdio MCP server that **wraps existing scripts** — it does not duplicate `GATE
 WORKFLOW_KIT_ROOT=/path/to/project .venv/bin/python -m workflow_mcp
 ```
 
-## Cursor wiring
+## Trae wiring
 
-Install with `--with-mcp-json` merges [`.cursor/mcp.json.kit.example`](../../../.cursor/mcp.json.kit.example) into `.cursor/mcp.json`.
+Activate with `--profile default` installs [`.trae/mcp.json`](../../../.trae/mcp.json) with the `workflow-kit` server.
 
 External servers: [connect-external-mcp.md](../../docs/operations/connect-external-mcp.md).
 
@@ -26,11 +26,11 @@ External servers: [connect-external-mcp.md](../../docs/operations/connect-extern
 | `workflow_run_merge_check` | `.ai_infra/scripts/pr/merge.py` |
 | `workflow_run_gate` | single gate from `GATES` |
 | `workflow_check_governance` | `check_governance_consistency.py` |
-| `workflow_list_agents` | `.cursor/agents/*.md` |
+| `workflow_list_agents` | `.trae/agents/*.md` (SSOT via `ide_contract_paths`) |
 | `workflow_get_tracker` | `.local/.../current/{name}.md` |
 | `workflow_gate_count` | `len(GATES)` |
 | `workflow_get_project_config` | `project.config.yaml` or example |
-| `workflow_list_mcp_registry` | `.cursor/mcp.registry.yaml` |
+| `workflow_list_mcp_registry` | `.trae/mcp.registry.yaml` |
 | `workflow_mcp_connection_guide` | connect-external-mcp.md |
 | `workflow_render_commit_trailers` | `.local/user_settings/github.collaboration.yaml` |
 | `workflow_render_pr_body` | PR body for named pipeline |
@@ -48,7 +48,7 @@ External servers: [connect-external-mcp.md](../../docs/operations/connect-extern
 |-----|---------|
 | `workflow://inventory` | Agent ids, skill ids, gate count (JSON) |
 | `workflow://agents/{agent_id}` | Agent prompt markdown |
-| `workflow://skills/{skill_id}` | Skill body from `.cursor/skills` or `.agents/skills` |
+| `workflow://skills/{skill_id}` | Skill body from `.trae/skills` |
 | `workflow://artifacts/pr/{phase}` | PR artifact (`review` \| `prep` \| `prepare` \| `merge`) |
 | `workflow://trackers/{name}` | Tracker markdown from `.local/.../current/` |
 | `workflow://mcp/registry` | Merged MCP registry JSON |
