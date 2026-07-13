@@ -35,7 +35,7 @@
   - Notes: default layout + `.trae/` path rewrite smoke
 
 - Module: `install`
-  - Owned tests: `tests/modules/install/test_*.py` incl. `test_scaffold_default.py`
+  - Owned tests: `tests/modules/install/test_*.py` incl. `tests/modules/install/test_scaffold_trae_only.py`
   - Coverage status: `healthy`
   - Notes: default scaffold; cmd_gates 6 steps (trae parity)
 
@@ -54,9 +54,9 @@
   - Coverage status: `healthy`
   - Notes: DRIFT-001–009 and CLI wiring
 
-**Total:** 486 pytest (kit-dev)
-
 - Module: `ci`
   - Owned tests: `tests/modules/ci/test_seed_kit_workspace.py`
   - Coverage status: `healthy`
   - Notes: CI workspace seed
+
+**Total:** 486 pytest (kit-dev)
