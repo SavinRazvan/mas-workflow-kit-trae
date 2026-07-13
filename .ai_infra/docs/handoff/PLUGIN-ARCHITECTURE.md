@@ -1,5 +1,7 @@
 
 
+> **Trae edition note:** This document describes the **upstream Cursor Marketplace edition** — see [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit). This Trae repo uses `.trae/` SSOT per [ADR-009](../decisions/ADR-009-trae-only-edition.md).
+
 # Cursor Agent Infrastructure Plugin — architecture
 
 **Kit repo map (maintainers):** [repository-map.md](repository-map.md) — SSOT vs generated trees, consumer install surface, deprecated paths. Not shipped to consumer projects.

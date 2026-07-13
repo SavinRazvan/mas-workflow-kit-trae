@@ -14,6 +14,8 @@ Notes:
  - Consumer orientation: workflow-architecture.md, PLUGIN-USER-GUIDE.md, folder-charter.md.
 -->
 
+> **Trae edition note:** This document describes the **upstream Cursor Marketplace edition** — see [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit). This Trae repo uses `.trae/` SSOT per [ADR-009](../decisions/ADR-009-trae-only-edition.md).
+
 # Repository map (kit maintainers)
 
 **Audience:** People working in the **`mas-workflow-kit`** git repo — not consumer app projects.
