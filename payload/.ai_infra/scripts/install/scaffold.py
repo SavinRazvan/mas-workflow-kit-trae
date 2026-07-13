@@ -608,7 +608,7 @@ def main() -> int:
     parser.add_argument("--with-readme", action="store_true", help="Copy kit README.md")
     parser.add_argument("--with-tests", action="store_true", help="Copy tests/ (kit dev only)")
     parser.add_argument("--with-venv", action="store_true", help="Create .venv and install deps")
-    parser.add_argument("--with-mcp-json", action="store_true", help="Use with_mcp profile + mcp.json")
+    parser.add_argument("--with-mcp-json", action="store_true", help="Scaffold MCP config (.trae/mcp.json) on default profile")
     parser.add_argument("--verify", action="store_true", help="Run gates after install")
     parser.add_argument(
         "--refresh-dashboards-only",
