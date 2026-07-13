@@ -56,7 +56,7 @@ def cmd_verify_all(args: argparse.Namespace) -> int:
         }
         print(json.dumps(payload, indent=2))
     else:
-        print(verify_all.format_report(results))
+        print(verify_all.format_report(results, verbose=getattr(args, "verbose", False)))
     return verify_all.exit_code_for(results)
 
 
@@ -70,6 +70,7 @@ def register_verify_subparser(sub: argparse._SubParsersAction) -> None:
     )
     all_cmd.add_argument("--directory", type=Path, default=".")
     all_cmd.add_argument("--json", action="store_true", help="Emit JSON report")
+    all_cmd.add_argument("--verbose", action="store_true", help="Print per-step duration")
     all_cmd.add_argument(
         "--write-preflight",
         action="store_true",

@@ -93,6 +93,8 @@ make clean-legacy-contract   # removes gitignored .cursor/ .agents/ .cursor-plug
 
 If you use **Cursor IDE** in this repo, load skills from `.trae/skills/`, not `.cursor/skills/`.
 
+**Dual-IDE legacy:** upstream parity helpers (`sync_trae_contract`, `dual_ide` profile) are dormant when Trae SSOT is active — see [dual-ide-legacy.md](.ai_infra/docs/operations/dual-ide-legacy.md).
+
 **Docs:** [workflow-architecture.md](.ai_infra/docs/architecture/workflow-architecture.md) · [ADR index](.ai_infra/docs/decisions/README.md) · [AGENTS.md](AGENTS.md)
 
 ## License

@@ -1,7 +1,7 @@
 """
 File: doc_facts_checks.py
 Path: .ai_infra/scripts/architecture/doc_facts_checks.py
-Role: Individual DOC-001…006 checks for canonical doc vs repo fact parity.
+Role: Individual DOC-001…007 checks for canonical doc vs repo fact parity.
 Used By:
  - .ai_infra/scripts/architecture/check_doc_facts.py
 Depends On:
@@ -367,6 +367,34 @@ def check_doc006_implementation_test_count(paths: DocFactsPaths) -> CheckResult:
     )
 
 
+def check_doc007_trae_workflow_type_gate(paths: DocFactsPaths) -> CheckResult:
+    """gate-matrix.md documents pyright in trae-workflow gates when kit-dev cli includes it."""
+    if not is_kit_dev(paths.root):
+        return CheckResult(
+            check_id="DOC-007",
+            severity=Severity.P2,
+            passed=True,
+            detail="consumer profile — DOC-007 skipped",
+        )
+    cli_path = paths.root / ".ai_infra" / "install" / "trae_workflow" / "cli.py"
+    cli_text = _read(cli_path)
+    matrix_text = _read(paths.gate_matrix)
+    has_pyright_cli = "pyright" in cli_text
+    matrix_ok = "pyright" in matrix_text.lower()
+    passed = has_pyright_cli and matrix_ok
+    parts: list[str] = []
+    if not has_pyright_cli:
+        parts.append("cli.py missing pyright gate step")
+    if not matrix_ok:
+        parts.append("gate-matrix.md missing pyright mention")
+    return CheckResult(
+        check_id="DOC-007",
+        severity=Severity.P2,
+        passed=passed,
+        detail="trae-workflow type gate documented" if passed else "; ".join(parts),
+    )
+
+
 KIT_DEV_CHECKS = (
     check_doc001_agent_roster,
     check_doc002_status_agent_count,
@@ -374,4 +402,5 @@ KIT_DEV_CHECKS = (
     check_doc004_rules_count,
     check_doc005_prepare_gate_facts,
     check_doc006_implementation_test_count,
+    check_doc007_trae_workflow_type_gate,
 )

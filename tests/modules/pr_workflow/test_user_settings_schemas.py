@@ -39,3 +39,13 @@ def test_exemplar_validates_against_schema(exemplar_rel: str, schema_name: str) 
     )
     data = yaml.safe_load((REPO_ROOT / exemplar_rel).read_text(encoding="utf-8"))
     jsonschema.validate(instance=data, schema=schema)
+
+
+def test_github_collaboration_exemplar_has_schema_version() -> None:
+    data = yaml.safe_load(
+        (
+            REPO_ROOT
+            / ".ai_infra/templates/user-settings/exemplars/github.collaboration.yaml"
+        ).read_text(encoding="utf-8")
+    )
+    assert data.get("version") == 1
