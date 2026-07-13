@@ -1,258 +1,104 @@
 <!--
 File: repository-map.md
 Path: .ai_infra/docs/handoff/repository-map.md
-Role: Kit-maintainer repository map — SSOT vs generated trees, consumer install surface, deprecated paths.
+Role: Kit-maintainer repository map — Trae edition SSOT, payload sync, consumer install surface.
 Used By:
  - AGENTS.md (kit dev onboarding)
- - README.md § Developing the kit repo only
+ - README.md § Developing the kit
 Depends On:
  - .ai_infra/manifest.yaml
  - .ai_infra/scripts/release/sync_plugin_bundle.py
- - .ai_infra/docs/handoff/PLUGIN-ARCHITECTURE.md
+ - ADR-009
 Notes:
- - **Kit-dev only** — not in manifest copy_ai_infra; never shipped to consumer projects.
- - Consumer orientation: workflow-architecture.md, PLUGIN-USER-GUIDE.md, folder-charter.md.
+ - Kit-dev only — not copied to consumer projects via manifest.
 -->
 
-> **Trae edition note:** This document describes the **upstream Cursor Marketplace edition** — see [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit). This Trae repo uses `.trae/` SSOT per [ADR-009](../decisions/ADR-009-trae-only-edition.md).
+# Repository map (Trae edition — kit maintainers)
 
-# Repository map (kit maintainers)
+**Audience:** Maintainers of **mas-workflow-kit-trae** — not consumer app projects.
 
-**Audience:** People working in the **`mas-workflow-kit`** git repo — not consumer app projects.
+**Not shipped to consumers.** Lives under `docs/handoff/` (excluded from `manifest.yaml` `copy_ai_infra`).
 
-**Not shipped to consumers.** This file lives under `docs/handoff/` (excluded from `manifest.yaml` `copy_ai_infra`). Do not link it from consumer quickstart or PLUGIN-USER-GUIDE body text.
+**Consumer docs:** [workflow-architecture.md](../architecture/workflow-architecture.md) · [trae-consumer-quickstart.md](../operations/trae-consumer-quickstart.md) · [PLUGIN-USER-GUIDE.md](../operations/PLUGIN-USER-GUIDE.md)
 
----
-
-## How to read this doc
-
-| Column | Meaning |
-|--------|---------|
-| **SSOT** | Edit here; other trees are generated or copied |
-| **Generated** | Run `make sync-plugin`; commit the diff |
-| **Consumer** | Lands on disk after `trae_workflow activate` in an app project |
-| **Kit-dev only** | Stays in this repo; not in consumer `payload/` |
+> **Upstream Cursor edition:** [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit) uses `.cursor/` + Marketplace plugin — separate repository.
 
 ---
 
-## Kit repository (mas-workflow-kit)
+## Top-level layout
 
-```text
-mas-workflow-kit/
-├── .cursor/                    SSOT — agents, rules, canonical skills
-├── .agents/skills/             SSOT — maintainer slash skills (+ deprecated stubs)
-├── agents/                     Generated → Marketplace plugin surface (mirror of .cursor/agents)
-├── rules/                      Generated → Marketplace plugin surface (mirror of .cursor/rules)
-├── skills/                     Generated → Marketplace merge (.cursor/skills + additive .agents/skills)
-├── payload/                    Generated → activate/install source tree (ADR-001)
-├── .cursor-plugin/plugin.json  SSOT — Marketplace manifest
-├── .ai_infra/                  SSOT — scripts, docs, templates, MCP, workflows, manifest.yaml
-├── assets/                     Marketplace logo (`logo.png`)
-├── .github/                    CI workflows (kit-dev only)
-├── trae_workflow/            SSOT — thin CLI shim (also copied to consumer)
-├── schemas/                    Legacy gate.json stub (GATES live in prepare.py)
-├── .local/                     Kit-dev runtime (gitignored); CI seed fixture — not consumer exemplars
-├── tests/                      Kit-dev only — full pytest suite (633+)
-├── Makefile, pyproject.toml    Kit-dev only
-├── overlays/                   Optional product rules source (empty in core kit)
-├── project-rules/              Deprecated alias → use overlays/rules/
-└── AGENTS.md                   Kit-dev router (consumers get AGENTS.stub.md)
+```
+mas-workflow-kit-trae/
+├── .trae/                    # Contract plane SSOT (tracked)
+│   ├── agents/               # 7 agent prompts
+│   ├── rules/                # 13 rules (6 governance + 7 agent-requested)
+│   ├── skills/               # 15 protocol + PR workflow skills
+│   └── mcp.*                 # MCP registry + examples
+├── payload/                  # Activate source (tracked)
+│   ├── .trae/                # Synced from root .trae/ via make sync-plugin
+│   └── trae_workflow/        # CLI package copy
+├── .ai_infra/                # Infrastructure plane (slim subset → consumers)
+│   ├── scripts/              # PR, install, architecture, workflow, integration
+│   ├── install/trae_workflow/  # activate CLI
+│   ├── mcp_servers/workflow_mcp/
+│   ├── docs/                 # operations, governance, decisions, architecture
+│   └── templates/            # local-workspace, user-settings, agent-integration
+├── trae_workflow/            # Editable install entry (pyproject.toml)
+├── tests/modules/            # Kit test suite (488 tests)
+├── AGENTS.md                 # Onboarding hub
+└── .local/                   # Runtime (gitignored) — trackers, PR artifacts
 ```
 
-**Regenerate committed bundles:** `make sync-plugin` then `make check-plugin`.
-
-Deep dive: [PLUGIN-ARCHITECTURE.md](PLUGIN-ARCHITECTURE.md).
+**Gitignored legacy (do not edit):** `.cursor/`, `.agents/`, `.cursor-plugin/` — upstream remnants. See `make clean-legacy-contract`.
 
 ---
 
-## Source of truth vs generated (do not edit generated directly)
+## SSOT vs generated
 
-| Path | Role | Edit where |
+| Path | Role | Edit here? |
 |------|------|------------|
-| `.cursor/agents/*.md` | 7 agent cards | **Here** |
-| `.cursor/rules/*.mdc` | 6 universal rules | **Here** |
-| `.cursor/skills/*/` | 10 canonical protocols | **Here** |
-| `.agents/skills/*/` | Maintainer slash skills | **Here** |
-| `agents/`, `rules/`, `skills/` (repo root) | Marketplace discovery | `make sync-plugin` from above |
-| `payload/` | Consumer install bundle | `make sync-plugin` from above + manifest |
-| `skills/audit-alignment/` | Deprecated stub in merged `skills/` | `.agents/skills/audit-alignment/` |
+| `.trae/` | Human-edited contract SSOT | **Yes** |
+| `payload/.trae/` | Activate bundle | **No** — `make sync-plugin` |
+| `payload/trae_workflow/` | CLI copy for activate | **No** — sync-plugin |
+| `.ai_infra/` | Scripts + docs | **Yes** (kit-dev) |
+| `.local/` | Runtime trackers/artifacts | **Yes** (local only) |
 
 ---
 
-## Consumer project after activate (default profile)
+## Consumer install surface (`manifest.yaml` profile `default`)
 
-What **`/workflow-activate`** copies into **your app** (e.g. Smart-Notes):
+Copied on `trae_workflow activate`:
 
-```text
-my-app/
-├── AGENTS.md                       Stub router (from template)
-├── .cursor/
-│   ├── agents/                     7 agents (from payload)
-│   ├── rules/                      6 rules
-│   └── skills/                     10 canonical skills only (no repo-root skills/ merge)
-├── .agents/skills/                 5 maintainer slash folders (+ audit-alignment stub)
-├── .ai_infra/                      Slim bundle (manifest copy_ai_infra only)
-│   ├── scripts/pr|architecture|integration|workflow|install/
-│   ├── install/trae_workflow/
-│   ├── docs/operations|governance|roadmap|decisions|architecture/
-│   ├── templates/local-workspace|user-settings|agent-integration/
-│   ├── workflows/                  PR lane hub (shipped — see workflows/README.md)
-│   └── mcp_servers/workflow_mcp/   (with_mcp profile)
-├── trae_workflow/                CLI entrypoint
-└── .local/                         Scaffolded trackers + artifact buckets (gitignored)
+- `.trae/` (from `payload/.trae/`)
+- `trae_workflow/`
+- Slim `.ai_infra/` subtrees (scripts, docs, templates, MCP server)
+- Scaffolded `.local/` tier-1 paths + `AGENTS.md` stub
+
+Path SSOT for artifact buckets: `.ai_infra/scripts/pr/local_workflow_paths.py`
+
+---
+
+## Verification (kit-dev)
+
+```bash
+pip install -e ".[dev,mcp]"
+make sync-plugin && make check-plugin && make check-trae-parity
+make gates
+python3 -m trae_workflow integrate validate --directory .
 ```
 
-**Not installed:** kit `tests/modules/` (633), `Makefile`, `docs/handoff/`, `docs/maintainer/`, `scripts/ci/`, `scripts/release/`, this `repository-map.md`, `IMPLEMENTATION-STATUS.md`, repo-root `agents/rules/skills/`.
+---
 
-Consumer tree detail: [PLUGIN-ARCHITECTURE.md § Installed consumer project](PLUGIN-ARCHITECTURE.md).
+## Maintainer workflow
+
+1. Edit contract plane under **`.trae/`** only.
+2. `make sync-plugin` before commit when `.trae/` changes.
+3. `make gates` before PR.
+4. See [IMPLEMENTATION-STATUS.md](IMPLEMENTATION-STATUS.md) for shipped inventory.
 
 ---
 
-## `.ai_infra/docs/` — what copies where
+## Related
 
-| Subtree | Consumer `.ai_infra/docs/`? | Purpose |
-|---------|:---------------------------:|---------|
-| `operations/` | **Yes** (minus filtered files) | Quickstart, PLUGIN-USER-GUIDE, gate-matrix, local-workspace-layout |
-| `governance/` | **Yes** | folder-charter, drift-prevention, module boundaries |
-| `architecture/` | **Yes** | workflow-architecture.md (consumer-facing) |
-| `decisions/` | **Yes** | ADR index |
-| `roadmap/` | **Yes** | alignment-audit-schema |
-| **`handoff/`** | **No** | IMPLEMENTATION-STATUS, PLUGIN-ARCHITECTURE, marketplace-publish, **this file** |
-| **`maintainer/`** | **No** | Heavy megadocs, local anchoring patterns |
-
-Filter SSOT: `.ai_infra/scripts/architecture/consumer_bundle_paths.py` (e.g. excludes `documentation-maintenance-checklist.md` from consumer ops copy).
-
----
-
-## Agents (7) — all active
-
-| Agent | `.cursor/agents/` | Consumer | Invoke |
-|-------|:-----------------:|:--------:|--------|
-| `implementer` | Yes | Yes | `/implementer` |
-| `test-runner` | Yes | Yes | `/test-runner` |
-| `verifier` | Yes | Yes | `/verifier` |
-| `enterprise-auditor` | Yes | Yes | `/enterprise-auditor` |
-| `integrator-mas-agent` | Yes | Yes | `/integrator-mas-agent` |
-| `workflow-drift-guard` | Yes | Yes | `/workflow-drift-guard` |
-| `researcher` | Yes | Yes (optional) | `/researcher` |
-
-**Deprecated agents:** none.
-
----
-
-## Skills
-
-### Canonical — `.cursor/skills/` (10) → consumer `.cursor/skills/`
-
-| Skill | Paired agent |
-|-------|----------------|
-| `enterprise-architecture-audit` | `enterprise-auditor` (full audit + **focused alignment pass**) |
-| `audit-module-map` | `enterprise-auditor` (depth tool) |
-| `audit-orchestration` | Parent orchestration |
-| `workflow-drift-audit` | `workflow-drift-guard` |
-| `implementation-execution-loop` | `implementer` |
-| `test-module-coverage` | `test-runner` |
-| `mas-infrastructure-integration` | `integrator-mas-agent` |
-| `workflow-activate` | Install / re-activate |
-| `connect-external-mcp` | MCP setup |
-| `research-corpus-execution` | `researcher` |
-
-### Maintainer slash — `.agents/skills/` → consumer `.agents/skills/`
-
-| Skill | Status | Notes |
-|-------|--------|-------|
-| `pr-workflow` | Active | Umbrella |
-| `review-pr` | Active | |
-| `prepare-pr` | Active | |
-| `merge-pr` | Active | |
-| **`audit-alignment`** | **Deprecated stub** | Redirect → `enterprise-auditor`; outputs unchanged (`alignment-audit.md`, `alignment-todos.md`) |
-
-Also under `.agents/skills/`: `README.md`, `PR_WORKFLOW.md` (legacy redirect), `RESEARCH_WORKFLOW.md` (research hub pointer).
-
-### Repo-root `skills/` (15 folders) — Marketplace only
-
-Merged view for Cursor plugin loading from GitHub. **Not** copied as a single tree to consumer disk. Consumers receive `.cursor/skills/` and `.agents/skills/` separately via `payload/`.
-
----
-
-## Rules (6) — consumer `.cursor/rules/`
-
-| Rule | alwaysApply |
-|------|:-----------:|
-| `implementation-workflow-governance.mdc` | Yes |
-| `pr-workflow-enforcement.mdc` | Yes |
-| `commit-trailer-format.mdc` | Yes |
-| `file-docstring-header-relations.mdc` | Yes |
-| `local-artifact-protection.mdc` | Yes |
-| `advisory-audit-alignment-enforcement.mdc` | Yes |
-
-Product overlays: `overlays/rules/*.mdc` → consumer `.cursor/rules/` at install (empty in core kit).
-
----
-
-## Deprecated / legacy / aliases
-
-| Path | Status | Use instead |
-|------|--------|-------------|
-| `.agents/skills/audit-alignment/` | Deprecated stub | `enterprise-auditor` + `enterprise-architecture-audit` |
-| `skills/audit-alignment/` (repo root) | Same stub (generated) | Same |
-| `.agents/skills/PR_WORKFLOW.md` | Legacy redirect | `pr-workflow/SKILL.md` |
-| `project-rules/` | Deprecated alias | `overlays/rules/` |
-| Repo-root `agents/`, `rules/`, `skills/` | Generated mirrors | Edit `.cursor/` + `.agents/skills/` |
-| `.cursor/settings.json` | Kit-dev IDE prefs | Not in consumer bundle |
-
----
-
-## `.local/` (runtime — gitignored)
-
-| Subtree | Tier | Writer |
-|---------|------|--------|
-| `index-and-planning/current/` | 1 base + 2 runtime | scaffold + agents |
-| `workflow-artifacts/pr/` | 2 | review/prepare/merge scripts |
-| `workflow-artifacts/alignment/` | 2 | `enterprise-auditor` |
-| `workflow-artifacts/drift/` | 2 | `workflow-drift-guard` |
-| `workflow-artifacts/enterprise-architecture-audit/` | 2 | `enterprise-auditor` |
-| `agents-control-center/` | 1 + refresh | scaffold / activate |
-| `user_settings/` | 1 | human (gitignored) |
-| `generated-data/` | 2 | pytest / CI |
-
-**Kit repo `.local/`** is a CI seed fixture — not what consumers receive. Consumers get neutral exemplars from `templates/local-workspace/exemplars/`.
-
-Contract: [local-workspace-layout.md](../operations/local-workspace-layout.md) · [folder-charter.md](../governance/folder-charter.md).
-
----
-
-## Kit-dev-only paths (quick reference)
-
-| Path | Why kit-dev only |
-|------|------------------|
-| `tests/modules/` | Full kit test suite |
-| `.ai_infra/docs/handoff/` | Maintainer status, plugin arch, this map |
-| `.ai_infra/docs/maintainer/` | Megadocs |
-| `.ai_infra/scripts/ci/`, `scripts/release/` | CI and plugin sync |
-| `.ai_infra/templates/local-workspace/ci/kit-dev/` | CI tracker fixtures |
-| `Makefile`, `pyproject.toml`, `.github/` | Kit repo hygiene |
-| Repo-root `agents/`, `rules/`, `skills/` | Marketplace surface |
-
----
-
-## Related docs (by audience)
-
-| Audience | Start here |
-|----------|------------|
-| **Kit maintainer** | This file → [PLUGIN-ARCHITECTURE.md](PLUGIN-ARCHITECTURE.md) → [IMPLEMENTATION-STATUS.md](IMPLEMENTATION-STATUS.md) → [Docs index](../README.md) |
-| **Consumer app dev** | [consumer-quickstart.md](../operations/consumer-quickstart.md) → [PLUGIN-USER-GUIDE.md](../operations/PLUGIN-USER-GUIDE.md) → [workflow-architecture.md](../architecture/workflow-architecture.md) |
-| **`.local/` layout** | [local-workspace-layout.md](../operations/local-workspace-layout.md) (shipped — universal) |
-| **Three planes** | [folder-charter.md](../governance/folder-charter.md) (shipped — universal) |
-| **Marketplace publish** | [marketplace-publish.md](marketplace-publish.md) |
-
----
-
-## Maintenance
-
-When adding agents, skills, manifest paths, or deprecated redirects:
-
-1. Update SSOT under `.cursor/` or `.agents/skills/`
-2. Run `make sync-plugin && make check-plugin`
-3. Update this file and [IMPLEMENTATION-STATUS.md](IMPLEMENTATION-STATUS.md) counts
-4. Do **not** add kit-repo-only tables to consumer quickstart or PLUGIN-USER-GUIDE
+- [PLUGIN-ARCHITECTURE.md](PLUGIN-ARCHITECTURE.md) — three-plane architecture
+- [ADR-009](../decisions/ADR-009-trae-only-edition.md) — Trae-only edition decision
