@@ -4,7 +4,7 @@ PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 
 install-dry-run:
 	rm -rf /tmp/workflow-kit-dry-run
-	$(PYTHON) -m cursor_workflow install \
+	$(PYTHON) -m trae_workflow install \
 		--target /tmp/workflow-kit-dry-run \
 		--with-venv \
 		--with-mcp-json \
@@ -21,28 +21,30 @@ type-check:
 	.venv/bin/pyright
 
 gates:
-	$(PYTHON) -m cursor_workflow gates
+	$(PYTHON) -m trae_workflow gates
+
+PROFILE ?= default
 
 sync-plugin:
-	$(PYTHON) .ai_infra/scripts/release/sync_plugin_bundle.py --profile dual_ide
+	$(PYTHON) .ai_infra/scripts/release/sync_plugin_bundle.py --profile $(PROFILE)
 
 check-plugin:
-	$(PYTHON) .ai_infra/scripts/release/sync_plugin_bundle.py --check --profile dual_ide
+	$(PYTHON) .ai_infra/scripts/release/sync_plugin_bundle.py --check --profile $(PROFILE)
 
 check-trae-parity:
 	$(PYTHON) .ai_infra/scripts/architecture/check_trae_parity.py
 
 integrate-validate:
-	$(PYTHON) -m cursor_workflow integrate validate --directory .
+	$(PYTHON) -m trae_workflow integrate validate --directory .
 
 drift-validate:
-	$(PYTHON) -m cursor_workflow drift validate --directory .
+	$(PYTHON) -m trae_workflow drift validate --directory .
 
 doc-validate:
-	$(PYTHON) -m cursor_workflow doc validate --directory .
+	$(PYTHON) -m trae_workflow doc validate --directory .
 
 verify-all:
-	$(PYTHON) -m cursor_workflow verify all --directory .
+	$(PYTHON) -m trae_workflow verify all --directory .
 
 ci-seed:
 	$(PYTHON) .ai_infra/scripts/ci/seed_kit_workspace.py --directory .

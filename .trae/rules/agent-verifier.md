@@ -1,5 +1,3 @@
-<!-- GENERATED — do not edit. Sync from .cursor/ via sync_trae_contract.py -->
-
 ---
 description: Claims vs evidence; minimal high-signal checks.
 alwaysApply: false

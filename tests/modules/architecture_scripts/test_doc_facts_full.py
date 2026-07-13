@@ -31,8 +31,8 @@ import doc_facts_checks as dfc  # noqa: E402
 
 def _copy_minimal_kit(target: Path) -> None:
     for rel in (
-        ".cursor/agents",
-        ".cursor/rules",
+        ".trae/agents",
+        ".trae/rules",
         "README.md",
         "AGENTS.md",
         ".ai_infra/docs/architecture/workflow-architecture.md",
@@ -115,7 +115,7 @@ def test_check_doc001_missing_agents_dir_fails(tmp_path: Path) -> None:
     paths = dfc.doc_facts_paths(tmp_path)
     result = dfc.check_doc001_agent_roster(paths)
     assert not result.passed
-    assert "missing .cursor/agents" in result.detail
+    assert "missing .trae/agents" in result.detail
 
 
 def test_check_doc001_missing_doc_target_reports_file_missing(tmp_path: Path) -> None:
@@ -162,7 +162,7 @@ def test_check_doc004_missing_rules_dir_fails(tmp_path: Path) -> None:
     paths = dfc.doc_facts_paths(tmp_path)
     result = dfc.check_doc004_rules_count(paths)
     assert not result.passed
-    assert "missing .cursor/rules" in result.detail
+    assert "missing .trae/rules" in result.detail
 
 
 def test_check_doc004_status_missing_row_fails(tmp_path: Path) -> None:
@@ -292,7 +292,7 @@ def test_main_writes_preflight_json(tmp_path: Path) -> None:
     code = cdf.main(["--directory", str(REPO_ROOT), "--preflight-out", str(out)])
     assert code == 0
     payload = json.loads(out.read_text(encoding="utf-8"))
-    assert payload["command"] == "python -m cursor_workflow doc validate"
+    assert payload["command"] == "python -m trae_workflow doc validate"
     assert "results" in payload
 
 

@@ -1,5 +1,3 @@
-<!-- GENERATED — do not edit. Sync from .cursor/ via sync_trae_contract.py -->
-
 ---
 description: Optional local research corpus; hard-stop on product code without explicit scope.
 alwaysApply: false

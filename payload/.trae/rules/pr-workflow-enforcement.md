@@ -1,5 +1,3 @@
-<!-- GENERATED — do not edit. Sync from .cursor/ via sync_trae_contract.py -->
-
 ---
 description: PR-first maintainer workflow, artifacts, and pre-merge gates
 alwaysApply: true

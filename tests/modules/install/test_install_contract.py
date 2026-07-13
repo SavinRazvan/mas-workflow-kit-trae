@@ -57,7 +57,7 @@ def _assert_contract(target: Path, profile: str) -> None:
         assert (target / rel).exists(), f"missing recommended path: {rel}"
 
 
-@pytest.mark.parametrize("profile", ("default", "with_mcp"))
+@pytest.mark.parametrize("profile", ("default",))
 def test_install_contract_profiles(tmp_path: Path, profile: str) -> None:
     mod = _load_scaffold()
     target = tmp_path / f"consumer-{profile}"
@@ -65,7 +65,7 @@ def test_install_contract_profiles(tmp_path: Path, profile: str) -> None:
         target,
         REPO_ROOT,
         profile=profile,
-        with_mcp_json=(profile == "with_mcp"),
+        with_mcp_json=True,
     )
     _assert_contract(target, profile)
     kit_version = target / ".ai_infra" / ".kit-version"

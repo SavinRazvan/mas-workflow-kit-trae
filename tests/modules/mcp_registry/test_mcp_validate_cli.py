@@ -1,11 +1,11 @@
 """
 File: test_mcp_validate_cli.py
 Path: tests/modules/mcp_registry/test_mcp_validate_cli.py
-Role: Tests cursor-workflow mcp validate against registry and mcp.json keys.
+Role: Tests trae-workflow mcp validate against registry and mcp.json keys.
 Used By:
  - pytest
 Depends On:
- - .ai_infra/install/cursor_workflow/cli.py
+ - .ai_infra/install/trae_workflow/cli.py
 """
 
 from __future__ import annotations
@@ -19,14 +19,14 @@ from pathlib import Path
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-CLI_PATH = REPO_ROOT / ".ai_infra" / "install" / "cursor_workflow" / "cli.py"
+CLI_PATH = REPO_ROOT / ".ai_infra" / "install" / "trae_workflow" / "cli.py"
 
 
 def _load_cli():
-    spec = importlib.util.spec_from_file_location("cursor_workflow_cli", CLI_PATH)
+    spec = importlib.util.spec_from_file_location("trae_workflow_cli", CLI_PATH)
     assert spec is not None and spec.loader is not None
     module = importlib.util.module_from_spec(spec)
-    sys.modules["cursor_workflow_cli"] = module
+    sys.modules["trae_workflow_cli"] = module
     spec.loader.exec_module(module)
     return module
 
@@ -54,7 +54,7 @@ def _seed_mcp_layout(root: Path) -> None:
     (cursor / "mcp.registry.yaml").write_text(yaml.dump(registry), encoding="utf-8")
 
 
-def _seed_dual_ide_layout(root: Path) -> None:
+def _seed_default_layout(root: Path) -> None:
     _seed_mcp_layout(root)
     trae = root / ".trae"
     trae.mkdir(parents=True)
@@ -97,9 +97,9 @@ def test_mcp_validate_fails_when_registry_key_missing_from_mcp_json(tmp_path: Pa
     assert code == 1
 
 
-def test_mcp_validate_dual_ide_writes_both_planes(tmp_path: Path) -> None:
+def test_mcp_validate_default_writes_both_planes(tmp_path: Path) -> None:
     cli = _load_cli()
-    _seed_dual_ide_layout(tmp_path)
+    _seed_default_layout(tmp_path)
     code = cli.main(["mcp", "validate", "--directory", str(tmp_path)])
     assert code == 0
     assert (tmp_path / ".cursor" / "mcp.json").is_file()

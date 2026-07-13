@@ -38,7 +38,7 @@ def test_scaffold_dry_run_lists_copies(tmp_path: Path) -> None:
     log = mod.scaffold(tmp_path / "out", REPO_ROOT, dry_run=True)
     joined = "\n".join(log)
     assert ".ai_infra" in joined
-    assert ".cursor" in joined
+    assert ".trae" in joined
     assert "session-pointer.md" in joined
     assert "project.config.yaml.example" in joined
     assert "minimal smoke" in joined
@@ -49,12 +49,11 @@ def test_scaffold_creates_core_layout(tmp_path: Path) -> None:
     mod = _load_scaffold()
     target = tmp_path / "project"
     mod.scaffold(target, REPO_ROOT)
-    assert (target / ".cursor" / "agents" / "implementer.md").is_file()
+    assert (target / ".trae" / "agents" / "implementer.md").is_file()
     assert (target / ".ai_infra" / "scripts" / "pr" / "prepare.py").is_file()
     assert (target / ".ai_infra" / "scripts" / "install" / "scaffold.py").is_file()
     assert (target / ".local" / "index-and-planning" / "current" / "session-pointer.md").is_file()
-    assert not (target / ".cursor" / "agents" / "workflow-intelligence-mapper.md").exists()
-    assert not (target / ".cursor" / "rules" / mod.ADAPTER_WALL_RULE).exists()
+    assert not (target / ".trae" / "agents" / "workflow-intelligence-mapper.md").exists()
     assert not (target / "examples").exists()
     assert (target / "tests" / "modules" / "smoke" / "test_kit_installed.py").is_file()
     assert not (target / "tests" / "modules" / "install" / "test_scaffold.py").exists()

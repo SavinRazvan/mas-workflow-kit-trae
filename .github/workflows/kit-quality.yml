@@ -38,8 +38,8 @@ jobs:
           # regeneration (no prior sync step) — catches drift in the committed bundle.
           make check-plugin
           .venv/bin/python .ai_infra/scripts/architecture/check_trae_parity.py
-          .venv/bin/python -m cursor_workflow health
-          .venv/bin/python -m cursor_workflow contributors validate
+          .venv/bin/python -m trae_workflow health
+          .venv/bin/python -m trae_workflow contributors validate
           .venv/bin/python .ai_infra/scripts/architecture/check_governance_consistency.py
 
       - name: Install dry-run

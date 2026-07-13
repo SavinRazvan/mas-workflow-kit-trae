@@ -17,7 +17,7 @@
 
 **Optional add-on:** MCP server under `.ai_infra/mcp_servers/` — wraps the same scripts; agents do not require it.
 
-**Expansion path:** after install, use **`/integrator-mas-agent`** to add agents/skills/MCP. Machine checks: `python -m cursor_workflow integrate validate` (P0: agent sections, registry parity, pipeline names, user_settings schema). ADR-006 defines MAS-integrated vs independent-governed modes.
+**Expansion path:** after install, use **`/integrator-mas-agent`** to add agents/skills/MCP. Machine checks: `python -m trae_workflow integrate validate` (P0: agent sections, registry parity, pipeline names, user_settings schema). ADR-006 defines MAS-integrated vs independent-governed modes.
 
 ---
 
@@ -41,9 +41,9 @@ Enabling the **Marketplace plugin** loads agents/rules/skills into Cursor, but *
 ```mermaid
 flowchart LR
   User[User enables plugin] --> Cursor[Cursor contract in IDE]
-  Cursor --> Activate["cursor_workflow activate"]
+  Cursor --> Activate["trae_workflow activate"]
   Activate --> P1["Plane 1: .cursor/ + .agents/"]
-  Activate --> P2["Plane 2: .ai_infra/ + cursor_workflow/"]
+  Activate --> P2["Plane 2: .ai_infra/ + trae_workflow/"]
   Activate --> P3["Plane 3: .local/ scaffold"]
   P3 --> Settings["User edits user_settings/ only"]
 ```
@@ -51,7 +51,7 @@ flowchart LR
 | Step | Who | Command |
 |------|-----|---------|
 | 1. Enable plugin | Human | Cursor Marketplace |
-| 2. Activate planes | Agent or human | `python -m cursor_workflow activate --directory .` |
+| 2. Activate planes | Agent or human | `python -m trae_workflow activate --directory .` |
 | 3. Personalize | Human | `.local/user_settings/github.collaboration.yaml` |
 | 4. Validate | Agent or human | `contributors validate` + `integrate validate` |
 | 5. Extend infra | Agent or human | **`/integrator-mas-agent`** in Agent chat (not shell) |
@@ -84,7 +84,7 @@ mas-workflow-kit/
 │   ├── docs/
 │   ├── templates/
 │   ├── mcp_servers/        # optional workflow_mcp
-│   └── install/cursor_workflow/
+│   └── install/trae_workflow/
 ├── .local/
 ├── Makefile
 ├── pyproject.toml         # incl. [tool.pytest.ini_options] — SSOT, no separate pytest.ini
@@ -110,7 +110,7 @@ my-app/
 │   ├── manifest.yaml
 │   ├── install-contract.json
 │   ├── scripts/pr|architecture|integration|workflow|install/
-│   ├── install/cursor_workflow/
+│   ├── install/trae_workflow/
 │   ├── docs/operations|governance|roadmap|decisions|architecture/
 │   ├── templates/local-workspace|user-settings|agent-integration/
 │   ├── mcp_servers/workflow_mcp/   # with_mcp profile
@@ -171,14 +171,14 @@ Product rules: copy `overlays/rules/*.mdc` into `.cursor/rules/` after install (
 
 | Mechanism              | What it is                                                          |
 | ---------------------- | ------------------------------------------------------------------- |
-| **This plugin**        | File bundle installed per project via `cursor_workflow activate` or `install` |
+| **This plugin**        | File bundle installed per project via `trae_workflow activate` or `install` |
 | **MCP**                | Optional `.cursor/mcp.json` → `workflow_mcp` tools wrapping scripts |
 | **Cursor Marketplace** | Future distribution channel for the same bundle                     |
 
 `.cursor/settings.json` (tracked) is a maintainer kit-dev preference — enables the
 `cursor-team-kit` plugin used while authoring this repo. It is not part of the consumer
 bundle (not copied by `sync_plugin_bundle.py` or `scaffold.py`) and has no effect on
-`cursor_workflow activate` output.
+`trae_workflow activate` output.
 
 
 Plugins ≠ MCP. This product is agent infrastructure; MCP is an optional wire.
