@@ -1,0 +1,10 @@
+# MCP secrets
+.cursor/mcp.user.json
+.trae/mcp.user.json
+._example_repo/*
+.ai_infra
+.local
+.agents
+.cursor
+cursor_workflow/*
+.venv/*

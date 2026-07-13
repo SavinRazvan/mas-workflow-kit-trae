@@ -1,0 +1,2 @@
+[console_scripts]
+cursor-workflow = cursor_workflow.cli:main
