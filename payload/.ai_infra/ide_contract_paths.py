@@ -21,6 +21,7 @@ from pathlib import Path
 CURSOR = "cursor"
 TRAE = "trae"
 TRAE_ONLY_PROFILE = "default"
+DUAL_IDE_PROFILE = "dual_ide"
 
 _IDE_ROOTS: dict[str, str] = {
     CURSOR: ".cursor",
@@ -97,6 +98,8 @@ def uses_trae_ssot(root: Path, profile: str = "") -> bool:
     """True when Trae contract plane is authoritative (Trae edition or Cursor absent)."""
     if profile == TRAE_ONLY_PROFILE:
         return True
+    if profile == DUAL_IDE_PROFILE:
+        return False
     env = os.environ.get("TRAE_ONLY", "").strip().lower()
     if env in ("1", "true", "yes"):
         return True

@@ -20,6 +20,12 @@ from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
 
+_AI_INFRA = Path(__file__).resolve().parents[2]
+if _AI_INFRA.name == ".ai_infra" and str(_AI_INFRA) not in sys.path:
+    sys.path.insert(0, str(_AI_INFRA))
+
+from ide_contract_paths import uses_trae_ssot  # noqa: E402
+
 
 class Severity(str, Enum):
     P0 = "P0"
@@ -357,7 +363,15 @@ def check_drift009(paths: DriftPaths) -> CheckResult:
     """When .trae/ exists, rule count must match .cursor/ SSOT (+ agent rules).
 
     Consumer smoke only — kit-dev uses check_trae_parity.py for body-level compare.
+    Skipped when Trae edition SSOT is active (ADR-009; no `.cursor/rules/*.mdc`).
     """
+    if uses_trae_ssot(paths.root):
+        return CheckResult(
+            check_id="DRIFT-009",
+            severity=Severity.P2,
+            passed=True,
+            detail="Trae SSOT — dual-IDE cursor parity check skipped",
+        )
     trae_rules = paths.root / ".trae" / "rules"
     cursor_rules = paths.root / ".cursor" / "rules"
     cursor_agents = paths.root / ".cursor" / "agents"
