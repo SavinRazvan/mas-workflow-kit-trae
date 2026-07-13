@@ -79,7 +79,9 @@ def mcp_registry_example(root: Path, ide: str) -> Path:
 
 
 def maintainer_skills_dir(root: Path) -> Path:
-    """Maintainer slash skills — shared across IDEs (.agents/skills/)."""
+    """Maintainer PR workflow skills — `.trae/skills/` (Trae) or `.agents/skills/` (Cursor)."""
+    if uses_trae_ssot(root):
+        return root / ".trae" / "skills"
     return root / ".agents" / "skills"
 
 

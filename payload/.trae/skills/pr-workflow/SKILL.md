@@ -18,7 +18,7 @@ This skill is the **merge path** only: **review → prepare → merge** (slash s
 2. `prepare-pr` — tracker sync + `prepare.py` (`resolve_gates()` — **4** steps on kit-dev: testing artifacts, pytest, drift, doc facts).
 3. `merge-pr` — `merge.py` check, `gh pr merge`, finalize repo state.
 
-Per-step detail: `.agents/skills/review-pr/`, `prepare-pr/`, `merge-pr/`.
+Per-step detail: `.trae/skills/review-pr/`, `prepare-pr/`, `merge-pr/`.
 
 ## After push (before merge)
 

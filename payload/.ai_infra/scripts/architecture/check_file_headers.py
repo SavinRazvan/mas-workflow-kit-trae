@@ -6,7 +6,7 @@ Used By:
  - .ai_infra/scripts/architecture/check_governance_consistency.py
  - Makefile gates (via governance consistency)
 Depends On:
- - .cursor/rules/file-docstring-header-relations.mdc
+ - .trae/rules/file-docstring-header-relations.md
 Notes:
  - Scans maintainer Python trees only; skips __pycache__ and empty __init__.py stubs.
 """

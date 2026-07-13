@@ -26,7 +26,6 @@ Build and maintain a **local research corpus** with verified evidence. **Off by 
 
 1. `_research_results/RESEARCH_BOUNDARIES.md` (create at project enable time)
 2. `.trae/skills/research-corpus-execution/SKILL.md`
-3. `.agents/skills/RESEARCH_WORKFLOW.md` when present
 
 ## Optional commands (project-specific)
 

@@ -3,9 +3,9 @@ File: alignment-audit-schema.md
 Path: .ai_infra/docs/roadmap/alignment-audit-schema.md
 Role: Required fields and taxonomy for advisory alignment audit findings (.local/workflow-artifacts/alignment/).
 Used By:
- - .cursor/skills/enterprise-architecture-audit/SKILL.md
+ - .trae/skills/enterprise-architecture-audit/SKILL.md
  - enterprise-auditor alignment passes
- - .cursor/rules/advisory-audit-alignment-enforcement.mdc
+ - .trae/rules/advisory-audit-alignment-enforcement.md
 Depends On:
  - docs/governance/workflow-source-owners.md
 Notes:
@@ -60,12 +60,12 @@ Standardize advisory audit findings so outputs from skills, rules checks, and ma
 - `.local/workflow-artifacts/alignment/alignment-audit.md`
 - `.local/workflow-artifacts/alignment/alignment-todos.md`
 
-**Focused alignment pass** (architecture-impacting PR, no full enterprise scorecard): `enterprise-auditor` writes only the two files above; scope is the PR's touched docs/code/tests. See `.cursor/skills/enterprise-architecture-audit/SKILL.md` § “Focused alignment pass”.
+**Focused alignment pass** (architecture-impacting PR, no full enterprise scorecard): `enterprise-auditor` writes only the two files above; scope is the PR's touched docs/code/tests. See `.trae/skills/enterprise-architecture-audit/SKILL.md` § “Focused alignment pass”.
 
 ## Precedence Rule (When Sources Conflict)
 
-1. `.cursor/rules/*` and `AGENTS.md`
-2. `.agents/skills/pr-workflow/SKILL.md` and phase skills (`review-pr`, `prepare-pr`, `merge-pr`)
+1. `.trae/rules/*` and `AGENTS.md`
+2. `.trae/skills/pr-workflow/SKILL.md` and phase skills (`review-pr`, `prepare-pr`, `merge-pr`)
 3. `.ai_infra/scripts/pr/prepare.py` (`GATES`) and `.ai_infra/scripts/pr/local_workflow_paths.py`
 4. `docs/governance/*`, `docs/operations/*`
 5. `docs/roadmap/*`

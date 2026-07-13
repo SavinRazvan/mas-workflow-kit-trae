@@ -11,9 +11,9 @@ Used By:
 Depends On:
  - pathlib
 Notes:
- - Keep path strings aligned with `.cursor/rules/pr-workflow-enforcement.mdc` and
+ - Keep path strings aligned with `.trae/rules/pr-workflow-enforcement.md` and
    `scripts/architecture/check_governance_consistency.py` merge.py parity fragments.
- - Git **commit** messages (not these `.md` paths): **`.cursor/rules/commit-trailer-format.mdc`** — `Author` / `GitHub-User`, optional `Assisted-by`; no `Made-with:`.
+ - Git **commit** messages (not these `.md` paths): **`.trae/rules/commit-trailer-format.md`** — `Author` / `GitHub-User`, optional `Assisted-by`; no `Made-with:`.
 """
 
 from __future__ import annotations

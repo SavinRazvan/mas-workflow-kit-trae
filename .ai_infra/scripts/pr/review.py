@@ -3,7 +3,7 @@ File: review.py
 Path: .ai_infra/scripts/pr/review.py
 Role: Initializes local review artifact with attribution and branch stamp for PR review workflow.
 Used By:
- - .agents/skills/review-pr/SKILL.md
+ - .trae/skills/review-pr/SKILL.md
 Depends On:
  - argparse
  - pathlib
