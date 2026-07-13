@@ -3,8 +3,8 @@ File: finalize.py
 Path: .ai_infra/scripts/pr/finalize.py
 Role: Performs deterministic post-merge cleanup for local and remote branches.
 Used By:
- - .agents/skills/pr-workflow/SKILL.md
- - .agents/skills/merge-pr/SKILL.md
+ - .trae/skills/pr-workflow/SKILL.md
+ - .trae/skills/merge-pr/SKILL.md
 Depends On:
  - argparse
  - subprocess

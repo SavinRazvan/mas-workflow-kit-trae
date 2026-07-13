@@ -3,7 +3,7 @@ File: merge.py
 Path: .ai_infra/scripts/pr/merge.py
 Role: Verifies merge prerequisites and writes merge summary artifact.
 Used By:
- - .agents/skills/merge-pr/SKILL.md
+ - .trae/skills/merge-pr/SKILL.md
 Depends On:
  - argparse
  - pathlib

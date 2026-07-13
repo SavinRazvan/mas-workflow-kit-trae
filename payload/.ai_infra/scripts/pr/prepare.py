@@ -3,7 +3,7 @@ File: prepare.py
 Path: .ai_infra/scripts/pr/prepare.py
 Role: Runs preparation gates and emits local prepare artifact.
 Used By:
- - .agents/skills/prepare-pr/SKILL.md
+ - .trae/skills/prepare-pr/SKILL.md
 Depends On:
  - argparse
  - pathlib
