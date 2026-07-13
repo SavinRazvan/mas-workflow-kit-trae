@@ -1,6 +1,6 @@
 """
-File: test_scaffold_default.py
-Path: tests/modules/install/test_scaffold_default.py
+File: test_scaffold_trae_only.py
+Path: tests/modules/install/test_scaffold_trae_only.py
 Role: Tests scaffold install with default profile (ADR-009).
 Used By:
  - pytest
