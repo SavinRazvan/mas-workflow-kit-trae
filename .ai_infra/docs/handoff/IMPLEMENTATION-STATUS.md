@@ -15,19 +15,18 @@ Notes:
 
 # Implementation status (MAS Workflow Kit)
 
-**Last updated:** 2026-07-13 (Trae-only SSOT pivot)  
-**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 488
+**Last updated:** 2026-07-13 (Trae hygiene — IMPLEMENTATION-STATUS Trae table)  
+**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit-trae`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 488
 
 ## Shipped (confirmed in repo)
 
 | Area | Status | Location |
 |------|--------|----------|
-| Universal rules | 6 `.md` | `.trae/rules/` (Trae edition SSOT) |
-| Agents | 7 core; `model: auto`; audit agents write `.local/` artifacts only (no `readonly`) | `.trae/agents/` |
-| Canonical skills | 10 folders | `.cursor/skills/` |
-| Maintainer skills | 5 folders (additive plugin merge) | `.agents/skills/` |
-| Cursor skill merge | Canonical wins in plugin sync | `sync_plugin_bundle.py` |
-| workflow-activate skill | Kit dev + plugin | `.cursor/skills/workflow-activate/` |
+| Universal rules | 6 governance `.md` + 7 agent-requested | `.trae/rules/` (13 total; Trae SSOT) |
+| Agents | 7 core; `model: auto`; audit agents write `.local/` artifacts only | `.trae/agents/` |
+| Skills | 15 folders (protocol + PR workflow + alignment) | `.trae/skills/` |
+| Payload sync | `make sync-plugin` copies `.trae/` → `payload/.trae/` | `sync_plugin_bundle.py` |
+| workflow-activate skill | Consumer + kit-dev | `.trae/skills/workflow-activate/` |
 | PR scripts + prepare gates | Pattern A — **2** universal; **4** on kit-dev (drift + doc facts) | `.ai_infra/scripts/pr/prepare.py` |
 | Governance + debrand scanners | CI-ready | `.ai_infra/scripts/architecture/` |
 | Workflow drift validate | ADR-007 | `.ai_infra/scripts/workflow/check_drift.py` |
@@ -37,12 +36,12 @@ Notes:
 | MCP tools + resources | 20 tools + 6 resources | `.ai_infra/mcp_servers/workflow_mcp/` |
 | Install scaffold + contract | `install-contract.json`; idempotent trackers/`AGENTS.md`/`pages.json` on re-activate | `.ai_infra/scripts/install/scaffold.py` |
 | Local artifact tiers | Tier 1 scaffold: all `workflow-artifacts/*` buckets + README stubs; SSOT `local_workflow_paths.py` | `.ai_infra/templates/local-workspace/`, `pages.json` |
-| Integrate validate | INT-001…014; INT-009/011 plugin parity **kit-dev only** | `.ai_infra/scripts/integration/validate.py` |
+| Integrate validate | INT-001…014 | `.ai_infra/scripts/integration/validate.py` |
 | Install CLI | install, **activate**, gates, health, mcp, contributors, integrate, drift, doc, verify | `.ai_infra/install/trae_workflow/cli.py` |
 | Editable install | `pyproject.toml` — `pip install -e ".[dev,mcp]"` | repo root |
-| Three-plane activate | Idempotent plugin consumer setup | `.ai_infra/install/trae_workflow/activate_cli.py`, `plane_status.py` |
-| User MCP registry | ADR-004 | `.cursor/mcp.registry.yaml.example`, `mcp_manage.py` |
-| Marketplace plugin | ADR-001 Option B | `.cursor-plugin/`, `sync_plugin_bundle.py` |
+| Three-plane activate | `default` profile — `.trae/` + slim `.ai_infra/` + `.local/` scaffold | `activate_cli.py`, `plane_status.py` |
+| User MCP registry | ADR-004 | `.trae/mcp.registry.yaml.example`, `mcp_manage.py` |
+| Cursor Marketplace plugin | **N/A Trae edition** — upstream [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit) | see [ADR-009](../decisions/ADR-009-trae-only-edition.md) |
 | Kit version on install | `kit_version` 0.4.0 | `.ai_infra/manifest.yaml`, `.ai_infra/.kit-version` |
 | Tests | 488 | `tests/modules/` |
 
@@ -57,7 +56,7 @@ installable kit (CLI, scripts invoked in-process, MCP server). As of 2026-07-08:
 `check_file_headers.py`) have dedicated module tests but are excluded from this metric by
 design — they are launched via `subprocess` / `make gates`, not imported by the coverage
 run. Running `--cov=.` (tests included) reports ~99% because of order-dependent branches in
-test-helper cleanup code; scope shipped source for marketplace readiness claims.
+test-helper cleanup code; scope shipped source for Trae edition readiness claims.
 
 ## Verification commands
 
