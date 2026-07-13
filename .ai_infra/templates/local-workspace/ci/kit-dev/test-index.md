@@ -14,6 +14,11 @@
   - Coverage status: `healthy`
   - Notes: PR script attribution + verify_publish smoke
 
+- Module: `architecture`
+  - Owned tests: `tests/modules/architecture/test_check_contract_json_sync.py`
+  - Coverage status: `healthy`
+  - Notes: contract JSON sync guard
+
 - Module: `architecture_scripts`
   - Owned tests: `tests/modules/architecture_scripts/test_check_governance_consistency.py`, `tests/modules/architecture_scripts/test_check_debrand.py`, `tests/modules/architecture_scripts/test_path_drift_ban.py`, `tests/modules/architecture_scripts/test_check_doc_facts.py`
   - Coverage status: `healthy`
@@ -37,7 +42,7 @@
 - Module: `install`
   - Owned tests: `tests/modules/install/test_*.py` incl. `tests/modules/install/test_scaffold_trae_only.py`
   - Coverage status: `healthy`
-  - Notes: default scaffold; cmd_gates 6 steps (trae parity)
+  - Notes: default scaffold; cmd_gates 7 steps (pyright + trae parity)
 
 - Module: `mcp_registry`
   - Owned tests: `tests/modules/mcp_registry/test_*.py`
@@ -45,7 +50,7 @@
   - Notes: schema, merge, validate CLI
 
 - Module: `integration`
-  - Owned tests: `tests/modules/integration/test_integrate_validate.py`
+  - Owned tests: `tests/modules/integration/test_integrate_validate.py`, `tests/modules/integration/test_consumer_minimal_example.py`
   - Coverage status: `healthy`
   - Notes: integrate validate P0 checks
 
@@ -59,4 +64,4 @@
   - Coverage status: `healthy`
   - Notes: CI workspace seed
 
-**Total:** 487 pytest (kit-dev)
+**Total:** 494 pytest (kit-dev)

@@ -36,7 +36,7 @@ def test_install_dry_run(tmp_path: Path) -> None:
     assert code == 0
 
 
-def test_gates_invokes_five_steps(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_gates_invokes_expected_steps(monkeypatch: pytest.MonkeyPatch) -> None:
     from trae_workflow.cli import cmd_gates, kit_root
 
     calls: list[list[str]] = []
@@ -45,20 +45,24 @@ def test_gates_invokes_five_steps(monkeypatch: pytest.MonkeyPatch) -> None:
         calls.append(cmd)
         return 0
 
-    # cmd_gates is loaded from .ai_infra/install/.../cli.py via root shim
     monkeypatch.setitem(cmd_gates.__globals__, "_run", fake_run)
 
     class Args:
         directory = kit_root()
 
     assert cmd_gates(Args()) == 0
-    assert len(calls) == 6
+    expected = 7 if (kit_root() / ".venv" / "bin" / "pyright").is_file() else 6
+    assert len(calls) == expected
     assert "check_testing_artifacts.py" in calls[0][-1]
     assert calls[1][1:3] == ["-m", "pytest"]
     assert "check_governance_consistency.py" in calls[2][-1]
     assert "check_debrand.py" in calls[3][-1]
     assert "check_doc_facts.py" in calls[4][-1]
-    assert "check_trae_parity.py" in calls[5][-1]
+    if expected == 7:
+        assert calls[5][-1].endswith("pyright")
+        assert "check_trae_parity.py" in calls[6][-1]
+    else:
+        assert "check_trae_parity.py" in calls[5][-1]
 
 
 def test_version_in_package() -> None:

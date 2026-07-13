@@ -22,6 +22,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m venv .venv
+          .venv/bin/pip install -U pip
           .venv/bin/pip install -q -e ".[dev,mcp]"
 
       - name: Seed CI workspace
@@ -47,3 +48,8 @@ jobs:
 
       - name: Type check
         run: .venv/bin/pyright
+
+      - name: Dependency audit
+        run: |
+          .venv/bin/pip install -q pip-audit
+          .venv/bin/pip-audit

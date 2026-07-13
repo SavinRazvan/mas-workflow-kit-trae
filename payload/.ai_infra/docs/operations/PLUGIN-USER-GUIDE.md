@@ -262,9 +262,9 @@ Use project `.venv`: `source .venv/bin/activate` before CLI commands.
 
 | Command | When | Steps |
 |---------|------|-------|
-| `python3 -m trae_workflow gates` | Post-change smoke | **5** base; **6** on kit-dev when `.trae/` present (adds trae parity) |
+| `python3 -m trae_workflow gates` | Post-change smoke | **6** base (incl. pyright when `.venv` present); **7** on kit-dev when `.trae/` present (+ trae parity) |
 | `scaffold --verify` | Consumer post-install | **4** (no doc facts, no trae parity) |
-| `python3 -m trae_workflow health` | Anytime | Layout + version |
+| `python3 -m trae_workflow health` | Anytime | Layout + version (`--json` for machine output) |
 | `python3 -m trae_workflow drift validate` | Slice closure (kit-dev) | Plan ↔ tracker coherence |
 | `python3 -m trae_workflow drift validate --profile consumer` | Consumer verify | DRIFT-005 + DRIFT-008 only |
 

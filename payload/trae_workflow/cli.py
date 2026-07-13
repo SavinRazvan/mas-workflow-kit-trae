@@ -25,6 +25,7 @@ __version__ = "0.4.0"
 
 main = _mod.main
 cmd_gates = _mod.cmd_gates
+cmd_health = _mod.cmd_health
 cmd_install = _mod.cmd_install
 build_parser = _mod.build_parser
 kit_root = _mod.kit_root

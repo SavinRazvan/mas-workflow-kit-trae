@@ -119,6 +119,11 @@ def cmd_gates(args: argparse.Namespace) -> int:
         code = _run(cmd, root)
         if code != 0:
             return code
+    type_check = root / ".venv" / "bin" / "pyright"
+    if type_check.is_file():
+        code = _run([str(type_check)], root)
+        if code != 0:
+            return code
     trae_parity = arch / "check_trae_parity.py"
     release_sync = root / ".ai_infra" / "scripts" / "release" / "sync_trae_contract.py"
     if (root / ".trae").is_dir() and trae_parity.is_file() and release_sync.is_file():
@@ -128,8 +133,7 @@ def cmd_gates(args: argparse.Namespace) -> int:
     return 0
 
 
-def cmd_health(args: argparse.Namespace) -> int:
-    root = Path(args.directory).resolve()
+def _collect_health_issues(root: Path) -> tuple[list[str], str | None]:
     issues: list[str] = []
     required = [
         root / ".ai_infra" / "scripts" / "pr" / "prepare.py",
@@ -141,9 +145,10 @@ def cmd_health(args: argparse.Namespace) -> int:
         if not path.is_file():
             issues.append(f"missing {path.relative_to(root)}")
 
-    kit_version = root / ".ai_infra" / ".kit-version"
-    if kit_version.is_file():
-        print(f"kit_version: {kit_version.read_text(encoding='utf-8').strip()}")
+    kit_version: str | None = None
+    kit_version_path = root / ".ai_infra" / ".kit-version"
+    if kit_version_path.is_file():
+        kit_version = kit_version_path.read_text(encoding="utf-8").strip()
 
     if (root / ".trae" / "mcp.json.kit.example").is_file() and (
         root / ".trae" / "mcp.registry.yaml"
@@ -182,6 +187,27 @@ def cmd_health(args: argparse.Namespace) -> int:
             issues.append("drift validate: missing .ai_infra/scripts/workflow")
     except FileNotFoundError:
         issues.append("user_settings: missing .ai_infra/scripts/pr (kit incomplete)")
+
+    return issues, kit_version
+
+
+def cmd_health(args: argparse.Namespace) -> int:
+    import json as json_mod
+
+    root = Path(args.directory).resolve()
+    issues, kit_version = _collect_health_issues(root)
+
+    if getattr(args, "json", False):
+        payload = {
+            "status": "pass" if not issues else "fail",
+            "kit_version": kit_version,
+            "issues": issues,
+        }
+        print(json_mod.dumps(payload, indent=2))
+        return 1 if issues else 0
+
+    if kit_version is not None:
+        print(f"kit_version: {kit_version}")
 
     if issues:
         print("health: FAIL")
@@ -272,6 +298,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=".",
         help="Project root (default: current directory)",
     )
+    health.add_argument("--json", action="store_true", help="Emit machine-readable JSON")
     health.set_defaults(func=cmd_health)
 
     mcp = sub.add_parser("mcp", help="MCP config merge and registry validation")

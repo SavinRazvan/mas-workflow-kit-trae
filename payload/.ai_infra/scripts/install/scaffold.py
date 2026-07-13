@@ -367,7 +367,11 @@ def _scaffold_local(source: Path, target: Path, dry_run: bool, log: list[str]) -
     arch_stub = target / ".local" / "index-and-planning" / "current" / "architecture.md"
     if not arch_stub.exists() and not dry_run:
         arch_stub.write_text(
-            "# Architecture\n\nAdd project architecture under `docs/architecture/`.\n",
+            "# Architecture\n\n"
+            "**Kit three-plane model (canonical):** "
+            "[.ai_infra/docs/architecture/workflow-architecture.md]"
+            "(../../../.ai_infra/docs/architecture/workflow-architecture.md)\n\n"
+            "Add **your product** architecture under `docs/architecture/`.\n",
             encoding="utf-8",
         )
         _log(log, f"WRITE {arch_stub}")

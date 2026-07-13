@@ -18,6 +18,7 @@ import argparse
 import json
 import subprocess
 import sys
+import time
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -38,17 +39,26 @@ class StepResult:
     command: list[str]
     exit_code: int
     output: str
+    duration_s: float = 0.0
 
 
 def _run_step(name: str, cmd: list[str], root: Path) -> StepResult:
+    started = time.monotonic()
     proc = subprocess.run(
         cmd,
         cwd=root,
         capture_output=True,
         text=True,
     )
+    duration_s = time.monotonic() - started
     output = ((proc.stdout or "") + (proc.stderr or "")).strip()
-    return StepResult(name=name, command=cmd, exit_code=proc.returncode, output=output)
+    return StepResult(
+        name=name,
+        command=cmd,
+        exit_code=proc.returncode,
+        output=output,
+        duration_s=duration_s,
+    )
 
 
 def run_verify_all(root: Path, py: str) -> list[StepResult]:
@@ -76,8 +86,20 @@ def run_verify_all(root: Path, py: str) -> list[StepResult]:
                 [py, "-m", "trae_workflow", "integrate", "validate", "--directory", str(root)],
             ),
             ("check-plugin", [py, str(release / "sync_plugin_bundle.py"), "--check"]),
+            (
+                "contract-json-sync",
+                [
+                    py,
+                    str(root / ".ai_infra" / "scripts" / "architecture" / "check_contract_json_sync.py"),
+                    "--directory",
+                    str(root),
+                ],
+            ),
         ]
     )
+    pyright = root / ".venv" / "bin" / "pyright"
+    if pyright.is_file():
+        steps.append(("type-check", [str(pyright)]))
     if (root / ".trae").is_dir():
         release_sync = root / ".ai_infra" / "scripts" / "release" / "sync_trae_contract.py"
         if release_sync.is_file():
@@ -99,14 +121,15 @@ def run_verify_all(root: Path, py: str) -> list[StepResult]:
     return [_run_step(name, cmd, root) for name, cmd in steps]
 
 
-def format_report(results: list[StepResult]) -> str:
+def format_report(results: list[StepResult], *, verbose: bool = False) -> str:
     lines: list[str] = []
     failed = 0
     for result in results:
         status = "PASS" if result.exit_code == 0 else "FAIL"
         if result.exit_code != 0:
             failed += 1
-        lines.append(f"[{status}] {result.name}: {' '.join(result.command)}")
+        suffix = f" ({result.duration_s:.1f}s)" if verbose else ""
+        lines.append(f"[{status}] {result.name}{suffix}: {' '.join(result.command)}")
         if result.exit_code != 0 and result.output:
             lines.append(result.output)
     lines.append(f"summary: failed={failed} total={len(results)}")
@@ -139,6 +162,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Run maintainer verify-all matrix")
     parser.add_argument("--directory", type=Path, default=".")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument("--verbose", action="store_true", help="Print per-step duration")
     parser.add_argument(
         "--preflight-out",
         type=Path,
@@ -164,7 +188,7 @@ def main(argv: list[str] | None = None) -> int:
         }
         print(json.dumps(payload, indent=2))
     else:
-        print(format_report(results))
+        print(format_report(results, verbose=args.verbose))
     return exit_code_for(results)
 
 
