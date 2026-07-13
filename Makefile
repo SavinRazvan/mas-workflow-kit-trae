@@ -1,6 +1,6 @@
 PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 
-.PHONY: install-dry-run smoke-consumer test gates sync-plugin check-plugin check-trae-parity integrate-validate drift-validate ci-seed verify-all doc-validate type-check coverage-index
+.PHONY: install-dry-run smoke-consumer test gates sync-plugin check-plugin check-trae-parity integrate-validate drift-validate ci-seed verify-all doc-validate type-check coverage-index clean-legacy-contract
 
 install-dry-run:
 	rm -rf /tmp/workflow-kit-dry-run
@@ -50,4 +50,9 @@ ci-seed:
 	$(PYTHON) .ai_infra/scripts/ci/seed_kit_workspace.py --directory .
 
 coverage-index:
-	$(PYTHON) .ai_infra/scripts/ci/generate_coverage_index.py --directory .
+	$(PYTHON) .ai_infra/scripts/ci/generate_coverage_index.py
+
+.PHONY: clean-legacy-contract
+clean-legacy-contract:
+	rm -rf .cursor .agents .cursor-plugin
+	@echo "Removed gitignored legacy contract trees (.cursor, .agents, .cursor-plugin). SSOT: .trae/" --directory .

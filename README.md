@@ -81,6 +81,18 @@ make sync-plugin          # regen payload/.trae/ (profile=default)
 make gates
 ```
 
+### Contract plane (kit-dev)
+
+- **SSOT:** edit [`.trae/`](.trae/) only — agents, skills, rules, MCP config.
+- **Payload:** `make sync-plugin` copies committed `.trae/` → `payload/.trae/`.
+- **Legacy trees:** `.cursor/`, `.agents/`, `.cursor-plugin/` are **gitignored** remnants from upstream Cursor kit-dev. Do not edit them; they may drift from `.trae/`. Safe to remove locally:
+
+```bash
+make clean-legacy-contract   # removes gitignored .cursor/ .agents/ .cursor-plugin/
+```
+
+If you use **Cursor IDE** in this repo, load skills from `.trae/skills/`, not `.cursor/skills/`.
+
 **Docs:** [workflow-architecture.md](.ai_infra/docs/architecture/workflow-architecture.md) · [ADR index](.ai_infra/docs/decisions/README.md) · [AGENTS.md](AGENTS.md)
 
 ## License
