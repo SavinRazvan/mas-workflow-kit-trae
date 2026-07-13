@@ -6,41 +6,30 @@ Used By:
  - README.md
  - Onboarding
 Depends On:
- - .ai_infra/docs/decisions/README.md
+ - .ai_infra/docs/decisions/ADR-009-trae-only-edition.md
 Notes:
- - Consumer-facing; maintainer deep-dive: `.ai_infra/docs/handoff/PLUGIN-ARCHITECTURE.md` (kit-dev only).
+ - Trae edition consumer-facing architecture.
 -->
 
-# Workflow architecture (MAS Workflow Kit)
+# Workflow architecture (MAS Workflow Kit for Trae)
 
 ## Planes
 
 | Plane | Path | Purpose |
 |-------|------|---------|
-| IDE contract (Trae, SSOT) | `.trae/` | Rules, skills, agent rules, MCP — editable SSOT in Trae edition ([ADR-009](../decisions/ADR-009-trae-only-edition.md)) |
-| IDE contract (Cursor, upstream) | `.cursor/`, `.agents/` | Agents, skills, rules — SSOT in upstream kit-dev |
-| Infrastructure | `.ai_infra/` | Scripts, docs, templates, MCP |
+| Trae contract (SSOT) | `.trae/` | Rules, skills, agents, MCP — editable SSOT ([ADR-009](../decisions/ADR-009-trae-only-edition.md)) |
+| Infrastructure | `.ai_infra/`, `trae_workflow/` | Scripts, docs, templates, MCP server |
 | Runtime | `.local/` | Trackers, PR artifacts, audits (see [Artifact tiers](../operations/local-workspace-layout.md#artifact-tiers)) |
 
-**Trae edition:** activate with `--profile default` installs `.trae/` contract plane. Trae users: [trae-consumer-quickstart.md](../operations/trae-consumer-quickstart.md).
+**Activate:** `python3 -m trae_workflow activate --directory . --profile default` installs all three planes. See [trae-consumer-quickstart.md](../operations/trae-consumer-quickstart.md).
 
-**Dual IDE (upstream):** activate with `--profile default` installs both `.cursor/` and `.trae/` per [ADR-008](../decisions/ADR-008-dual-ide-contract-plane.md).
+> **Upstream Cursor edition:** [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit) uses plugin install + `.cursor/` — separate repository.
 
-**Install** scaffolds Tier 1 base paths (trackers, `workflow-artifacts/*` buckets, README stubs). Agents and PR scripts write Tier 2 runtime content during work. Path SSOT: `.ai_infra/scripts/pr/local_workflow_paths.py`.
-
-## Activation
-
-Enabling the **plugin** loads agents/skills/rules in the IDE only — it does **not** write files to your project. Run activate to install all three planes on disk:
-
-1. **Plugin from GitHub (recommended):** Agent chat → `/add-plugin https://github.com/SavinRazvan/mas-workflow-kit` → open your app → **`/workflow-activate`** (or `python -m trae_workflow activate --directory .`)
-2. **Marketplace (when listed):** same flow after **Cursor → Marketplace** install
-3. **Kit clone / advanced:** `python -m trae_workflow install --target . --verify`
-
-See [PLUGIN-USER-GUIDE.md](../operations/PLUGIN-USER-GUIDE.md) §1 for the plugin-vs-disk diagram and file tree.
+**Install** scaffolds Tier 1 base paths (trackers, `workflow-artifacts/*` buckets). Agents and PR scripts write Tier 2 runtime content during work. Path SSOT: `.ai_infra/scripts/pr/local_workflow_paths.py`.
 
 ## Pattern A (maintainer PR)
 
-Hub: `.agents/skills/pr-workflow/SKILL.md` → `review-pr` → `prepare-pr` (`prepare.py` GATES) → `merge-pr` → `finalize.py`
+Hub: `.trae/skills/pr-workflow/SKILL.md` → `review-pr` → `prepare-pr` (`prepare.py` GATES) → `merge-pr` → `finalize.py`
 
 Gate order: read `.ai_infra/scripts/pr/prepare.py` only — do not duplicate here.
 
@@ -50,26 +39,25 @@ Every session: `.local/index-and-planning/current/session-pointer.md` → `plan.
 
 ## Core agents (kit)
 
-| Agent | Role |
-|-------|------|
-| `implementer` | Slices, code, trackers |
-| `test-runner` | Module tests, coverage |
-| `verifier` | Evidence checks |
-| `enterprise-auditor` | Architecture audits |
-| `researcher` | Research corpus (local) |
-| `integrator-mas-agent` | Add agents/skills/MCP to infrastructure |
-| `workflow-drift-guard` | Operational drift (plan ↔ tracker ↔ docs) — [ADR-007](../decisions/ADR-007-workflow-drift-guard.md) |
+| Agent | Trae invocation | Role |
+|-------|-----------------|------|
+| `implementer` | `.trae/rules/agent-implementer.md` | Slices, code, trackers |
+| `test-runner` | `.trae/rules/agent-test-runner.md` | Module tests, coverage |
+| `verifier` | `.trae/rules/agent-verifier.md` | Evidence checks |
+| `enterprise-auditor` | `.trae/rules/agent-enterprise-auditor.md` | Architecture audits |
+| `researcher` | `.trae/rules/agent-researcher.md` | Research corpus (local) |
+| `integrator-mas-agent` | `.trae/rules/agent-integrator-mas-agent.md` | Add agents/skills/MCP |
+| `workflow-drift-guard` | `.trae/rules/agent-workflow-drift-guard.md` | Operational drift — [ADR-007](../decisions/ADR-007-workflow-drift-guard.md) |
 
-Integration procedure: [mas-infrastructure-integration.md](../operations/mas-infrastructure-integration.md).  
-Drift validation: `make drift-validate` — see [gate-matrix.md](../operations/gate-matrix.md).
+Integration: [mas-infrastructure-integration.md](../operations/mas-infrastructure-integration.md).  
+Drift: `make drift-validate` — [gate-matrix.md](../operations/gate-matrix.md).
 
 ## Skills layout
 
 | Root | Contents |
 |------|----------|
-| `.cursor/skills/` | Canonical protocols: `enterprise-architecture-audit`, `workflow-drift-audit`, `implementation-execution-loop`, `workflow-activate`, … |
-| `.agents/skills/` | Maintainer slash skills: `review-pr`, `prepare-pr`, `merge-pr`, `pr-workflow`, `audit-alignment` (redirect) |
+| `.trae/skills/` | 15 protocol skills: `workflow-activate`, `enterprise-architecture-audit`, `workflow-drift-audit`, `implementation-execution-loop`, `review-pr`, `prepare-pr`, `merge-pr`, `pr-workflow`, … |
 
-Plugin bundle copies `.cursor/skills/` first; maintainer skills are **additive only** (no overwrite).
+Activate bundle: `make sync-plugin` refreshes `payload/.trae/` from committed `.trae/` SSOT.
 
 See [folder-charter.md](../governance/folder-charter.md) and [decisions/README.md](../decisions/README.md).

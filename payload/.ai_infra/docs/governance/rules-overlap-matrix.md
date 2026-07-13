@@ -1,37 +1,48 @@
 <!--
 File: rules-overlap-matrix.md
 Path: .ai_infra/docs/governance/rules-overlap-matrix.md
-Role: Inventory of `.cursor/rules/*.mdc` overlaps and merge posture (Track D).
+Role: Inventory of `.trae/rules/*.md` overlaps and merge posture (Trae edition).
 Used By:
- - Maintainers changing Cursor rules
+ - Maintainers changing Trae rules
 Depends On:
  - AGENTS.md
  - docs/operations/agent-workflow-procedures.md
 Notes:
- - Universal MAS Workflow Kit: **6** always-applied rules under `.cursor/rules/`.
- - Product rules (e.g. adapter wall) live in `overlays/rules/`.
- - Last reviewed: 2026-06-14
+ - Trae edition: **13** rules under `.trae/rules/` (6 universal + 7 agent-requested).
 -->
 
-# Rules overlap matrix (Cursor)
+# Rules overlap matrix (Trae)
+
+## Universal governance (6 — always applied in Trae)
 
 | Rule file | Purpose | Overlap with | Posture |
 |-----------|---------|--------------|---------|
-| `pr-workflow-enforcement.mdc` | PR-first, artifacts, merge gates | `workflow-complete.md`, `pr-workflow/SKILL.md` | **Short pointer** to `local_workflow_paths.py` + `prepare.py` `GATES` |
-| `implementation-workflow-governance.mdc` | Slice lifecycle, planning discipline, testing, anchoring | `implementer.md`, `token-efficiency.md` | **Keep** |
-| `advisory-audit-alignment-enforcement.mdc` | Alignment artifacts (authored via `enterprise-auditor`) | `agent-workflow-procedures.md` | **Keep** |
-| `commit-trailer-format.mdc` | Required commit trailers + optional `Assisted-by` (no `Made-with:`) | `README.md`, `AGENTS.md` § Commits | **Keep separate** |
-| `file-docstring-header-relations.mdc` | File headers | All new source files | **Keep** |
-| `local-artifact-protection.mdc` | `.coverage`, `.env` (project paths) | ops runbooks | **Keep** |
+| `pr-workflow-enforcement.md` | PR-first, artifacts, merge gates | `workflow-complete.md`, `pr-workflow/SKILL.md` | **Short pointer** to `local_workflow_paths.py` + `prepare.py` `GATES` |
+| `implementation-workflow-governance.md` | Slice lifecycle, planning, testing | `agent-implementer.md`, `token-efficiency.md` | **Keep** |
+| `advisory-audit-alignment-enforcement.md` | Alignment artifacts (`enterprise-auditor`) | `agent-workflow-procedures.md` | **Keep** |
+| `commit-trailer-format.md` | Required commit trailers + optional `Assisted-by` | `README.md`, `AGENTS.md` § Commits | **Keep separate** |
+| `file-docstring-header-relations.md` | File headers on new sources | All new source files | **Keep** |
+| `local-artifact-protection.md` | `.coverage`, `.env` | ops runbooks | **Keep** |
+
+## Agent-requested rules (7 — invoke by name in Trae)
+
+| Rule file | Agent | Posture |
+|-----------|-------|---------|
+| `agent-implementer.md` | implementer | **Keep** |
+| `agent-test-runner.md` | test-runner | **Keep** |
+| `agent-verifier.md` | verifier | **Keep** |
+| `agent-enterprise-auditor.md` | enterprise-auditor | **Keep** |
+| `agent-workflow-drift-guard.md` | workflow-drift-guard | **Keep** |
+| `agent-researcher.md` | researcher | **Keep** |
+| `agent-integrator-mas-agent.md` | integrator-mas-agent | **Keep** |
 
 ## Not in universal core
 
-| Rule / pack | Location | Notes |
-|-------------|----------|-------|
-| Product-specific rules (e.g. adapter wall) | `overlays/rules/*.mdc` | Install via `cp overlays/rules/*.mdc target/.cursor/rules/` — not shipped in core |
+| Pack | Location | Notes |
+|------|----------|-------|
+| Product-specific rules | `overlays/rules/*.md` | Copy into target `.trae/rules/` at install — not in core kit |
 
-## Track D status
+## Status
 
-- **D0 inventory:** this matrix (6 universal rules).
-- **D1 concise pass:** applied — short invariants + links to `prepare.py`.
-- **D2 merge/remove:** `test-implementation-standard.mdc` **removed** (content in `implementation-workflow-governance.mdc`).
+- **Inventory:** 13 `.trae/rules/*.md` files tracked in git.
+- **Posture:** short invariants + links to `prepare.py`; no duplicated gate command lists in rules.
