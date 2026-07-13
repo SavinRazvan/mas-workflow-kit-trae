@@ -153,7 +153,11 @@ def seed_kit_workspace(root: Path, profile: str = "kit-dev") -> list[str]:
     arch_stub = current / "architecture.md"
     if not arch_stub.is_file():
         arch_stub.write_text(
-            "# Architecture\n\nCI workspace stub — project architecture under `docs/architecture/`.\n",
+            "# Architecture\n\n"
+            "**Kit three-plane model (canonical):** "
+            "[.ai_infra/docs/architecture/workflow-architecture.md]"
+            "(../../../.ai_infra/docs/architecture/workflow-architecture.md)\n\n"
+            "CI workspace stub — add product architecture under `docs/architecture/`.\n",
             encoding="utf-8",
         )
         log.append(f"write {arch_stub.relative_to(root)}")

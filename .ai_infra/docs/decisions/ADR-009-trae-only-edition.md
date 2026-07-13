@@ -15,7 +15,7 @@ Maintaining Cursor-first SSOT in a Trae-only repo creates drift, confusing docs,
 2. **Install profile:** `default` (default in Makefile) copies `.trae/` + `trae_workflow/` + `.ai_infra/` — no `.cursor/` or `.agents/` on activate.
 3. **Release pipeline:** `make sync-plugin` copies `.trae/` → `payload/.trae/` with path rewrites only; no `GENERATED` banners.
 4. **Parity gate:** `check_trae_parity.py` compares committed `.trae/` to temp sync output (not regen from `.cursor/`).
-5. **Dual-IDE code paths retained:** `sync_trae_contract_from_cursor` and `default` profile remain for upstream parity; unused in this repo.
+5. **Dual-IDE code paths retained:** `sync_trae_contract_from_cursor` and `dual_ide` profile remain for upstream parity; gated via `ide_contract_paths.DUAL_IDE_PROFILE` and `uses_trae_ssot()` — unused in this repo.
 6. **Upstream unchanged:** [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit) Cursor edition keeps ADR-008 Cursor-first SSOT.
 
 ## Consequences
