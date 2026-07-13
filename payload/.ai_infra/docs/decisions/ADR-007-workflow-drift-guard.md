@@ -3,6 +3,8 @@
 **Status:** accepted  
 **Date:** 2026-06-29
 
+> **Trae edition:** skill and agent paths live under `.trae/` (see [ADR-009](ADR-009-trae-only-edition.md)). Historical `.cursor/` references below apply to upstream Cursor kit.
+
 ## Context
 
 MAS Workflow Kit enforces infrastructure parity via `integrate validate`, governance scanners, and testing-artifact gates. Those tools do not cover **operational workflow drift**: plan ↔ tracker ↔ session-pointer incoherence, stale handoff docs, or slice-closure discipline gaps.
@@ -21,7 +23,7 @@ Introduce a script-first drift validator and MAS-integrated agent per [ADR-006](
 | CLI | `python -m trae_workflow drift validate` |
 | Script SSOT | `.ai_infra/scripts/workflow/check_drift.py` |
 | Checks module | `.ai_infra/scripts/workflow/drift_checks.py` |
-| Skill | `.cursor/skills/workflow-drift-audit/SKILL.md` |
+| Skill | `.trae/skills/workflow-drift-audit/SKILL.md` |
 | Local artifacts | `.local/workflow-artifacts/drift/drift-audit.md`, `drift-todos.md` |
 
 ### Profiles
@@ -86,6 +88,6 @@ Auto-detect profile from `work-tracker.md` unless `--profile` overrides.
 ## References
 
 - `.local/workflow-artifacts/drift/workflow-drift-guard-plan.md`
-- `.cursor/agents/workflow-drift-guard.md`
-- `.cursor/skills/workflow-drift-audit/SKILL.md`
+- `.trae/agents/workflow-drift-guard.md`
+- `.trae/skills/workflow-drift-audit/SKILL.md`
 - [ADR-006-agent-integration-model.md](ADR-006-agent-integration-model.md)

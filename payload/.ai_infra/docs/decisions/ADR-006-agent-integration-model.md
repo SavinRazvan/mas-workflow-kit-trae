@@ -3,6 +3,8 @@
 **Status:** accepted  
 **Date:** 2026-06-14
 
+> **Trae edition:** agent/skill/registry paths use `.trae/` (see [ADR-009](ADR-009-trae-only-edition.md)). `.cursor/` paths below describe upstream Cursor kit.
+
 ## Context
 
 Consumers extend the MAS Workflow Kit by adding agents, skills, MCP servers, and scripts. Without a clear integration contract, new capability drifts from gates, PR pipelines, registry parity, and procedural discipline.
@@ -57,6 +59,6 @@ Standalone agent for a narrow domain; not in default PR pipelines unless explici
 
 ## References
 
-- `.cursor/agents/integrator-mas-agent.md`
-- `.cursor/skills/mas-infrastructure-integration/SKILL.md`
+- `.trae/agents/integrator-mas-agent.md`
+- `.trae/skills/mas-infrastructure-integration/SKILL.md`
 - `.ai_infra/templates/agent-integration/INTEGRATION-CHECKLIST.md`
