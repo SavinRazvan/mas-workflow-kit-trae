@@ -27,7 +27,7 @@ Per-step detail: `.agents/skills/review-pr/`, `prepare-pr/`, `merge-pr/`.
 
 ## Gates
 
-Authoritative list: **`resolve_gates()` in `.ai_infra/scripts/pr/prepare.py`** (universal **two** gates; kit-dev auto-appends drift + doc facts → **four**). Add **`check_governance_consistency.py`** when changing governance or `.cursor/` policy.
+Authoritative list: **`resolve_gates()` in `.ai_infra/scripts/pr/prepare.py`** (universal **two** gates; kit-dev auto-appends drift + doc facts → **four**). Add **`check_governance_consistency.py`** when changing governance or `.trae/rules/` policy.
 
 ## Artifacts (under `.local/`)
 
