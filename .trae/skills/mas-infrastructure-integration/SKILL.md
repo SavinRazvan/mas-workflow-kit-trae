@@ -128,7 +128,7 @@ Run applicable subset:
 ```bash
 python -m trae_workflow contributors validate
 python -m trae_workflow integrate validate
-python .ai_infra/scripts/architecture/check_governance_consistency.py   # if .cursor/ or workflows changed
+python .ai_infra/scripts/architecture/check_governance_consistency.py   # if .trae/ or workflows changed
 pytest -q tests/modules/<relevant>/
 make gates                    # kit dev
 make check-plugin             # if agents/rules/skills/payload touched

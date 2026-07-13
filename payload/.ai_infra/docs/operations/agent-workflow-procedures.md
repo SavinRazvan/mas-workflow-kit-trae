@@ -55,7 +55,7 @@ Notes:
 
 **PR phase markdown** uses `Action-By` / `GitHub-User` / `Agent/s` per **`.trae/skills/pr-workflow/SKILL.md`**.
 
-When trailer policy changes, sync: **`AGENTS.md`**, **`README.md`**, **`.trae/rules/pr-workflow-enforcement.md`**, **`.trae/agents/implementer.md`**, **`.trae/skills/pr-workflow/SKILL.md`**, **`PR_WORKFLOW.md`** (redirect), **`workflow-source-owners.md`**, **`rules-overlap-matrix.md`**, and this §3b.
+When trailer policy changes, sync: **`AGENTS.md`**, **`README.md`**, **`.trae/rules/pr-workflow-enforcement.md`**, **`.trae/agents/implementer.md`**, **`.trae/skills/pr-workflow/SKILL.md`**, **`workflow-source-owners.md`**, **`rules-overlap-matrix.md`**, and this §3b.
 
 ---
 
