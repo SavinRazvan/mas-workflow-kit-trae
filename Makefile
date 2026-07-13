@@ -50,9 +50,9 @@ ci-seed:
 	$(PYTHON) .ai_infra/scripts/ci/seed_kit_workspace.py --directory .
 
 coverage-index:
-	$(PYTHON) .ai_infra/scripts/ci/generate_coverage_index.py
+	$(PYTHON) .ai_infra/scripts/ci/generate_coverage_index.py --directory .
 
 .PHONY: clean-legacy-contract
 clean-legacy-contract:
 	rm -rf .cursor .agents .cursor-plugin
-	@echo "Removed gitignored legacy contract trees (.cursor, .agents, .cursor-plugin). SSOT: .trae/" --directory .
+	@echo "Removed gitignored legacy contract trees (.cursor, .agents, .cursor-plugin). SSOT: .trae/"
