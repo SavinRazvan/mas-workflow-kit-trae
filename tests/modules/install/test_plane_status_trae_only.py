@@ -34,7 +34,8 @@ def test_default_kit_repo_ready() -> None:
     assert status.all_ready, status.missing
 
 
-def test_default_does_not_require_cursor_plane(tmp_path: Path) -> None:
+def test_default_empty_project_trae_only_contract(tmp_path: Path) -> None:
     plane_status = _load_plane_status()
     status = plane_status.assess_planes(tmp_path, profile="default")
-    assert status.cursor_contract is True
+    assert status.requires_trae is True
+    assert not status.trae_contract

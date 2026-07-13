@@ -118,7 +118,7 @@ def workflow_check_governance() -> str:
 
 @mcp.tool()
 def workflow_list_agents() -> str:
-    """List agent ids from the contract plane (.trae/agents or .cursor/agents)."""
+    """List agent ids from the Trae contract plane (`.trae/agents`)."""
     root = workspace_root()
     sys.path.insert(0, str(root / ".ai_infra"))
     from ide_contract_paths import agents_dir, ssot_ide
@@ -282,7 +282,7 @@ def workflow_activate(force: bool = False) -> str:
     args = argparse.Namespace(
         directory=root,
         source=None,
-        profile="with_mcp",
+        profile="default",
         with_venv=True,
         with_mcp_json=True,
         verify=True,
@@ -371,7 +371,7 @@ def resource_agent(agent_id: str) -> str:
 
 @mcp.resource("workflow://skills/{skill_id}")
 def resource_skill(skill_id: str) -> str:
-    """Skill body from .cursor/skills or .agents/skills."""
+    """Skill body from `.trae/skills` (Trae edition)."""
     try:
         return read_skill(workspace_root(), skill_id)
     except FileNotFoundError as exc:

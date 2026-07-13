@@ -123,7 +123,9 @@ def validate_mcp_agents_worksheet(root: Path | None = None) -> list[str]:
 
     errors.extend(validate_mcp_agents_schema(root))
 
-    registry_path = project_root(root) / ".cursor" / "mcp.registry.yaml"
+    registry_path = project_root(root) / ".trae" / "mcp.registry.yaml"
+    if not registry_path.is_file():
+        registry_path = project_root(root) / ".cursor" / "mcp.registry.yaml"
     registry_text = registry_path.read_text(encoding="utf-8") if registry_path.is_file() else ""
 
     for server in cfg.get("external_servers") or []:
@@ -133,7 +135,7 @@ def validate_mcp_agents_worksheet(root: Path | None = None) -> list[str]:
         if sid and sid not in registry_text:
             errors.append(
                 f"enabled external server '{sid}' in mcp.agents.yaml not found in "
-                ".cursor/mcp.registry.yaml — sync registry after editing worksheet"
+                ".trae/mcp.registry.yaml — sync registry after editing worksheet"
             )
 
     return errors

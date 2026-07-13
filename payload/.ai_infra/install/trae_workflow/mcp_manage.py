@@ -43,11 +43,12 @@ from ide_contract_paths import (  # noqa: E402
 
 
 def _default_ide(root: Path) -> str:
-    if (root / ".ai_infra" / "docs" / "handoff" / "IMPLEMENTATION-STATUS.md").is_file():
+    """Trae edition defaults to `.trae/`; dual-IDE Cursor only when not Trae SSOT."""
+    if uses_trae_ssot(root):
         return TRAE
     if (root / ".trae" / "mcp.json.kit.example").is_file():
         return TRAE
-    return TRAE if uses_trae_ssot(root) else CURSOR
+    return CURSOR
 
 
 def _default_ides(root: Path) -> tuple[str, ...]:
@@ -198,8 +199,8 @@ def validate_registry_all(root: Path, *, ides: tuple[str, ...] | None = None) ->
     return errors
 
 
-def link_user_server(root: Path, name: str, fragment_file: Path, *, ide: str = CURSOR) -> None:
-    ide_key = normalize_ide(ide)
+def link_user_server(root: Path, name: str, fragment_file: Path, *, ide: str | None = None) -> None:
+    ide_key = normalize_ide(ide or _default_ide(root))
     fragment = _strip_private_keys(_read_json(fragment_file))
     fragment_servers = fragment.get("mcpServers", {})
     if not isinstance(fragment_servers, dict) or not fragment_servers:
@@ -234,7 +235,9 @@ def link_user_server(root: Path, name: str, fragment_file: Path, *, ide: str = C
 
 def ensure_mcp_gitignore(root: Path) -> None:
     gitignore = root / ".gitignore"
-    lines = [".cursor/mcp.user.json", ".trae/mcp.user.json"]
+    lines = [".trae/mcp.user.json"]
+    if not uses_trae_ssot(root):
+        lines.insert(0, ".cursor/mcp.user.json")
     if gitignore.is_file():
         text = gitignore.read_text(encoding="utf-8")
         for line in lines:
@@ -246,9 +249,10 @@ def ensure_mcp_gitignore(root: Path) -> None:
 
 
 def seed_trae_mcp_from_cursor(root: Path) -> None:
-    """Copy Cursor MCP exemplars to .trae/ when .trae exists but fragments missing."""
+    """Legacy dual-IDE helper: copy Cursor MCP exemplars to `.trae/` when both planes exist."""
+    cursor_root = root / ".cursor"
     trae_root = root / ".trae"
-    if not trae_root.is_dir():
+    if not trae_root.is_dir() or not cursor_root.is_dir():
         return
     pairs = (
         (root / ".cursor" / "mcp.json.kit.example", trae_root / "mcp.json.kit.example"),
