@@ -1,2 +1,0 @@
-# workflow_mcp server — FastMCP is mcp.server.fastmcp (official MCP SDK)
-mcp>=1.2

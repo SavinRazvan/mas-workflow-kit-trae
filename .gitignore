@@ -1,10 +1,31 @@
-# MCP secrets
-.cursor/mcp.user.json
+# ── Secrets (never commit) ───────────────────────────────────────────────────
 .trae/mcp.user.json
-._example_repo/*
-.ai_infra
-.local
-.agents
-.cursor
-cursor_workflow/*
-.venv/*
+.cursor/mcp.user.json
+
+# ── Local runtime / execution state ───────────────────────────────────────────
+.local/
+
+# ── Dev environment ───────────────────────────────────────────────────────────
+.venv/
+*.egg-info/
+.pytest_cache/
+__pycache__/
+*.pyc
+.coverage
+.env
+.ruff_cache/
+
+# ── Cursor kit (Trae-only repo — not published) ───────────────────────────────
+.cursor/
+.agents/
+.cursor-plugin/
+agents/
+rules/
+skills/
+cursor_workflow/
+
+# ── Read-only reference checkout (informative only) ────────────────────────────
+_example_repo/*
+_example_repo
+
+
