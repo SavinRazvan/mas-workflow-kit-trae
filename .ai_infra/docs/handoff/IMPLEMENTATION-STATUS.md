@@ -15,15 +15,15 @@ Notes:
 
 # Implementation status (MAS Workflow Kit)
 
-**Last updated:** 2026-07-08 (DRIFT-005 consumer skip + coverage branch test)  
-**Product:** MAS Workflow Kit (`mas-workflow-kit`) · CLI: `cursor-workflow` 0.4.0 · **Tests:** 494
+**Last updated:** 2026-07-13 (Trae-only SSOT pivot)  
+**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 488
 
 ## Shipped (confirmed in repo)
 
 | Area | Status | Location |
 |------|--------|----------|
-| Universal rules | 6 `.mdc` | `.cursor/rules/` |
-| Agents | 7 core; `model: auto`; audit agents write `.local/` artifacts only (no `readonly`) | `.cursor/agents/` |
+| Universal rules | 6 `.md` | `.trae/rules/` (Trae edition SSOT) |
+| Agents | 7 core; `model: auto`; audit agents write `.local/` artifacts only (no `readonly`) | `.trae/agents/` |
 | Canonical skills | 10 folders | `.cursor/skills/` |
 | Maintainer skills | 5 folders (additive plugin merge) | `.agents/skills/` |
 | Cursor skill merge | Canonical wins in plugin sync | `sync_plugin_bundle.py` |
@@ -38,17 +38,17 @@ Notes:
 | Install scaffold + contract | `install-contract.json`; idempotent trackers/`AGENTS.md`/`pages.json` on re-activate | `.ai_infra/scripts/install/scaffold.py` |
 | Local artifact tiers | Tier 1 scaffold: all `workflow-artifacts/*` buckets + README stubs; SSOT `local_workflow_paths.py` | `.ai_infra/templates/local-workspace/`, `pages.json` |
 | Integrate validate | INT-001…014; INT-009/011 plugin parity **kit-dev only** | `.ai_infra/scripts/integration/validate.py` |
-| Install CLI | install, **activate**, gates, health, mcp, contributors, integrate, drift, doc, verify | `.ai_infra/install/cursor_workflow/cli.py` |
+| Install CLI | install, **activate**, gates, health, mcp, contributors, integrate, drift, doc, verify | `.ai_infra/install/trae_workflow/cli.py` |
 | Editable install | `pyproject.toml` — `pip install -e ".[dev,mcp]"` | repo root |
-| Three-plane activate | Idempotent plugin consumer setup | `.ai_infra/install/cursor_workflow/activate_cli.py`, `plane_status.py` |
+| Three-plane activate | Idempotent plugin consumer setup | `.ai_infra/install/trae_workflow/activate_cli.py`, `plane_status.py` |
 | User MCP registry | ADR-004 | `.cursor/mcp.registry.yaml.example`, `mcp_manage.py` |
 | Marketplace plugin | ADR-001 Option B | `.cursor-plugin/`, `sync_plugin_bundle.py` |
 | Kit version on install | `kit_version` 0.4.0 | `.ai_infra/manifest.yaml`, `.ai_infra/.kit-version` |
-| Tests | 494 | `tests/modules/` |
+| Tests | 488 | `tests/modules/` |
 
 ## Coverage scope (shipped source)
 
-`pytest --cov=.ai_infra --cov=cursor_workflow` measures the **import surface** of the
+`pytest --cov=.ai_infra --cov=trae_workflow` measures the **import surface** of the
 installable kit (CLI, scripts invoked in-process, MCP server). As of 2026-07-08: **44 files,
 3588 statements, 100%** when the full suite passes (`generate_coverage_index.py` and
 `migrate_local_workspace_layout.py` are maintainer tooling — omitted from `--cov` per
@@ -69,18 +69,18 @@ make doc-validate
 make verify-all
 make install-dry-run
 make check-plugin
-cursor-workflow activate --directory .
-cursor-workflow health
-cursor-workflow mcp validate
+trae-workflow activate --directory .
+trae-workflow health
+trae-workflow mcp validate
 pytest -m live tests/modules/workflow_mcp/test_workflow_mcp.py::test_workflow_mcp_stdio_initialize_smoke
-cursor-workflow drift validate
+trae-workflow drift validate
 ```
 
 ## Not yet shipped
 
 | Item | Target |
 |------|--------|
-| PyPI publish (`cursor-workflow` on PyPI) | out of scope — editable install via `pyproject.toml` is shipped |
+| PyPI publish (`trae-workflow` on PyPI) | out of scope — editable install via `pyproject.toml` is shipped |
 
 ## Maintainer doc sync
 

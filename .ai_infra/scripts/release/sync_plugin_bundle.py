@@ -1,20 +1,15 @@
 """
 File: sync_plugin_bundle.py
 Path: .ai_infra/scripts/release/sync_plugin_bundle.py
-Role: Build and verify Cursor Marketplace plugin bundle (repo-root agents/rules/skills + payload/).
+Role: Build and verify Trae edition activate payload (payload/.trae + payload/trae_workflow).
 Used By:
  - Makefile sync-plugin / check-plugin
- - marketplace-publish.md
 Depends On:
  - .ai_infra/manifest.yaml
  - .ai_infra/bootstrap.py
 Notes:
- - agents/, rules/, skills/ at repo root (siblings of .cursor-plugin/) = Cursor-loaded
-   plugin surface, matching the official cursor/plugin-template convention exactly
-   (no custom path fields in .cursor-plugin/plugin.json).
- - payload/ = ADR-001 install source tree for workflow-activate.
- - Both are generated from .cursor/ + .agents/skills/ but MUST be committed to git —
-   Cursor Marketplace reads the repository tree directly, there is no build step.
+ - payload/ is the ADR-001 install source tree for `trae_workflow activate`.
+ - Committed payload/ must match sources — run `make sync-plugin` after contract changes.
 """
 
 from __future__ import annotations
@@ -44,18 +39,9 @@ else:
 from paths import ai_infra_dir
 
 MANIFEST_PATH = ai_infra_dir() / "manifest.yaml"
-PLUGIN_DIR = KIT_ROOT
-PLUGIN_COMPONENT_DIRS = ("agents", "rules", "skills")
-TRAE_DIR = KIT_ROOT / ".trae"
 PAYLOAD_DIR = KIT_ROOT / "payload"
-ACTIVATE_SKILL_SRC = (
-    ai_infra_dir() / "templates" / "plugin" / "skills" / "workflow-activate" / "SKILL.md"
-)
-CURSOR_WORKFLOW_SRC = KIT_ROOT / "cursor_workflow"
-PAYLOAD_EXTRA_AI_INFRA = ("install/cursor_workflow", "scripts/install")
-CONNECT_SKILL_SRC = (
-    ai_infra_dir() / "templates" / "plugin" / "skills" / "connect-external-mcp" / "SKILL.md"
-)
+TRAE_WORKFLOW_SRC = KIT_ROOT / "trae_workflow"
+PAYLOAD_EXTRA_AI_INFRA = ("install/trae_workflow", "scripts/install")
 LICENSE_FILES = ("LICENSE", "NOTICE")
 
 _SKIP_DIR_NAMES = frozenset({"__pycache__", ".pytest_cache", ".mypy_cache"})
@@ -96,6 +82,8 @@ def _resolve_profile(manifest: dict[str, Any], name: str) -> dict[str, Any]:
     }
     for key in ("copy_dirs", "copy_ai_infra", "copy_files"):
         merged[key] = merged[key] + list(raw.get(key, []))
+    if "copy_dirs_replace" in raw:
+        merged["copy_dirs"] = list(raw["copy_dirs_replace"])
     return merged
 
 
@@ -143,63 +131,7 @@ def _copy_file(src: Path, dst: Path) -> None:
     shutil.copy2(src, dst)
 
 
-def _merge_maintainer_skills(plugin_skills: Path) -> None:
-    """Add maintainer-only skills from .agents/skills without overwriting .cursor/skills."""
-    maintainer = KIT_ROOT / ".agents" / "skills"
-    if not maintainer.is_dir():
-        return
-    for skill_dir in sorted(maintainer.iterdir()):
-        if not skill_dir.is_dir():
-            continue
-        dest = plugin_skills / skill_dir.name
-        if dest.exists():
-            continue
-        _copy_tree(skill_dir, dest)
-
-
-def sync_plugin_surface(plugin_dir: Path) -> None:
-    agents_src = KIT_ROOT / ".cursor" / "agents"
-    rules_src = KIT_ROOT / ".cursor" / "rules"
-    skills_src = KIT_ROOT / ".cursor" / "skills"
-
-    plugin_dir.mkdir(parents=True, exist_ok=True)
-    _copy_tree(agents_src, plugin_dir / "agents")
-    _copy_tree(rules_src, plugin_dir / "rules")
-    _copy_tree(skills_src, plugin_dir / "skills")
-    _merge_maintainer_skills(plugin_dir / "skills")
-
-    activate_src = skills_src / "workflow-activate" / "SKILL.md"
-    if not activate_src.is_file():
-        activate_src = ACTIVATE_SKILL_SRC
-    if not activate_src.is_file():
-        raise FileNotFoundError(f"missing activation skill: {ACTIVATE_SKILL_SRC}")
-    activate_dest = plugin_dir / "skills" / "workflow-activate" / "SKILL.md"
-    if not activate_dest.parent.exists() or not activate_dest.is_file():
-        activate_dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(activate_src, activate_dest)
-
-    connect_dest = plugin_dir / "skills" / "connect-external-mcp" / "SKILL.md"
-    if not connect_dest.is_file() and CONNECT_SKILL_SRC.is_file():
-        connect_dest.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(CONNECT_SKILL_SRC, connect_dest)
-
-
-def _load_sync_trae_contract() -> Any:
-    release = KIT_ROOT / ".ai_infra" / "scripts" / "release"
-    release_str = str(release)
-    if release_str not in sys.path:
-        sys.path.insert(0, release_str)
-    import sync_trae_contract
-
-    return sync_trae_contract
-
-
-def sync_trae_plane(trae_dir: Path | None = None) -> Path:
-    sync_trae = _load_sync_trae_contract()
-    return sync_trae.sync_trae_contract(KIT_ROOT, trae_dir)
-
-
-def sync_payload(payload_dir: Path, plugin_dir: Path, profile: str = "with_mcp") -> None:
+def sync_payload(payload_dir: Path, _plugin_dir: Path, profile: str = "default") -> None:
     manifest = _load_manifest()
     spec = _resolve_profile(manifest, profile)
     ai_src = KIT_ROOT / ".ai_infra"
@@ -225,26 +157,14 @@ def sync_payload(payload_dir: Path, plugin_dir: Path, profile: str = "with_mcp")
         else:
             _copy_file(ai_src / rel, ai_dst / rel)
 
-    _copy_tree(KIT_ROOT / ".agents", payload_dir / ".agents")
-    _copy_tree(plugin_dir / "agents", payload_dir / ".cursor" / "agents")
-    _copy_tree(plugin_dir / "rules", payload_dir / ".cursor" / "rules")
-    _copy_tree(KIT_ROOT / ".cursor" / "skills", payload_dir / ".cursor" / "skills")
-
-    mcp_kit = KIT_ROOT / ".cursor" / "mcp.json.kit.example"
-    if mcp_kit.is_file() and profile == "with_mcp":
-        _copy_file(mcp_kit, payload_dir / ".cursor" / "mcp.json.kit.example")
-
-    _copy_tree(CURSOR_WORKFLOW_SRC, payload_dir / "cursor_workflow")
+    _copy_tree(TRAE_WORKFLOW_SRC, payload_dir / "trae_workflow")
 
     for name in LICENSE_FILES:
         _copy_file(KIT_ROOT / name, payload_dir / name)
 
-    if profile in ("with_mcp", "dual_ide"):
-        trae_src = KIT_ROOT / ".trae"
-        if not trae_src.is_dir():
-            sync_trae_plane(trae_src)
-        if trae_src.is_dir():
-            _copy_tree(trae_src, payload_dir / ".trae")
+    trae_src = KIT_ROOT / ".trae"
+    if trae_src.is_dir():
+        _copy_tree(trae_src, payload_dir / ".trae")
 
 
 def _collect_files(root: Path) -> dict[str, str]:
@@ -258,54 +178,34 @@ def _collect_files(root: Path) -> dict[str, str]:
     return out
 
 
-def check_bundle(profile: str = "with_mcp") -> list[str]:
+def check_bundle(profile: str = "default") -> list[str]:
     errors: list[str] = []
-    missing_component = any(
-        not (PLUGIN_DIR / name).is_dir() for name in PLUGIN_COMPONENT_DIRS
-    )
-    if missing_component or not PAYLOAD_DIR.is_dir():
+    if not PAYLOAD_DIR.is_dir():
         return [
-            "agents/, rules/, skills/, or payload/ missing — "
-            "run: python .ai_infra/scripts/release/sync_plugin_bundle.py --sync"
+            "payload/ missing — run: python .ai_infra/scripts/release/sync_plugin_bundle.py --sync"
         ]
-
     with tempfile.TemporaryDirectory(prefix="mas-plugin-check-") as tmp:
         tmp_root = Path(tmp)
-        expected_plugin = tmp_root / "plugin"
         expected_payload = tmp_root / "payload"
-        sync_plugin_surface(expected_plugin)
-        sync_payload(expected_payload, expected_plugin, profile)
-
-        component_pairs = tuple(
-            (name, expected_plugin / name, PLUGIN_DIR / name) for name in PLUGIN_COMPONENT_DIRS
-        )
-        for label, expected_root, actual_root in (
-            *component_pairs,
-            ("payload", expected_payload, PAYLOAD_DIR),
-            (".trae", expected_payload / ".trae", PAYLOAD_DIR / ".trae"),
-        ):
-            expected = _collect_files(expected_root)
-            actual = _collect_files(actual_root)
-            if expected != actual:
-                missing = sorted(set(expected) - set(actual))
-                extra = sorted(set(actual) - set(expected))
-                changed = sorted(
-                    rel for rel in expected if rel in actual and expected[rel] != actual[rel]
-                )
-                if missing:
-                    errors.append(f"{label}: missing files: {missing[:8]}")
-                if extra:
-                    errors.append(f"{label}: extra files: {extra[:8]}")
-                if changed:
-                    errors.append(f"{label}: content drift: {changed[:8]}")
-
+        sync_payload(expected_payload, KIT_ROOT, profile)
+        expected = _collect_files(expected_payload)
+        actual = _collect_files(PAYLOAD_DIR)
+        if expected != actual:
+            missing = sorted(set(expected) - set(actual))
+            extra = sorted(set(actual) - set(expected))
+            changed = sorted(
+                rel for rel in expected if rel in actual and expected[rel] != actual[rel]
+            )
+            if missing:
+                errors.append(f"payload: missing files: {missing[:8]}")
+            if extra:
+                errors.append(f"payload: extra files: {extra[:8]}")
+            if changed:
+                errors.append(f"payload: content drift: {changed[:8]}")
     required = [
-        PLUGIN_DIR / "skills" / "workflow-activate" / "SKILL.md",
-        PLUGIN_DIR / "skills" / "connect-external-mcp" / "SKILL.md",
-        PLUGIN_DIR / "agents" / "implementer.md",
         PAYLOAD_DIR / ".ai_infra" / "scripts" / "pr" / "prepare.py",
         PAYLOAD_DIR / ".ai_infra" / "scripts" / "install" / "scaffold.py",
-        PAYLOAD_DIR / "cursor_workflow" / "__main__.py",
+        PAYLOAD_DIR / "trae_workflow" / "__main__.py",
         PAYLOAD_DIR / "LICENSE",
         PAYLOAD_DIR / "NOTICE",
         PAYLOAD_DIR / ".trae" / "rules" / "pr-workflow-enforcement.md",
@@ -315,14 +215,11 @@ def check_bundle(profile: str = "with_mcp") -> list[str]:
     for path in required:
         if not path.is_file():
             errors.append(f"missing required bundle file: {path.relative_to(KIT_ROOT)}")
-
     return errors
 
 
-def sync_all(profile: str = "with_mcp") -> None:
-    sync_plugin_surface(PLUGIN_DIR)
-    sync_trae_plane(TRAE_DIR)
-    sync_payload(PAYLOAD_DIR, PLUGIN_DIR, profile)
+def sync_all(profile: str = "default") -> None:
+    sync_payload(PAYLOAD_DIR, KIT_ROOT, profile)
 
 
 def main() -> int:
@@ -334,9 +231,9 @@ def main() -> int:
     )
     parser.add_argument(
         "--profile",
-        default="dual_ide",
-        choices=("default", "with_mcp", "dual_ide"),
-        help="Manifest profile for payload/.ai_infra (default: dual_ide)",
+        default="default",
+        choices=("default",),
+        help="Manifest profile for payload (Trae edition: default only)",
     )
     args = parser.parse_args()
 
@@ -351,7 +248,7 @@ def main() -> int:
         return 0
 
     sync_all(args.profile)
-    print(f"Synced agents/, rules/, skills/, .trae/, and payload/ (profile={args.profile}).")
+    print(f"Synced payload/.trae/ + payload/trae_workflow/ (profile={args.profile}).")
     return 0
 
 

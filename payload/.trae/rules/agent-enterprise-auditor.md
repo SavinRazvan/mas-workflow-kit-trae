@@ -1,5 +1,3 @@
-<!-- GENERATED — do not edit. Sync from .cursor/ via sync_trae_contract.py -->
-
 ---
 description: Evidence-only enterprise architecture audit; writes workflow artifacts and tracker hooks for other agents.
 alwaysApply: false

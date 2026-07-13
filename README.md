@@ -1,67 +1,61 @@
-# MAS Workflow Kit
+# MAS Workflow Kit for Trae
 
-Multi-agent workflow infrastructure for **Cursor** and **Trae** — subagents (Cursor), agent rules (Trae), skills, governance rules, PR scripts, and `.local/` trackers.
+Multi-agent workflow infrastructure for **Trae IDE** — agent rules, skills, governance, PR scripts, MCP, and `.local/` trackers.
 
-Install into **your** project (not a standalone app). This repo is a **kit-dev** workspace with dual-IDE (`dual_ide`) support per [ADR-008](.ai_infra/docs/decisions/ADR-008-dual-ide-contract-plane.md).
+Install into **your** project (not a standalone app). This repository is the **Trae edition** kit-dev workspace: `.trae/` is the contract-plane SSOT per [ADR-009](.ai_infra/docs/decisions/ADR-009-trae-only-edition.md).
 
-> `_example_repo/` is a temporary Cursor reference checkout (informative only) — not a runtime dependency.
+> Upstream [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit) remains the Cursor Marketplace edition (dual-IDE). This fork is Trae-only.
 
 ## Quick navigation
 
 | Audience | Start here |
 |----------|------------|
-| **Cursor user** | [Consumer quickstart](.ai_infra/docs/operations/consumer-quickstart.md) · `/add-plugin` → `/workflow-activate` |
-| **Trae user** | [Trae consumer quickstart](.ai_infra/docs/operations/trae-consumer-quickstart.md) · `activate --profile dual_ide` |
+| **Trae user** | [Trae consumer quickstart](.ai_infra/docs/operations/trae-consumer-quickstart.md) · `activate --profile default` |
 | **Full manual** | [PLUGIN-USER-GUIDE](.ai_infra/docs/operations/PLUGIN-USER-GUIDE.md) |
 | **Kit maintainer** | [Developing the kit](#developing-the-kit) below |
 
 ---
 
-## Get started — Cursor
+## Get started — Trae
 
-1. **Agent chat:** `/add-plugin https://github.com/SavinRazvan/mas-workflow-kit`
-2. Open **your app folder** → `/workflow-activate`
-3. Edit `.local/user_settings/github.collaboration.yaml` → `python3 -m cursor_workflow contributors validate`
-4. `/implementer` — read `session-pointer.md` → `plan.md` → `work-tracker.md`
-
-Default activate profile: `with_mcp` (Cursor contract plane).
-
----
-
-## Get started — Trae (parallel IDE)
-
-Trae has no `/add-plugin`. From **your project root** (terminal):
+From **your project root** (terminal):
 
 ```bash
-python3 -m cursor_workflow activate --directory . --profile dual_ide
+python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[dev,mcp]"
+python3 -m trae_workflow activate --directory . --profile default
 ```
 
 Then in Trae:
 
-1. Enable **Include AGENTS.md** in Trae settings
+1. Enable **Include AGENTS.md** in Trae AI settings
 2. Confirm `.trae/rules/` (13) and `.trae/skills/` (15) load
 3. Connect **workflow-kit** MCP from `.trae/mcp.json`
+4. Edit `.local/user_settings/github.collaboration.yaml` → `python3 -m trae_workflow contributors validate`
 
-**Invoke agents:** ask Trae to follow `.trae/rules/agent-implementer.md` (no `/implementer` slash).
+**Invoke agents:** ask Trae to follow `.trae/rules/agent-implementer.md` (no slash subagents).
 
 Full runbook: [trae-consumer-quickstart.md](.ai_infra/docs/operations/trae-consumer-quickstart.md)
 
 ---
 
-## What you get (dual IDE)
+## What you get
 
 **Agents (7):** `implementer`, `test-runner`, `verifier`, `enterprise-auditor`, `integrator-mas-agent`, `workflow-drift-guard`, `researcher`
 
-**6 universal rules** in `.cursor/rules/` (synced to `.trae/rules/` as `.md`).
+**6 universal governance rules** in `.trae/rules/` (plus 7 agent-requested rules).
 
-| Piece | Cursor | Trae |
-|-------|--------|------|
-| Subagents / agent rules | `.cursor/agents/` (7) | `.trae/agents/` + `agent-*.md` rules |
-| Skills | `.cursor/skills/` (10) + `.agents/skills/` (5) | `.trae/skills/` (15, generated) |
-| MCP | `.cursor/mcp.json` | `.trae/mcp.json` |
-| Shared | `.ai_infra/`, `cursor_workflow/`, `.local/` | same |
+| Piece | Path |
+|-------|------|
+| Agent rules | `.trae/rules/agent-*.md` |
+| Agent prompts | `.trae/agents/*.md` |
+| Skills | `.trae/skills/` (15) |
+| Governance rules | `.trae/rules/*.md` (13) |
+| MCP | `.trae/mcp.json` |
+| Shared scripts | `.ai_infra/`, `trae_workflow/` |
+| Runtime trackers | `.local/` |
 
-`.trae/` is **generated** from `.cursor/` SSOT — do not hand-edit; run `make sync-plugin` in kit-dev.
+`.trae/` is **editable SSOT** in this repo — not generated from `.cursor/`. Run `make sync-plugin` to refresh `payload/.trae/` for activate.
 
 ---
 
@@ -72,9 +66,9 @@ source .venv/bin/activate
 make check-trae-parity
 make check-plugin
 make test
-python3 -m cursor_workflow gates
-python3 -m cursor_workflow integrate validate --directory .
-python3 -m cursor_workflow mcp validate --directory .
+python3 -m trae_workflow gates
+python3 -m trae_workflow integrate validate --directory .
+python3 -m trae_workflow mcp validate --directory .
 ```
 
 ---
@@ -83,7 +77,7 @@ python3 -m cursor_workflow mcp validate --directory .
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -e ".[dev,mcp]"
-make sync-plugin          # regen .trae/ + payload/ (profile=dual_ide)
+make sync-plugin          # regen payload/.trae/ (profile=default)
 make gates
 ```
 

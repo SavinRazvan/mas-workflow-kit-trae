@@ -111,7 +111,7 @@ Follow `.ai_infra/docs/operations/connect-external-mcp.md` plus:
 1. Row in `.local/user_settings/mcp.agents.yaml`
 2. Fragment in `.trae/mcp.user.json` (gitignored)
 3. Keys in `.trae/mcp.registry.yaml` — `agents: [...]` per server
-4. `python -m cursor_workflow mcp validate`
+4. `python -m trae_workflow mcp validate`
 
 ### D. New maintainer script
 
@@ -126,14 +126,14 @@ Follow `.ai_infra/docs/operations/connect-external-mcp.md` plus:
 Run applicable subset:
 
 ```bash
-python -m cursor_workflow contributors validate
-python -m cursor_workflow integrate validate
+python -m trae_workflow contributors validate
+python -m trae_workflow integrate validate
 python .ai_infra/scripts/architecture/check_governance_consistency.py   # if .cursor/ or workflows changed
 pytest -q tests/modules/<relevant>/
 make gates                    # kit dev
 make check-plugin             # if agents/rules/skills/payload touched
 make install-dry-run          # if manifest / scaffold changed
-python -m cursor_workflow health --directory .
+python -m trae_workflow health --directory .
 ```
 
 Record PASS/FAIL in `change-index.md` and `updates-log.md`.

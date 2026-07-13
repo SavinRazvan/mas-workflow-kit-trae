@@ -5,12 +5,13 @@ Role: Full-branch coverage for activate_cli.py (source resolution, hints, cmd_ac
 Used By:
  - pytest
 Depends On:
- - .ai_infra/install/cursor_workflow/activate_cli.py
+ - .ai_infra/install/trae_workflow/activate_cli.py
 """
 
 from __future__ import annotations
 
 import argparse
+import json
 import subprocess
 import sys
 from pathlib import Path
@@ -19,7 +20,7 @@ from types import SimpleNamespace
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
-_PKG_DIR = REPO_ROOT / ".ai_infra" / "install" / "cursor_workflow"
+_PKG_DIR = REPO_ROOT / ".ai_infra" / "install" / "trae_workflow"
 _AI_INFRA_DIR = REPO_ROOT / ".ai_infra"
 
 for _p in (str(_PKG_DIR), str(_AI_INFRA_DIR)):
@@ -141,8 +142,9 @@ def test_print_post_activate_hints(tmp_path: Path, capsys: pytest.CaptureFixture
     activate_cli._print_post_activate_hints(tmp_path)
     out = capsys.readouterr().out
     assert "github.collaboration.yaml" in out
-    assert "/implementer" in out
-    assert "/integrator-mas-agent" in out
+    assert ".trae/rules/agent-implementer.md" in out
+    assert "Include AGENTS.md" in out
+    assert "/implementer" not in out
 
 
 # ---------------------------------------------------------------------------
@@ -150,10 +152,16 @@ def test_print_post_activate_hints(tmp_path: Path, capsys: pytest.CaptureFixture
 # ---------------------------------------------------------------------------
 
 _READY_PATHS = (
-    ".cursor/agents/implementer.md",
+    ".trae/agents/implementer.md",
     ".ai_infra/scripts/pr/prepare.py",
+    ".ai_infra/scripts/architecture/check_governance_consistency.py",
+    ".ai_infra/bootstrap.py",
+    ".ai_infra/paths.py",
+    ".ai_infra/manifest.yaml",
     ".local/index-and-planning/current/session-pointer.md",
     "AGENTS.md",
+    "trae_workflow/__main__.py",
+    ".ai_infra/install/trae_workflow/cli.py",
 )
 
 
@@ -162,13 +170,28 @@ def _make_ready(root: Path) -> None:
         p = root / rel
         p.parent.mkdir(parents=True, exist_ok=True)
         p.write_text("ok\n", encoding="utf-8")
+    contract_path = root / ".ai_infra" / "install-contract.json"
+    contract_path.write_text(
+        json.dumps(
+            {
+                "version": 1,
+                "profiles": {
+                    "default": {
+                        "required_paths": list(_READY_PATHS),
+                        "forbidden_paths": [],
+                    }
+                },
+            }
+        ),
+        encoding="utf-8",
+    )
 
 
 def _args(**overrides) -> argparse.Namespace:
     base = dict(
         directory=None,
         source=None,
-        profile="with_mcp",
+        profile="default",
         with_venv=False,
         with_mcp_json=False,
         verify=False,
@@ -455,7 +478,7 @@ def test_register_activate_subparser_defaults_and_flags() -> None:
 
     args = parser.parse_args(["activate"])
     assert args.func is activate_cli.cmd_activate
-    assert args.profile == "with_mcp"
+    assert args.profile == "default"
     assert args.with_venv is True
     assert args.with_mcp_json is True
     assert args.verify is True

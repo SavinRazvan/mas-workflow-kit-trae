@@ -1,7 +1,7 @@
 """
 File: test_integrate_validate.py
 Path: tests/modules/integration/test_integrate_validate.py
-Role: Tests for integrate validate P0 checks.
+Role: Tests for integrate validate P0 checks (Trae edition).
 Used By:
  - pytest
 Depends On:
@@ -13,7 +13,6 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-import pytest
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
@@ -33,7 +32,7 @@ def test_integrate_validate_passes_on_kit_repo() -> None:
 
 def test_missing_anchor_fails_p0(tmp_path: Path) -> None:
     _copy_minimal_kit(tmp_path)
-    agent = tmp_path / ".cursor" / "agents" / "implementer.md"
+    agent = tmp_path / ".trae" / "agents" / "implementer.md"
     agent.write_text("# implementer\n\nNo anchor\n", encoding="utf-8")
     results = run_checks(tmp_path)
     int001 = next(r for r in results if r.check_id == "INT-001")
@@ -43,7 +42,7 @@ def test_missing_anchor_fails_p0(tmp_path: Path) -> None:
 
 def test_orphan_registry_id_fails_p0(tmp_path: Path) -> None:
     _copy_minimal_kit(tmp_path)
-    registry = tmp_path / ".cursor" / "mcp.registry.yaml.example"
+    registry = tmp_path / ".trae" / "mcp.registry.yaml.example"
     data = yaml.safe_load(registry.read_text(encoding="utf-8"))
     data["servers"]["workflow-kit"]["agents"].append("nonexistent-agent")
     registry.write_text(yaml.dump(data), encoding="utf-8")
@@ -53,38 +52,8 @@ def test_orphan_registry_id_fails_p0(tmp_path: Path) -> None:
     assert "nonexistent-agent" in int002.detail
 
 
-def test_orphan_trae_registry_id_fails_p0(tmp_path: Path) -> None:
-    import shutil
-
-    _copy_minimal_kit(tmp_path)
-    trae_agents = tmp_path / ".trae" / "agents"
-    trae_agents.mkdir(parents=True)
-    shutil.copy2(
-        REPO_ROOT / ".cursor" / "agents" / "implementer.md",
-        trae_agents / "implementer.md",
-    )
-    trae_registry = tmp_path / ".trae" / "mcp.registry.yaml.example"
-    shutil.copy2(REPO_ROOT / ".cursor" / "mcp.registry.yaml.example", trae_registry)
-    data = yaml.safe_load(trae_registry.read_text(encoding="utf-8"))
-    data["servers"]["workflow-kit"]["agents"].append("phantom-trae-agent")
-    trae_registry.write_text(yaml.dump(data), encoding="utf-8")
-    results = run_checks(tmp_path)
-    int002 = next(r for r in results if r.check_id == "INT-002")
-    assert not int002.passed
-    assert "phantom-trae-agent" in int002.detail
-
-
 def test_trae_registry_valid_when_present(tmp_path: Path) -> None:
-    import shutil
-
     _copy_minimal_kit(tmp_path)
-    trae_root = tmp_path / ".trae"
-    trae_root.mkdir(parents=True)
-    shutil.copytree(REPO_ROOT / ".trae" / "agents", trae_root / "agents", dirs_exist_ok=True)
-    shutil.copy2(
-        REPO_ROOT / ".trae" / "mcp.registry.yaml.example",
-        trae_root / "mcp.registry.yaml.example",
-    )
     results = run_checks(tmp_path)
     int002 = next(r for r in results if r.check_id == "INT-002")
     assert int002.passed
@@ -105,17 +74,16 @@ def test_plugin_parity_skipped_on_consumer_profile(tmp_path: Path) -> None:
     int009 = next(r for r in results if r.check_id == "INT-009")
     int011 = next(r for r in results if r.check_id == "INT-011")
     assert int009.passed
-    assert "consumer profile" in int009.detail
+    assert "Trae edition" in int009.detail
     assert int011.passed
-    assert "consumer profile" in int011.detail
 
 
 def _copy_minimal_kit(target: Path) -> None:
     import shutil
 
     for rel in (
-        ".cursor/agents",
-        ".cursor/mcp.registry.yaml.example",
+        ".trae/agents",
+        ".trae/mcp.registry.yaml.example",
         ".ai_infra/scripts/pr",
         ".ai_infra/scripts/integration",
         ".ai_infra/schemas",

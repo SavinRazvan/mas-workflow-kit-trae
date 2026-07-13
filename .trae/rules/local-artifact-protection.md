@@ -1,5 +1,3 @@
-<!-- GENERATED — do not edit. Sync from .cursor/ via sync_trae_contract.py -->
-
 ---
 description: Do not delete protected local data without explicit user confirmation
 alwaysApply: true

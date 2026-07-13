@@ -48,19 +48,19 @@ On every release, bump **in lockstep**:
 |------|--------|
 | `.cursor-plugin/plugin.json` | `version` |
 | `pyproject.toml` | `version` |
-| `cursor_workflow/__init__.py` | `__version__` |
-| `cursor_workflow/cli.py` | `__version__` |
-| `.ai_infra/install/cursor_workflow/__init__.py` | `__version__` |
-| `.ai_infra/install/cursor_workflow/cli.py` | `--version` string |
+| `trae_workflow/__init__.py` | `__version__` |
+| `trae_workflow/cli.py` | `__version__` |
+| `.ai_infra/install/trae_workflow/__init__.py` | `__version__` |
+| `.ai_infra/install/trae_workflow/cli.py` | `--version` string |
 | `.ai_infra/__init__.py` | `__version__` |
 | `.ai_infra/manifest.yaml` | `kit_version` |
 | `.ai_infra/.kit-version` | raw version string (kit-dev repo's own checked-in copy — see note below) |
 | `.ai_infra/docs/handoff/IMPLEMENTATION-STATUS.md` | header + kit version row |
 | `tests/modules/install/test_install_contract.py` | `.kit-version` assertion |
 | `tests/modules/install/test_editable_install.py` | `__version__` assertion |
-| `tests/modules/install/test_cursor_workflow.py` | `__version__` assertion |
+| `tests/modules/install/test_trae_workflow.py` | `__version__` assertion |
 
-**Consumer installs** receive version via `.ai_infra/.kit-version` (written fresh from manifest `kit_version` at scaffold/activate — no manual action needed there). **The kit-dev repo's own `.ai_infra/.kit-version` is git-tracked** and is *not* regenerated automatically (scaffold only runs on install targets), so it must be bumped by hand in this table too — `python3 -m cursor_workflow health` in this repo reads it directly and will report a stale version if it's missed (caught in v0.4.0: file was left at `0.3.0` after the version bump). **Not versioned with kit:** `workflow_mcp.__version__` (MCP server package semver).
+**Consumer installs** receive version via `.ai_infra/.kit-version` (written fresh from manifest `kit_version` at scaffold/activate — no manual action needed there). **The kit-dev repo's own `.ai_infra/.kit-version` is git-tracked** and is *not* regenerated automatically (scaffold only runs on install targets), so it must be bumped by hand in this table too — `python3 -m trae_workflow health` in this repo reads it directly and will report a stale version if it's missed (caught in v0.4.0: file was left at `0.3.0` after the version bump). **Not versioned with kit:** `workflow_mcp.__version__` (MCP server package semver).
 
 After bump: `make sync-plugin && make check-plugin`, tag `vX.Y.Z`, optional GitHub Release notes.
 
@@ -72,7 +72,7 @@ assets/logo.png    # Marketplace logotype (commit before publisher submit)
 agents/            # Cursor-loaded — sibling of .cursor-plugin/, matches cursor/plugin-template
 rules/             # Cursor-loaded — sibling of .cursor-plugin/
 skills/            # Cursor-loaded — sibling of .cursor-plugin/
-payload/           # ADR-001 install source (.ai_infra + cursor_workflow shim)
+payload/           # ADR-001 install source (.ai_infra + trae_workflow shim)
 ```
 
 **All four generated trees (`agents/`, `rules/`, `skills/`, `payload/`) are committed to git** — Cursor Marketplace reads the repository directly, so nothing gitignored is visible to a reviewer or a third-party installer. `make sync-plugin` regenerates them from `.cursor/` + `.agents/skills/`; `make check-plugin` fails the build on drift. Layout and discovery match the official [`cursor/plugin-template`](https://github.com/cursor/plugin-template) starters exactly — verified by running the upstream `scripts/validate-template.mjs` directly against this repo (0 errors, see `.local/workflow-artifacts/release/cursor-plugin-template-compliance-2026-07-02.md`).
@@ -89,7 +89,7 @@ mkdir -p "$TARGET"
 1. **Agent chat** (not terminal): `/add-plugin https://github.com/SavinRazvan/mas-workflow-kit` — click the **MAS Workflow Kit** card in the preview ([screenshot](../../../assets/mas-workflow-kit-install.png) · [README](https://github.com/SavinRazvan/mas-workflow-kit#1-install-the-plugin-cursor-chat--not-the-terminal))
 2. **File → Open Folder** → `"$TARGET"` (your app — not the kit repo)
 3. **Agent chat:** `/workflow-activate` → wait for **VERIFY PASS**
-4. Edit `.local/user_settings/github.collaboration.yaml` → `python3 -m cursor_workflow contributors validate`
+4. Edit `.local/user_settings/github.collaboration.yaml` → `python3 -m trae_workflow contributors validate`
 
 **Alternative — local path** (if GitHub URL fails in your Cursor build):
 
@@ -106,15 +106,15 @@ export KIT=~/Projects/mas-workflow-kit
 export TARGET=~/Projects/my-app
 mkdir -p "$TARGET"
 
-"$KIT/.venv/bin/python" "$KIT/payload/cursor_workflow" activate \
+"$KIT/.venv/bin/python" "$KIT/payload/trae_workflow" activate \
   --directory "$TARGET" \
   --source "$KIT/payload"
 
 cd "$TARGET"
 # Edit .local/user_settings/github.collaboration.yaml (placeholders → your name / @handle)
-python3 -m cursor_workflow contributors validate
-python3 -m cursor_workflow integrate validate
-python3 -m cursor_workflow gates
+python3 -m trae_workflow contributors validate
+python3 -m trae_workflow integrate validate
+python3 -m trae_workflow gates
 ```
 
 Pass: `VERIFY PASS` on activate; `contributors validate: PASS` (after editing placeholders); `integrate validate` P0 = 0 (plugin parity skipped on consumer); `gates` green. Kit smoke alone: `pytest -q tests/modules/smoke/` → **1 passed**; full `gates` runs **your app tests + smoke** (e.g. 120 on Smart-Notes).
@@ -122,12 +122,12 @@ Pass: `VERIFY PASS` on activate; `contributors validate: PASS` (after editing pl
 **Drift on consumer apps:** auto profile may read `kit-dev` unless `work-tracker.md` contains `STARTER-001`. Use explicit consumer profile (no agent required):
 
 ```bash
-python3 -m cursor_workflow drift validate --directory . --profile consumer
+python3 -m trae_workflow drift validate --directory . --profile consumer
 ```
 
 **DRIFT-005 on consumer:** If you see `DRIFT-005 FAIL: IMPLEMENTATION-STATUS missing **Tests:** count` — that is a **kit bug (not your app)**: false positive because `IMPLEMENTATION-STATUS.md` is maintainer-only and is not shipped to consumers. Fixed on kit `main` (skip when absent → PASS). Until your consumer project picks up the fix, ignore DRIFT-005 or upgrade the kit payload.
 
-**MCP validate:** use `python3 -m cursor_workflow mcp validate` — not bare `mcp validate` (different CLI).
+**MCP validate:** use `python3 -m trae_workflow mcp validate` — not bare `mcp validate` (different CLI).
 
 ### Quick plugin smoke (from kit repo)
 
@@ -138,17 +138,17 @@ python3 -m cursor_workflow drift validate --directory . --profile consumer
 
 ```bash
 cd "$TARGET"
-python3 -m cursor_workflow activate --directory .
+python3 -m trae_workflow activate --directory .
 ```
 
 Or from kit repo without opening target in Cursor:
 
 ```bash
-"$KIT/.venv/bin/python" "$KIT/payload/cursor_workflow" activate \
+"$KIT/.venv/bin/python" "$KIT/payload/trae_workflow" activate \
   --directory "$TARGET" --source "$KIT/payload"
 ```
 
-5. In target: `python3 -m cursor_workflow gates --directory "$TARGET"`
+5. In target: `python3 -m trae_workflow gates --directory "$TARGET"`
 
 ### Automated smoke (kit repo)
 
@@ -197,7 +197,7 @@ Pre-filled values for [Become a plugin publisher](https://cursor.com/marketplace
 
 **Manifest:** `.cursor-plugin/plugin.json` — `author`, `homepage`, `repository`, `logo` aligned with the table above.
 
-**Listing copy review (2026-07-07):** Verified `plugin.json` `description`, the Description row above, and README consumer sections (`What you get`, agent/skill/rule counts) against `IMPLEMENTATION-STATUS.md` on `main` — 633 tests (post DRIFT-005 slice), DOC-006 PASS, coverage scope 3588 stmts / 100% on `--cov=.ai_infra --cov=cursor_workflow`. No stale test or coverage numbers in marketplace-facing copy; feature counts (7 agents, 10 skills, 5 PR skills, 6 rules) match shipped inventory.
+**Listing copy review (2026-07-07):** Verified `plugin.json` `description`, the Description row above, and README consumer sections (`What you get`, agent/skill/rule counts) against `IMPLEMENTATION-STATUS.md` on `main` — 633 tests (post DRIFT-005 slice), DOC-006 PASS, coverage scope 3588 stmts / 100% on `--cov=.ai_infra --cov=trae_workflow`. No stale test or coverage numbers in marketplace-facing copy; feature counts (7 agents, 10 skills, 5 PR skills, 6 rules) match shipped inventory.
 
 **Consumer smoke (2026-07-08):** Real app **Smart-Notes** — `/add-plugin` + chat **`/workflow-activate`**, `health`/`gates`/`integrate`/`mcp validate` PASS, kit smoke **1** of **120** pytest during gates. Record: `.local/workflow-artifacts/release/smoke-consumer-smart-notes-2026-07-08.md`.
 
@@ -223,4 +223,4 @@ Until live publish, **deployability score remains capped** at local dry-run evid
 ## Rollback
 
 - Re-publish previous plugin version
-- Consumers: reinstall prior `kit_version` via `cursor_workflow install` from tagged kit release
+- Consumers: reinstall prior `kit_version` via `trae_workflow install` from tagged kit release

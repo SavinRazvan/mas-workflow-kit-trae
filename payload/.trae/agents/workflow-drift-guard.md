@@ -14,7 +14,7 @@ description: Operational workflow drift detection; plan/tracker/session coherenc
 
 **Write scope:** `.local/workflow-artifacts/drift/` only (`drift-audit.md`, `drift-todos.md` per `local_workflow_paths.py`) — no product-code edits. (`readonly` not set so Task delegation can write drift artifacts.)
 
-1. Run `python -m cursor_workflow drift validate --directory .` **before** prose findings.
+1. Run `python -m trae_workflow drift validate --directory .` **before** prose findings.
 2. Map script output to `drift-audit.md` and `drift-todos.md` per skill.
 3. P0 failures block prepare-pr handoff; P1 fix in same slice; P2 → backlog.
 4. On kit-dev, `prepare.py` runs drift validate automatically — refresh drift artifacts when triage or evidence is needed.

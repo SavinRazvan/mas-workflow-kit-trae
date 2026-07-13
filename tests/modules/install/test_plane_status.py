@@ -29,7 +29,7 @@ def _load_plane_status():
 
 def test_kit_repo_planes_ready() -> None:
     plane_status = _load_plane_status()
-    status = plane_status.assess_planes(REPO_ROOT, profile="with_mcp")
+    status = plane_status.assess_planes(REPO_ROOT, profile="default")
     assert status.all_ready
     assert not status.missing
 
@@ -38,7 +38,7 @@ def test_empty_dir_planes_missing(tmp_path: Path) -> None:
     plane_status = _load_plane_status()
     status = plane_status.assess_planes(tmp_path)
     assert not status.all_ready
-    assert not status.cursor_contract
+    assert not status.trae_contract
     assert not status.infrastructure
     assert not status.runtime
 

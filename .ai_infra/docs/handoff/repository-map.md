@@ -28,7 +28,7 @@ Notes:
 |--------|---------|
 | **SSOT** | Edit here; other trees are generated or copied |
 | **Generated** | Run `make sync-plugin`; commit the diff |
-| **Consumer** | Lands on disk after `cursor_workflow activate` in an app project |
+| **Consumer** | Lands on disk after `trae_workflow activate` in an app project |
 | **Kit-dev only** | Stays in this repo; not in consumer `payload/` |
 
 ---
@@ -47,7 +47,7 @@ mas-workflow-kit/
 ├── .ai_infra/                  SSOT — scripts, docs, templates, MCP, workflows, manifest.yaml
 ├── assets/                     Marketplace logo (`logo.png`)
 ├── .github/                    CI workflows (kit-dev only)
-├── cursor_workflow/            SSOT — thin CLI shim (also copied to consumer)
+├── trae_workflow/            SSOT — thin CLI shim (also copied to consumer)
 ├── schemas/                    Legacy gate.json stub (GATES live in prepare.py)
 ├── .local/                     Kit-dev runtime (gitignored); CI seed fixture — not consumer exemplars
 ├── tests/                      Kit-dev only — full pytest suite (633+)
@@ -91,12 +91,12 @@ my-app/
 ├── .agents/skills/                 5 maintainer slash folders (+ audit-alignment stub)
 ├── .ai_infra/                      Slim bundle (manifest copy_ai_infra only)
 │   ├── scripts/pr|architecture|integration|workflow|install/
-│   ├── install/cursor_workflow/
+│   ├── install/trae_workflow/
 │   ├── docs/operations|governance|roadmap|decisions|architecture/
 │   ├── templates/local-workspace|user-settings|agent-integration/
 │   ├── workflows/                  PR lane hub (shipped — see workflows/README.md)
 │   └── mcp_servers/workflow_mcp/   (with_mcp profile)
-├── cursor_workflow/                CLI entrypoint
+├── trae_workflow/                CLI entrypoint
 └── .local/                         Scaffolded trackers + artifact buckets (gitignored)
 ```
 

@@ -1,5 +1,3 @@
-<!-- GENERATED — do not edit. Sync from .cursor/ via sync_trae_contract.py -->
-
 ---
 description: Implementation slice lifecycle, index-and-planning updates, and module-aligned testing
 alwaysApply: true

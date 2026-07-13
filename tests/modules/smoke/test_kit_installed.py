@@ -13,7 +13,7 @@ from pathlib import Path
 
 
 def test_core_layout_installed() -> None:
-    assert Path(".cursor/agents/implementer.md").is_file()
+    assert Path(".trae/agents/implementer.md").is_file()
     assert Path(".ai_infra/scripts/pr/prepare.py").is_file()
     assert Path("AGENTS.md").is_file()
     assert Path(".local/index-and-planning/current/session-pointer.md").is_file()

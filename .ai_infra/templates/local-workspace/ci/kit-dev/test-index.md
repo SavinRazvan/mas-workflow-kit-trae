@@ -32,12 +32,12 @@
 - Module: `smoke`
   - Owned tests: `tests/modules/smoke/test_kit_installed.py`
   - Coverage status: `healthy`
-  - Notes: dual_ide layout + `.trae/` path rewrite smoke
+  - Notes: default layout + `.trae/` path rewrite smoke
 
 - Module: `install`
-  - Owned tests: `tests/modules/install/test_*.py` incl. `test_scaffold_dual_ide.py`
+  - Owned tests: `tests/modules/install/test_*.py` incl. `test_scaffold_default.py`
   - Coverage status: `healthy`
-  - Notes: dual_ide scaffold; cmd_gates 6 steps (trae parity)
+  - Notes: default scaffold; cmd_gates 6 steps (trae parity)
 
 - Module: `mcp_registry`
   - Owned tests: `tests/modules/mcp_registry/test_*.py`
@@ -54,7 +54,7 @@
   - Coverage status: `healthy`
   - Notes: DRIFT-001–009 and CLI wiring
 
-**Total:** 494 pytest (kit-dev)
+**Total:** 488 pytest (kit-dev)
 
 - Module: `ci`
   - Owned tests: `tests/modules/ci/test_seed_kit_workspace.py`

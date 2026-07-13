@@ -36,8 +36,8 @@ Run **once**; capture JSON for downstream agents:
 ```bash
 make verify-all
 # or with artifacts for agents:
-python -m cursor_workflow verify all --write-preflight
-python -m cursor_workflow doc validate --write-preflight
+python -m trae_workflow verify all --write-preflight
+python -m trae_workflow doc validate --write-preflight
 ```
 
 **MCP (preferred in Cursor):** `workflow_verify_all`, `workflow_doc_facts_validate`, `workflow_drift_validate`, `workflow_integrate_validate`, `workflow_activate`.

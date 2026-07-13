@@ -37,7 +37,7 @@ def test_render_markdown_reports_full_coverage() -> None:
     data = {
         "files": {
             ".ai_infra/paths.py": {"summary": {"num_statements": 10, "missing_lines": 0}},
-            "cursor_workflow/cli.py": {"summary": {"num_statements": 5, "missing_lines": 0}},
+            "trae_workflow/cli.py": {"summary": {"num_statements": 5, "missing_lines": 0}},
         }
     }
     text = mod.render_markdown(REPO_ROOT, data, test_count=605)
@@ -61,9 +61,9 @@ def test_render_markdown_lists_files_below_threshold() -> None:
 
 def test_module_key_branches() -> None:
     mod = _load_gen()
-    assert mod._module_key("cursor_workflow/cli.py") == "cursor_workflow"
+    assert mod._module_key("trae_workflow/cli.py") == "trae_workflow"
     assert mod._module_key(".ai_infra/scripts/pr/foo.py") == ".ai_infra/scripts/pr"
-    assert mod._module_key(".ai_infra/install/cursor_workflow/x.py") == ".ai_infra/install/cursor_workflow"
+    assert mod._module_key(".ai_infra/install/trae_workflow/x.py") == ".ai_infra/install/trae_workflow"
     assert mod._module_key(".ai_infra/mcp_servers/workflow_mcp/x.py") == ".ai_infra/mcp_servers/workflow_mcp"
     assert mod._module_key(".ai_infra/bootstrap.py") == ".ai_infra/bootstrap.py"
     assert mod._module_key("other/foo.py") == "other/foo.py"

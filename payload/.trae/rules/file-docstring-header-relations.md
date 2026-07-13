@@ -1,5 +1,3 @@
-<!-- GENERATED — do not edit. Sync from .cursor/ via sync_trae_contract.py -->
-
 ---
 description: Top-of-file module header with File/Path/Role/relations
 alwaysApply: true

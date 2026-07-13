@@ -1,5 +1,3 @@
-<!-- GENERATED — do not edit. Sync from .cursor/ via sync_trae_contract.py -->
-
 ---
 description: Architecture-impacting advisory audits before prepare/merge (authored via enterprise-auditor)
 alwaysApply: true

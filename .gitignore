@@ -15,14 +15,16 @@ __pycache__/
 .env
 .ruff_cache/
 
-# ── Cursor kit (Trae-only repo — not published) ───────────────────────────────
+# ── Trae kit (published) ───────────────────────────────────────────────────────
+# trae_workflow/ is tracked — CLI shim for python -m trae_workflow
+
+# ── Cursor / upstream reference (not in this repo) ────────────────────────────
 .cursor/
 .agents/
 .cursor-plugin/
 agents/
 rules/
 skills/
-cursor_workflow/
 
 # ── Read-only reference checkout (informative only) ────────────────────────────
 _example_repo/*

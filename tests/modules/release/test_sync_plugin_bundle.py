@@ -1,13 +1,13 @@
 """
 File: test_sync_plugin_bundle.py
 Path: tests/modules/release/test_sync_plugin_bundle.py
-Role: Tests for plugin bundle sync and parity check.
+Role: Tests for Trae edition payload sync and parity check.
 Used By:
  - pytest
 Depends On:
  - .ai_infra/scripts/release/sync_plugin_bundle.py
 Notes:
- - Uses temporary output dirs; does not require the committed agents/rules/skills tree.
+ - Uses temporary output dirs; verifies payload/.trae + payload/trae_workflow only.
 """
 
 from __future__ import annotations
@@ -31,63 +31,34 @@ def _load_sync():
     return module
 
 
-def test_sync_builds_plugin_and_payload(tmp_path: Path) -> None:
+def test_sync_builds_trae_payload(tmp_path: Path) -> None:
     mod = _load_sync()
-    plugin_dir = tmp_path / "plugin"
     payload_dir = tmp_path / "payload"
-    mod.sync_plugin_surface(plugin_dir)
-    mod.sync_payload(payload_dir, plugin_dir, profile="with_mcp")
+    mod.sync_payload(payload_dir, REPO_ROOT, profile="default")
 
-    assert (plugin_dir / "agents" / "implementer.md").is_file()
-    assert (plugin_dir / "skills" / "workflow-activate" / "SKILL.md").is_file()
-    assert (plugin_dir / "skills" / "review-pr" / "SKILL.md").is_file()
     assert (payload_dir / ".ai_infra" / "scripts" / "pr" / "prepare.py").is_file()
-    assert (payload_dir / "cursor_workflow" / "__main__.py").is_file()
-    assert (payload_dir / ".cursor" / "agents" / "implementer.md").is_file()
+    assert (payload_dir / "trae_workflow" / "__main__.py").is_file()
+    assert (payload_dir / ".trae" / "agents" / "implementer.md").is_file()
     assert (payload_dir / "LICENSE").is_file()
     assert (payload_dir / "NOTICE").is_file()
 
 
 def test_check_bundle_passes_after_sync(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
     mod = _load_sync()
-    plugin_dir = tmp_path / "plugin"
     payload_dir = tmp_path / "payload"
-    mod.sync_plugin_surface(plugin_dir)
-    mod.sync_payload(payload_dir, plugin_dir, profile="with_mcp")
+    mod.sync_payload(payload_dir, REPO_ROOT, profile="default")
 
-    monkeypatch.setattr(mod, "PLUGIN_DIR", plugin_dir)
     monkeypatch.setattr(mod, "PAYLOAD_DIR", payload_dir)
 
-    errors = mod.check_bundle("with_mcp")
+    errors = mod.check_bundle("default")
     assert errors == []
-
-
-def test_payload_skills_do_not_overlap_agents_skills(tmp_path: Path) -> None:
-    mod = _load_sync()
-    plugin_dir = tmp_path / "plugin"
-    payload_dir = tmp_path / "payload"
-    mod.sync_plugin_surface(plugin_dir)
-    mod.sync_payload(payload_dir, plugin_dir, profile="with_mcp")
-
-    cursor_names = {
-        p.name for p in (payload_dir / ".cursor" / "skills").iterdir() if p.is_dir()
-    }
-    agents_names = {
-        p.name for p in (payload_dir / ".agents" / "skills").iterdir() if p.is_dir()
-    }
-    overlap = sorted(cursor_names & agents_names)
-    assert overlap == [], f"payload must not duplicate skill folders: {overlap}"
-    assert (plugin_dir / "skills" / "review-pr" / "SKILL.md").is_file()
-    assert not (payload_dir / ".cursor" / "skills" / "review-pr").exists()
 
 
 def test_payload_install_verify_green(tmp_path: Path) -> None:
     mod = _load_sync()
-    plugin_dir = tmp_path / "plugin"
     payload_dir = tmp_path / "payload"
     target = tmp_path / "consumer"
-    mod.sync_plugin_surface(plugin_dir)
-    mod.sync_payload(payload_dir, plugin_dir, profile="with_mcp")
+    mod.sync_payload(payload_dir, REPO_ROOT, profile="default")
 
     scaffold_path = REPO_ROOT / ".ai_infra" / "scripts" / "install" / "scaffold.py"
     spec = importlib.util.spec_from_file_location("scaffold", scaffold_path)
@@ -98,7 +69,7 @@ def test_payload_install_verify_green(tmp_path: Path) -> None:
     log = scaffold.scaffold(
         target,
         payload_dir,
-        profile="with_mcp",
+        profile="default",
         with_venv=True,
         with_mcp_json=True,
         verify=True,
@@ -108,11 +79,9 @@ def test_payload_install_verify_green(tmp_path: Path) -> None:
 
 def test_payload_install_dry_run(tmp_path: Path) -> None:
     mod = _load_sync()
-    plugin_dir = tmp_path / "plugin"
     payload_dir = tmp_path / "payload"
     target = tmp_path / "consumer"
-    mod.sync_plugin_surface(plugin_dir)
-    mod.sync_payload(payload_dir, plugin_dir, profile="with_mcp")
+    mod.sync_payload(payload_dir, REPO_ROOT, profile="default")
 
     scaffold_path = REPO_ROOT / ".ai_infra" / "scripts" / "install" / "scaffold.py"
     spec = importlib.util.spec_from_file_location("scaffold", scaffold_path)
@@ -123,46 +92,20 @@ def test_payload_install_dry_run(tmp_path: Path) -> None:
     log = scaffold.scaffold(
         target,
         payload_dir,
-        profile="with_mcp",
+        profile="default",
         dry_run=True,
         with_mcp_json=True,
     )
     joined = "\n".join(log)
     assert ".ai_infra" in joined
-    assert ".cursor" in joined
+    assert ".trae" in joined
     assert "SCAFFOLD DONE" in joined
 
 
-def test_plugin_canonical_skills_not_overwritten_by_stubs(tmp_path: Path) -> None:
+def test_sync_payload_default_includes_trae(tmp_path: Path) -> None:
     mod = _load_sync()
-    plugin_dir = tmp_path / "plugin"
-    mod.sync_plugin_surface(plugin_dir)
-
-    enterprise = (plugin_dir / "skills" / "enterprise-architecture-audit" / "SKILL.md").read_text(
-        encoding="utf-8"
-    )
-    assert "Evidence contract" in enterprise
-    assert len(enterprise.splitlines()) > 200
-
-    orchestration = (plugin_dir / "skills" / "audit-orchestration" / "SKILL.md").read_text(
-        encoding="utf-8"
-    )
-    assert "verify-all" in orchestration or "enterprise-auditor" in orchestration
-
-    drift = (plugin_dir / "skills" / "workflow-drift-audit" / "SKILL.md").read_text(encoding="utf-8")
-    assert "drift validate" in drift.lower()
-
-    assert (plugin_dir / "skills" / "review-pr" / "SKILL.md").is_file()
-    assert (plugin_dir / "skills" / "workflow-activate" / "SKILL.md").is_file()
-    assert (plugin_dir / "skills" / "pr-workflow" / "SKILL.md").is_file()
-
-
-def test_sync_payload_dual_ide_includes_trae(tmp_path: Path) -> None:
-    mod = _load_sync()
-    plugin_dir = tmp_path / "plugin"
     payload_dir = tmp_path / "payload"
-    mod.sync_plugin_surface(plugin_dir)
-    mod.sync_payload(payload_dir, plugin_dir, profile="dual_ide")
+    mod.sync_payload(payload_dir, REPO_ROOT, profile="default")
 
     assert (payload_dir / ".trae" / "rules" / "pr-workflow-enforcement.md").is_file()
     assert (payload_dir / ".trae" / "skills" / "workflow-activate" / "SKILL.md").is_file()

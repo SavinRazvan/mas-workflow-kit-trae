@@ -63,8 +63,8 @@ def _copy_minimal_kit(target: Path) -> None:
     import shutil
 
     for rel in (
-        ".cursor/agents",
-        ".cursor/rules",
+        ".trae/agents",
+        ".trae/rules",
         "README.md",
         "AGENTS.md",
         ".ai_infra/docs/architecture/workflow-architecture.md",
