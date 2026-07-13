@@ -9,7 +9,7 @@ description: {{ONE_LINE_DESCRIPTION}}
 
 {{FACTUAL_GOAL}}
 
-**Agent:** `.cursor/agents/{{AGENT_ID}}.md`  
+**Agent:** `.trae/agents/{{AGENT_ID}}.md`  
 **Ops mirror:** `.ai_infra/docs/operations/{{OPS_DOC}}.md` (if applicable)
 
 ## When to use

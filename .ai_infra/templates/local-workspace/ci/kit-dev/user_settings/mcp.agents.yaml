@@ -3,8 +3,8 @@
 # Role: Human-friendly worksheet for external MCP servers and agent ↔ tool mapping.
 #
 # Apply changes to:
-#   .cursor/mcp.user.json       (server commands, args, env — gitignored)
-#   .cursor/mcp.registry.yaml   (which agents use which servers)
+#   .trae/mcp.user.json       (server commands, args, env — gitignored)
+#   .trae/mcp.registry.yaml   (which agents use which servers)
 #
 # Validate: trae-workflow mcp validate
 # Guide:    .ai_infra/docs/operations/connect-external-mcp.md
@@ -88,11 +88,11 @@ agent_defaults:
     optional_servers: []
 
 # Fragments directory (optional) — trae-workflow mcp link --name X --file ...
-fragments_dir: .cursor/mcp.d
+fragments_dir: .trae/mcp.d
 
 # After editing this file:
-#   1. cp .cursor/mcp.user.example.json .cursor/mcp.user.json  (if first time)
+#   1. cp .trae/mcp.user.example.json .trae/mcp.user.json  (if first time)
 #   2. Merge enabled external_servers[].transport into mcp.user.json mcpServers
-#   3. cp .cursor/mcp.registry.yaml.example .cursor/mcp.registry.yaml
+#   3. cp .trae/mcp.registry.yaml.example .trae/mcp.registry.yaml
 #   4. Add registry servers: keys matching mcp.user.json + agents + tools_hint
-#   5. trae-workflow mcp validate && reload Cursor MCP
+#   5. python3 -m trae_workflow mcp validate && reload Trae MCP

@@ -4,45 +4,45 @@ Link **any** MCP server to kit agents without forking agent prompts.
 
 ## Prerequisites
 
-- MAS Workflow Kit installed (`with_mcp` profile or `--with-mcp-json`)
-- Cursor MCP enabled for the workspace
+- MAS Workflow Kit activated (`--profile default` installs `.trae/mcp.json`)
+- Trae MCP enabled for the workspace
 
 ## Quick path
 
 1. **Registry** — copy example and edit agent mappings:
 
 ```bash
-cp .cursor/mcp.registry.yaml.example .cursor/mcp.registry.yaml
+cp .trae/mcp.registry.yaml.example .trae/mcp.registry.yaml
 ```
 
 2. **User servers** — secrets stay gitignored:
 
 ```bash
-cp .cursor/mcp.user.example.json .cursor/mcp.user.json
+cp .trae/mcp.user.example.json .trae/mcp.user.json
 # edit mcpServers in mcp.user.json
 ```
 
 Or link a fragment:
 
 ```bash
-trae-workflow mcp link --name my-api --file .cursor/mcp.d/my-api.json
+python3 -m trae_workflow mcp link --name my-api --file .trae/mcp.d/my-api.json
 ```
 
 3. **Merge + validate:**
 
 ```bash
-trae-workflow mcp validate
+python3 -m trae_workflow mcp validate
 ```
 
-4. Reload Cursor MCP; agents read `.cursor/mcp.registry.yaml` for which servers apply to their role.
+4. Reload Trae MCP; agents read `.trae/mcp.registry.yaml` for which servers apply to their role.
 
-**Worksheet:** complete **`.local/user_settings/mcp.agents.yaml`** (copied at install) — human-friendly server list and agent mapping — then apply to `.cursor/mcp.user.json` and the registry.
+**Worksheet:** complete **`.local/user_settings/mcp.agents.yaml`** (copied at install) — human-friendly server list and agent mapping — then apply to `.trae/mcp.user.json` and the registry.
 
 ## Two-tier model
 
 | Tier | Config | Purpose |
 |------|--------|---------|
-| Kit | `mcp.json.kit.example` → merged into `mcp.json` | `workflow-kit` tools (PR, trackers, gates) |
+| Kit | `mcp.json` (from activate) | `workflow-kit` tools (PR, trackers, gates) |
 | User | `mcp.user.json` + registry YAML | External servers per agent |
 
 See [ADR-004](../decisions/ADR-004-user-mcp-registry.md).

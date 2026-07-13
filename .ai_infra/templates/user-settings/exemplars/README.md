@@ -24,8 +24,8 @@ Kit rule: **`Author:` / `GitHub-User:`** on commits; **`Action-By:` / `Agent/s:`
 
 ## MCP flow (after you edit `mcp.agents.yaml`)
 
-1. Copy fragments into `.cursor/mcp.user.json` (or use `trae-workflow mcp link`).
-2. Sync agent ↔ server rows into `.cursor/mcp.registry.yaml`.
-3. Run `python3 -m trae_workflow mcp validate` and reload Cursor MCP.
+1. Copy fragments into `.trae/mcp.user.json` (or use `python3 -m trae_workflow mcp link`).
+2. Sync agent ↔ server rows into `.trae/mcp.registry.yaml`.
+3. Run `python3 -m trae_workflow mcp validate` and reload Trae MCP.
 
 Guide: [connect-external-mcp.md](../../../docs/operations/connect-external-mcp.md)

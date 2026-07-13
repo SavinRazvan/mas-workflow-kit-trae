@@ -39,16 +39,17 @@ The `.local/` directory is **gitignored**. This document is the **versioned cont
 
 **Bucket SSOT:** `.ai_infra/scripts/pr/local_workflow_paths.py` (`WORKFLOW_ARTIFACT_BUCKETS`, `ensure_workflow_artifacts_tree`).
 
-## Dual IDE (Cursor + Trae)
+## Trae contract plane (this edition)
 
-When activate uses `--profile default`, both `.cursor/` (SSOT) and generated `.trae/` exist. **Shared runtime:** `.local/` trackers and `workflow-artifacts/` — both IDEs read the same files.
+Activate profile **`default`** installs `.trae/` as the contract plane SSOT. **Shared runtime:** `.local/` trackers and `workflow-artifacts/` — Trae agents and terminal scripts read the same files.
 
 | Contract | Path | Editable? |
 |----------|------|-----------|
-| Cursor | `.cursor/`, `.agents/` | Yes (kit-dev SSOT) |
-| Trae | `.trae/` | No — run `make sync-plugin` |
+| Trae | `.trae/` | Yes in kit-dev; run `make sync-plugin` to refresh `payload/.trae/` |
 
-**Session rule:** only **one IDE** should own the active implementer slice at a time to avoid tracker conflicts. See [trae-consumer-quickstart.md](trae-consumer-quickstart.md) §4.
+**Session rule:** one active implementer slice in `work-tracker.md` at a time. See [trae-consumer-quickstart.md](trae-consumer-quickstart.md).
+
+> **Cursor edition:** upstream `mas-workflow-kit` uses `.cursor/` + plugin install — not shipped from this repo.
 
 ## Top-level buckets
 

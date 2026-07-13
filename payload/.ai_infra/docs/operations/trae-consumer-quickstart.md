@@ -16,6 +16,8 @@ Notes:
 
 MAS Workflow Kit for **Trae IDE** — agent rules, skills, MCP, and shared `.local/` trackers.
 
+**Full manual:** [PLUGIN-USER-GUIDE.md](PLUGIN-USER-GUIDE.md)
+
 ## Prerequisites
 
 - Python 3.11+

@@ -1,12 +1,12 @@
 # Upgrade MAS Workflow Kit
 
-Re-run install from a **newer kit source** (git tag, plugin payload, or local clone) into the same consumer project.
+Re-run activate from a **newer kit source** (git tag, payload, or local clone) into the same consumer project.
 
 ## Before upgrade
 
 1. Note current version: `cat .ai_infra/.kit-version`
-2. Commit or stash local changes (especially `.cursor/`, `.ai_infra/`, `.local/`)
-3. Back up custom overlays under `overlays/rules/` and any `mcp.user.json` secrets
+2. Commit or stash local changes (especially `.trae/`, `.ai_infra/`, `.local/`)
+3. Back up custom overlays and any `mcp.user.json` secrets
 
 ## Upgrade command
 
@@ -15,15 +15,15 @@ Re-run install from a **newer kit source** (git tag, plugin payload, or local cl
 ```bash
 cd ~/Projects/my-app    # your activated project
 source .venv/bin/activate
-python3 -m trae_workflow activate --directory .
+python3 -m trae_workflow activate --directory . --profile default
 ```
 
-Same as **`/workflow-activate`** in Agent chat when planes are already ready. Refreshes kit-managed dashboard HTML, `pages.json`, and install scripts from the plugin payload.
+Refreshes kit-managed dashboard HTML, `pages.json`, and install scripts from the payload.
 
 **Full reinstall (scripts, agents, rules — review `.local/` merge):**
 
 ```bash
-python3 -m trae_workflow activate --directory . --force
+python3 -m trae_workflow activate --directory . --profile default --force
 ```
 
 **Kit clone / advanced** — from kit repo:
@@ -32,20 +32,18 @@ python3 -m trae_workflow activate --directory . --force
 export TARGET=~/Projects/my-app
 .venv/bin/python -m trae_workflow install \
   --target "$TARGET" \
-  --source . \
-  --profile with_mcp \
+  --source payload \
+  --profile default \
   --with-mcp-json \
   --verify
 ```
-
-Use `--source payload` when running from the distribution root (see `workflow-activate` skill).
 
 ## What install updates
 
 | Area | Behavior |
 |------|----------|
 | `.ai_infra/scripts/` | Overwritten from manifest profile |
-| `.cursor/agents`, rules, skills | Overwritten from kit |
+| `.trae/agents`, rules, skills | Overwritten from kit |
 | `.local/` exemplars | Re-copied on **`--force`** only; light re-activate refreshes dashboards + `pages.json` |
 | Dashboard HTML / `pages.json` | Refreshed on every `activate` (idempotent) |
 | `AGENTS.md` | **Not** overwritten if present — delete to refresh from stub, or merge manually |
