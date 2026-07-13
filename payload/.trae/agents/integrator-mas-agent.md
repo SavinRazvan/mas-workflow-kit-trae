@@ -56,7 +56,7 @@ Independent agents **never** skip governance scanners, file headers, or Pattern 
 - **Pattern A:** one script command per maintainer action; `GATES` only in `prepare.py`.
 - **No duplicated gate lists** in prose — point to `prepare.py` or `gate-matrix.md`.
 - **Facts only** — cite paths; label `Unknown` when not verified.
-- **No bullshit** — no fake certifications, no `Made-with:` trailers, no invented MCP tools.
+- **No bullshit** — no fake certifications, no `Assisted-by:` / `Co-authored-by:` / `Made-with:` trailers, no invented MCP tools.
 - **Token efficiency** — run scripts; do not re-implement `prepare.py` logic in chat.
 
 ## When to escalate

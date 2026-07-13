@@ -45,10 +45,7 @@ owner:
   display_name: "Example Author"
   github_user: "@example"
 commit_provenance:
-  ai_disclosure_mode: assisted_by
-  assisted_by:
-    - tool: Cursor
-      agent: implementer
+  ai_disclosure_mode: none
 pr_collaboration:
   pipelines:
     default:
@@ -72,7 +69,8 @@ def test_render_commit_trailers(tmp_path: Path) -> None:
     block = us.render_commit_trailers(tmp_path)
     assert "Author: Example Author" in block
     assert "GitHub-User: @example" in block
-    assert "Assisted-by: Cursor:implementer" in block
+    assert "Assisted-by" not in block
+    assert "Co-authored-by" not in block
 
 
 def test_resolve_pr_attribution_from_pipeline(tmp_path: Path) -> None:

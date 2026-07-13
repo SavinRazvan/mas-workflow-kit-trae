@@ -54,7 +54,7 @@
   - Coverage status: `healthy`
   - Notes: DRIFT-001–009 and CLI wiring
 
-**Total:** 488 pytest (kit-dev)
+**Total:** 486 pytest (kit-dev)
 
 - Module: `ci`
   - Owned tests: `tests/modules/ci/test_seed_kit_workspace.py`

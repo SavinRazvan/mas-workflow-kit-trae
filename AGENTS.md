@@ -56,7 +56,7 @@ Full walkthrough: [PLUGIN-USER-GUIDE.md](.ai_infra/docs/operations/PLUGIN-USER-G
 |------|--------|
 | `.trae/rules/implementation-workflow-governance.md` | Slice lifecycle, trackers, tests |
 | `.trae/rules/pr-workflow-enforcement.md` | PR-first, artifacts, branch safety |
-| `.trae/rules/commit-trailer-format.md` | Commit trailers + optional `Assisted-by` |
+| `.trae/rules/commit-trailer-format.md` | Commit trailers (`Author` + `GitHub-User` only) |
 | `.trae/rules/file-docstring-header-relations.md` | **File headers** on new sources |
 | `.trae/rules/local-artifact-protection.md` | Protected paths (`.coverage`, `.env`) |
 | `.trae/rules/advisory-audit-alignment-enforcement.md` | Architecture audits → alignment artifacts |

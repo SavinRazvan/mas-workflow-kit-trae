@@ -98,9 +98,24 @@ def validate_github_collaboration(root: Path | None = None) -> list[str]:
         )
 
     prov = cfg.get("commit_provenance") or {}
-    for forbidden in prov.get("forbid_in_commits") or []:
-        if "Made-with" in str(forbidden):
-            continue
+    mode = prov.get("ai_disclosure_mode", "none")
+    if mode != "none":
+        errors.append(
+            f"commit_provenance.ai_disclosure_mode must be 'none' in {GITHUB_COLLAB_REL} "
+            "(kit policy: Author + GitHub-User only; no Assisted-by or Co-authored-by)"
+        )
+    if prov.get("assisted_by"):
+        errors.append(
+            f"remove commit_provenance.assisted_by from {GITHUB_COLLAB_REL} — not used"
+        )
+    if prov.get("human_coauthors"):
+        errors.append(
+            f"remove commit_provenance.human_coauthors from {GITHUB_COLLAB_REL} — not used"
+        )
+    if prov.get("co_author_trailer"):
+        errors.append(
+            f"remove commit_provenance.co_author_trailer from {GITHUB_COLLAB_REL} — not used"
+        )
 
     pipelines = (cfg.get("pr_collaboration") or {}).get("pipelines") or {}
     if "default" not in pipelines:

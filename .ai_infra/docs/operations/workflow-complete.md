@@ -20,7 +20,7 @@ Notes:
 ## A) Standard PR slice (happy path)
 
 1. **Branch** — `git checkout -b feature/<scope>` (or `fix/`, `chore/`).
-2. **Implement + commit** — follow layer rules; commit trailers (required `Author` / `GitHub-User`, optional `Assisted-by`; no `Made-with:`) per `.trae/rules/commit-trailer-format.md` and `AGENTS.md` § Commits.
+2. **Implement + commit** — follow layer rules; commit trailers (required `Author` / `GitHub-User` only) per `.trae/rules/commit-trailer-format.md` and `AGENTS.md` § Commits.
 3. **Push + PR** — `git push -u origin HEAD` → open PR to `main`.
 4. **Publish checkpoint** (before merge workflow):
    - `python .ai_infra/scripts/pr/verify_publish.py --branch "$(git branch --show-current)"`

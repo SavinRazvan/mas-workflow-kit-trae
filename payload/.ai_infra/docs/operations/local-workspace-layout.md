@@ -70,7 +70,7 @@ Activate profile **`default`** installs `.trae/` as the contract plane SSOT. **S
 
 ## Git commits vs `.local` markdown
 
-- **Git trailers** (`Author`, `GitHub-User`, optional `Assisted-by`) — commit messages only.
+- **Git trailers** (`Author`, `GitHub-User` only) — commit messages.
 - **PR artifacts** use `Action-By` / `Prepared-By` / `Agent/s` — see **agent-workflow-procedures.md** §3b.
 
 ## Durable documentation (not in `.local`)

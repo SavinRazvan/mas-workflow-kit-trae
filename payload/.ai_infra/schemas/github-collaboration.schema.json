@@ -26,7 +26,8 @@
       "properties": {
         "ai_disclosure_mode": {
           "type": "string",
-          "enum": ["assisted_by", "co_author_trailer", "none"]
+          "enum": ["none"],
+          "default": "none"
         },
         "assisted_by": {
           "type": "array",

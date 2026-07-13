@@ -13,7 +13,7 @@ Depends On:
 Notes:
  - Keep path strings aligned with `.trae/rules/pr-workflow-enforcement.md` and
    `scripts/architecture/check_governance_consistency.py` merge.py parity fragments.
- - Git **commit** messages (not these `.md` paths): **`.trae/rules/commit-trailer-format.md`** — `Author` / `GitHub-User`, optional `Assisted-by`; no `Made-with:`.
+ - Git **commit** messages (not these `.md` paths): **`.trae/rules/commit-trailer-format.md`** — `Author` / `GitHub-User` only.
 """
 
 from __future__ import annotations

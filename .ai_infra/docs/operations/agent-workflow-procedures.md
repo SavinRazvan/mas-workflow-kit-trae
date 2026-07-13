@@ -51,7 +51,7 @@ Notes:
 
 ## 3b) Commit message provenance (git, not PR artifacts)
 
-**Git commits** use **`.trae/rules/commit-trailer-format.md`**: required `Author:` + `GitHub-User:`; optional `Assisted-by:` when disclosure applies. No **`Made-with:`**.
+**Git commits** use **`.trae/rules/commit-trailer-format.md`**: required `Author:` + `GitHub-User:` only. No `Assisted-by:`, `Co-authored-by:`, or `Made-with:`.
 
 **PR phase markdown** uses `Action-By` / `GitHub-User` / `Agent/s` per **`.trae/skills/pr-workflow/SKILL.md`**.
 
