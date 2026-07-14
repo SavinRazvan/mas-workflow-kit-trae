@@ -28,26 +28,15 @@ jobs:
       - name: Seed CI workspace
         run: .venv/bin/python .ai_infra/scripts/ci/seed_kit_workspace.py --directory .
 
-      - name: Gate matrix
-        run: |
-          set -euo pipefail
-          # make gates includes check_testing_artifacts, pytest, check_governance_consistency.py, check_debrand.py
-          make gates
-          make drift-validate
-          make integrate-validate
-          # check-plugin verifies committed agents/rules/skills/payload against a fresh
-          # regeneration (no prior sync step) — catches drift in the committed bundle.
-          make check-plugin
-          .venv/bin/python .ai_infra/scripts/architecture/check_trae_parity.py
-          .venv/bin/python -m trae_workflow health
-          .venv/bin/python -m trae_workflow contributors validate
-          .venv/bin/python .ai_infra/scripts/architecture/check_governance_consistency.py
+      - name: Maintainer verify-all
+        # Gates step runs .ai_infra/scripts/architecture/check_governance_consistency.py
+        run: make verify-all
+
+      - name: Drift validate
+        run: make drift-validate
 
       - name: Install dry-run
         run: make install-dry-run
-
-      - name: Type check
-        run: .venv/bin/pyright
 
       - name: Dependency audit
         run: |
