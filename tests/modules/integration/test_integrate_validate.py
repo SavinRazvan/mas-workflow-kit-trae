@@ -68,6 +68,18 @@ def test_invalid_github_collaboration_schema_fails_p0(tmp_path: Path) -> None:
     assert not int006.passed
 
 
+def test_github_collaboration_wrong_version_fails_int015(tmp_path: Path) -> None:
+    _copy_minimal_kit(tmp_path)
+    collab = tmp_path / ".local" / "user_settings" / "github.collaboration.yaml"
+    data = yaml.safe_load(collab.read_text(encoding="utf-8"))
+    data["version"] = 2
+    collab.write_text(yaml.dump(data), encoding="utf-8")
+    results = run_checks(tmp_path)
+    int015 = next(r for r in results if r.check_id == "INT-015")
+    assert not int015.passed
+    assert "version must be 1" in int015.detail
+
+
 def test_plugin_parity_skipped_on_consumer_profile(tmp_path: Path) -> None:
     _copy_minimal_kit(tmp_path)
     results = run_checks(tmp_path)

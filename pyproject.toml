@@ -25,7 +25,7 @@ where = [".ai_infra/install", ".ai_infra/mcp_servers"]
 
 [tool.pyright]
 include = [".ai_infra/install", ".ai_infra/mcp_servers", ".ai_infra/scripts"]
-typeCheckingMode = "basic"
+typeCheckingMode = "standard"
 reportMissingImports = "warning"
 
 [tool.pytest.ini_options]
