@@ -72,15 +72,31 @@ def test_drift001_fails_when_planning_missing(tmp_path: Path) -> None:
 
 
 def test_drift002_fails_on_multiple_in_progress(tmp_path: Path) -> None:
-    _write_planning(tmp_path)
-    tracker = tmp_path / ".local/index-and-planning/current/work-tracker.md"
-    tracker.write_text(
-        tracker.read_text(encoding="utf-8")
-        + "- [ ] `in_progress` **OTHER**\n",
+    planning = tmp_path / ".local" / "index-and-planning" / "current"
+    planning.mkdir(parents=True)
+    (planning / "work-tracker.md").write_text(
+        "# Work Tracker\n\n## Active\n\n"
+        "- [ ] `in_progress` **DRIFT-GUARD**\n"
+        "- [ ] `in_progress` **OTHER**\n\n## Completed\n",
         encoding="utf-8",
     )
     result = check_drift002(drift_paths(tmp_path))
     assert not result.passed
+
+
+def test_drift002_passes_when_rule_line_has_in_progress_outside_active(tmp_path: Path) -> None:
+    planning = tmp_path / ".local" / "index-and-planning" / "current"
+    planning.mkdir(parents=True)
+    (planning / "work-tracker.md").write_text(
+        "# Work Tracker\n\n"
+        "**Rule:** Exactly one primary `in_progress` task in Active.\n\n"
+        "## Active\n\n"
+        "- [ ] `in_progress` **DRIFT-GUARD**\n\n## Completed\n",
+        encoding="utf-8",
+    )
+    result = check_drift002(drift_paths(tmp_path))
+    assert result.passed
+    assert result.detail == "in_progress count=1"
 
 
 def test_drift003_passes_when_active_in_plan(tmp_path: Path) -> None:

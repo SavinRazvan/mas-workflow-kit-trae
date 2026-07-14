@@ -87,8 +87,13 @@ def _extract_table_field(text: str, field: str) -> str:
     return match.group(1).strip() if match else ""
 
 
+def _active_section(text: str) -> str:
+    match = re.search(r"## Active\s*\n(.*?)(?:\n## |\Z)", text, re.DOTALL | re.IGNORECASE)
+    return match.group(1) if match else text
+
+
 def _extract_active_task(text: str) -> str | None:
-    for line in text.splitlines():
+    for line in _active_section(text).splitlines():
         if "`in_progress`" in line:
             match = re.search(r"\*\*([^*]+)\*\*", line)
             if match:
@@ -97,7 +102,7 @@ def _extract_active_task(text: str) -> str | None:
 
 
 def _count_in_progress(text: str) -> int:
-    return text.count("`in_progress`")
+    return _active_section(text).count("`in_progress`")
 
 
 def _extract_plan_focus(text: str) -> str:
