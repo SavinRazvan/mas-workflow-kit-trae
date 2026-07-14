@@ -29,6 +29,7 @@ jobs:
         run: .venv/bin/python .ai_infra/scripts/ci/seed_kit_workspace.py --directory .
 
       - name: Maintainer verify-all
+        # Gates step runs .ai_infra/scripts/architecture/check_governance_consistency.py
         run: make verify-all
 
       - name: Drift validate
