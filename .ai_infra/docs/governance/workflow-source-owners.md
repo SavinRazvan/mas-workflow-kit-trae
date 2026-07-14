@@ -36,7 +36,7 @@ Notes:
 | Git **commit** trailers | `.trae/rules/commit-trailer-format.md` | `AGENTS.md` § Commits |
 | Governance drift scan | `.ai_infra/scripts/architecture/check_governance_consistency.py` | CI + local policy edits |
 | Operational drift validate | `.ai_infra/scripts/workflow/check_drift.py` | `make drift-validate`, implementer closure |
-| Infrastructure integrate validate | `.ai_infra/scripts/integration/validate.py` | `make integrate-validate`, INT-001…014 |
+| Infrastructure integrate validate | `.ai_infra/scripts/integration/validate.py` | `make integrate-validate`, INT-001…015 |
 | Three-plane activate | `.ai_infra/install/trae_workflow/activate_cli.py` | `workflow-activate` skill, MCP `workflow_activate` |
 | Path resolution | `.ai_infra/paths.py` | MCP, install scaffold, tests |
 | MCP registry mapping | `.trae/mcp.registry.yaml` | Agents, `connect-external-mcp.md` |

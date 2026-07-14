@@ -48,6 +48,8 @@ Edit `.local/user_settings/github.collaboration.yaml`, then:
 python3 -m trae_workflow contributors validate
 ```
 
+**Minimal consumer layout:** see [`examples/consumer-minimal/`](../../../examples/consumer-minimal/) for a reference project tree after activate.
+
 ## 2. Trae settings
 
 1. Open the **project folder** in Trae.

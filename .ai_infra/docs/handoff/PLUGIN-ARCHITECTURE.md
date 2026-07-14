@@ -101,7 +101,7 @@ Gate order: **`.ai_infra/scripts/pr/prepare.py`** (`GATES`) — do not duplicate
 
 Use **integrator-mas-agent** + `.trae/skills/mas-infrastructure-integration/SKILL.md` to add agents/skills/MCP.
 
-Validate: `python3 -m trae_workflow integrate validate --directory .` (INT-001…014).
+Validate: `python3 -m trae_workflow integrate validate --directory .` (INT-001…015).
 
 ADR: [ADR-006](../decisions/ADR-006-agent-integration-model.md)
 

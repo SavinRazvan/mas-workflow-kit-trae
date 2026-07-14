@@ -148,6 +148,7 @@ def write_preflight_json(results: list[StepResult], output: Path) -> None:
                 "name": r.name,
                 "command": r.command,
                 "exit_code": r.exit_code,
+                "duration_s": round(r.duration_s, 3),
                 "output_tail": r.output[-2000:] if r.output else "",
             }
             for r in results
@@ -181,6 +182,7 @@ def main(argv: list[str] | None = None) -> int:
                     "name": r.name,
                     "exit_code": r.exit_code,
                     "command": r.command,
+                    "duration_s": round(r.duration_s, 3),
                 }
                 for r in results
             ],

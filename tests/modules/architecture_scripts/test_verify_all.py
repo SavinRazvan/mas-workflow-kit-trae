@@ -107,6 +107,7 @@ def test_write_preflight_json_truncates_long_output(tmp_path: Path) -> None:
     va.write_preflight_json(results, out)
     payload = json.loads(out.read_text(encoding="utf-8"))
     assert payload["command"] == "python -m trae_workflow verify all"
+    assert payload["steps"][0]["duration_s"] == 0.0
     assert len(payload["steps"][0]["output_tail"]) == 2000
     assert payload["exit_code"] == 1
 
