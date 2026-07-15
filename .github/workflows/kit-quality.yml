@@ -38,6 +38,9 @@ jobs:
       - name: Install dry-run
         run: make install-dry-run
 
+      - name: Consumer smoke (Track A + B)
+        run: make smoke-consumer
+
       - name: Dependency audit
         run: |
           .venv/bin/pip install -q pip-audit
