@@ -51,7 +51,7 @@ Script-first checks for plan ↔ tracker ↔ session-pointer coherence. See [ADR
 | Concern | Owner | Do NOT duplicate in drift |
 |---------|-------|---------------------------|
 | Bare paths, brand terms | `check_governance_consistency.py`, `check_debrand.py` | Path/brand scans |
-| Agent Anchor/MCP, registry parity | `integrate validate` INT-001…014 | Agent file structure |
+| Agent Anchor/MCP, registry parity | `integrate validate` INT-001…015 | Agent file structure |
 | Canonical doc facts (roster, counts) | `check_doc_facts.py` / INT-013 | Path/brand scans |
 | test-plan/index existence | `check_testing_artifacts.py` | File exists checks |
 | Plugin/payload SHA drift | `sync_plugin_bundle.py --check` | Bundle sync |

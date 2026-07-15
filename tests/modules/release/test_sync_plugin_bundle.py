@@ -111,3 +111,39 @@ def test_sync_payload_default_includes_trae(tmp_path: Path) -> None:
     assert (payload_dir / ".trae" / "skills" / "workflow-activate" / "SKILL.md").is_file()
     assert (payload_dir / ".trae" / "mcp.json").is_file()
     assert (payload_dir / ".trae" / "agents" / "implementer.md").is_file()
+
+
+def test_check_payload_git_clean_passes_when_clean(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    mod = _load_sync()
+    (tmp_path / ".git").mkdir()
+    monkeypatch.setattr(
+        mod.subprocess,
+        "run",
+        lambda *a, **k: __import__("types").SimpleNamespace(stdout="", returncode=0),
+    )
+    assert mod.check_payload_git_clean(tmp_path) == []
+
+
+def test_check_payload_git_clean_fails_when_dirty(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    mod = _load_sync()
+    (tmp_path / ".git").mkdir()
+    monkeypatch.setattr(
+        mod.subprocess,
+        "run",
+        lambda *a, **k: __import__("types").SimpleNamespace(
+            stdout=" M payload/.ai_infra/scripts/integration/validate.py\n",
+            returncode=0,
+        ),
+    )
+    errors = mod.check_payload_git_clean(tmp_path)
+    assert len(errors) == 1
+    assert "payload/" in errors[0]
+
+
+def test_check_payload_git_clean_skips_without_git(tmp_path: Path) -> None:
+    mod = _load_sync()
+    assert mod.check_payload_git_clean(tmp_path) == []

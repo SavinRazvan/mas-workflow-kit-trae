@@ -21,7 +21,7 @@ Three gate surfaces exist by design (Pattern A).
 | **`prepare.py` GATES** | PR merge prep | **2** universal (testing artifacts + pytest); **4** on kit-dev (auto-appends drift + doc facts) | `.ai_infra/scripts/pr/prepare.py` `resolve_gates()` |
 | **`trae-workflow gates`** | Kit dev / maintainer hygiene | **6** base (testing artifacts + pytest + governance + debrand + doc facts + pyright when `.venv` present); **7** when `.trae/` present (+ `check_trae_parity.py`) | `.ai_infra/install/trae_workflow/cli.py` |
 | **`make doc-validate`** | After doc/agent/rule changes | DOC-001…007 canonical fact checks | `.ai_infra/scripts/architecture/check_doc_facts.py` |
-| **`make verify-all`** | Pre-audit / release readiness | 9–10 (+ optional ci-seed): sync-plugin → gates → drift → integrate → check-plugin → contract-json-sync → type-check → trae-parity → health → contributors | `.ai_infra/scripts/architecture/verify_all.py` |
+| **`make verify-all`** | Pre-audit / release readiness | 10–11 (+ optional ci-seed): sync-plugin → gates → drift → integrate → check-plugin → **check-payload-git** → contract-json-sync → type-check → trae-parity → health → contributors | `.ai_infra/scripts/architecture/verify_all.py` |
 | **Preflight JSON** | After `verify all --write-preflight` | `.local/workflow-artifacts/audit/preflight.json` — per-step `duration_s`, `exit_code`, `output_tail` | `verify_all.write_preflight_json` |
 | **`scaffold --verify`** | Post-install smoke on consumer | 4: testing artifacts + pytest + governance + debrand (no doc facts) | `.ai_infra/scripts/install/scaffold.py` `_run_verify` |
 | **`make drift-validate`** | Slice closure / maintainer hygiene | Operational drift (DRIFT-001…008) | `.ai_infra/scripts/workflow/check_drift.py` |

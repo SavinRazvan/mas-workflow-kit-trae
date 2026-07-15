@@ -1,6 +1,6 @@
 PYTHON ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 
-.PHONY: install-dry-run smoke-consumer test gates sync-plugin check-plugin check-trae-parity integrate-validate drift-validate ci-seed verify-all doc-validate type-check contract-json-check coverage-index clean-legacy-contract
+.PHONY: install-dry-run smoke-consumer test gates sync-plugin check-plugin check-payload-git check-trae-parity integrate-validate drift-validate ci-seed verify-all doc-validate type-check contract-json-check coverage-index clean-legacy-contract
 
 install-dry-run:
 	rm -rf /tmp/workflow-kit-dry-run
@@ -33,6 +33,9 @@ sync-plugin:
 
 check-plugin:
 	$(PYTHON) .ai_infra/scripts/release/sync_plugin_bundle.py --check --profile $(PROFILE)
+
+check-payload-git:
+	$(PYTHON) .ai_infra/scripts/release/sync_plugin_bundle.py --check-git --profile $(PROFILE)
 
 check-trae-parity:
 	$(PYTHON) .ai_infra/scripts/architecture/check_trae_parity.py

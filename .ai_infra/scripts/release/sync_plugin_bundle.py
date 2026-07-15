@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import shutil
+import subprocess
 import sys
 import tempfile
 from pathlib import Path
@@ -218,6 +219,31 @@ def check_bundle(profile: str = "default") -> list[str]:
     return errors
 
 
+def check_payload_git_clean(kit_root: Path | None = None) -> list[str]:
+    """Fail when payload/ has uncommitted changes relative to git HEAD."""
+    root = kit_root or KIT_ROOT
+    if not (root / ".git").exists():
+        return []
+    proc = subprocess.run(
+        ["git", "status", "--porcelain", "--", "payload/"],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    lines = [line for line in (proc.stdout or "").splitlines() if line.strip()]
+    if not lines:
+        return []
+    preview = lines[:8]
+    extra = len(lines) - len(preview)
+    suffix = f" (+{extra} more)" if extra > 0 else ""
+    return [
+        "payload/ not committed after sync — run make sync-plugin and commit payload/: "
+        + "; ".join(preview)
+        + suffix
+    ]
+
+
 def sync_all(profile: str = "default") -> None:
     sync_payload(PAYLOAD_DIR, KIT_ROOT, profile)
 
@@ -230,12 +256,27 @@ def main() -> int:
         help="Verify agents/, rules/, skills/, and payload/ match sources (exit 1 on drift)",
     )
     parser.add_argument(
+        "--check-git",
+        action="store_true",
+        help="Fail when payload/ has uncommitted git changes (run after sync-plugin)",
+    )
+    parser.add_argument(
         "--profile",
         default="default",
         choices=("default",),
         help="Manifest profile for payload (Trae edition: default only)",
     )
     args = parser.parse_args()
+
+    if args.check_git:
+        errors = check_payload_git_clean()
+        if errors:
+            print("Payload git cleanliness check failed:")
+            for err in errors:
+                print(f" - {err}")
+            return 1
+        print("Payload git cleanliness check passed.")
+        return 0
 
     if args.check:
         errors = check_bundle(args.profile)

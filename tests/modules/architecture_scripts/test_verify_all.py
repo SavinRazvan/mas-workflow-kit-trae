@@ -60,6 +60,7 @@ def test_run_verify_all_includes_ci_seed_when_planning_missing(
     assert "ci-seed" in names
     assert names[0] == "ci-seed"
     assert "sync-plugin" in names
+    assert "check-payload-git" in names
     assert "contributors-validate" in names
 
 

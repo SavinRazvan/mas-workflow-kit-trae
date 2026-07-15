@@ -28,6 +28,10 @@ Notes:
 4. **Overlays** (`overlays/rules/`) — product-specific rules; copy into consumer `.trae/rules/` at install.
 5. **Kit dev** (`tests/`, `docs/handoff/`) — not installed to consumers by default.
 
+## ADR-009 (Trae-only edition)
+
+See [ADR-009](../decisions/ADR-009-trae-only-edition.md) §5 and [dual-ide-legacy.md](../operations/dual-ide-legacy.md) for how Cursor plugin paths relate to the Trae contract plane without duplicating gate logic in `.trae/`.
+
 ## Forbidden
 
 - Provider SDK imports in `.trae/` agent files
