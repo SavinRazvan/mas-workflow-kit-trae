@@ -1,7 +1,7 @@
 """
 File: test_check_doc_facts.py
 Path: tests/modules/architecture_scripts/test_check_doc_facts.py
-Role: Tests for canonical doc fact validation (DOC-001…006).
+Role: Tests for canonical doc fact validation (DOC-001…009).
 Used By:
  - pytest
 Depends On:
@@ -49,6 +49,41 @@ def test_starter_token_in_exemplar_fails_p0(tmp_path: Path) -> None:
     assert exit_code_for(results) == 1
 
 
+def test_doc008_fails_on_stale_handoff_count(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    import doc_facts_checks as dfc
+
+    _copy_minimal_kit(tmp_path)
+    monkeypatch.setattr(dfc, "_collect_pytest_count", lambda _root: 501)
+    repo_map = tmp_path / ".ai_infra" / "docs" / "handoff" / "repository-map.md"
+    repo_map.parent.mkdir(parents=True, exist_ok=True)
+    repo_map.write_text("tests/modules/ (487 tests)\n", encoding="utf-8")
+    plugin_arch = tmp_path / ".ai_infra" / "docs" / "handoff" / "PLUGIN-ARCHITECTURE.md"
+    plugin_arch.write_text("| Tests | `tests/modules/` (487) |\n", encoding="utf-8")
+    (tmp_path / "overlays").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "overlays" / "README.md").write_text(
+        "Install to `.trae/rules/`\n", encoding="utf-8"
+    )
+    results = run_checks(tmp_path)
+    doc008 = next(r for r in results if r.check_id == "DOC-008")
+    assert not doc008.passed
+    assert "487" in doc008.detail or "pytest=487" in doc008.detail
+
+
+def test_doc009_fails_on_cursor_overlay_install(tmp_path: Path) -> None:
+    _copy_minimal_kit(tmp_path)
+    (tmp_path / "overlays").mkdir(parents=True, exist_ok=True)
+    (tmp_path / "overlays" / "README.md").write_text(
+        "cp overlays/rules/*.mdc /path/to/project/.cursor/rules/\n",
+        encoding="utf-8",
+    )
+    results = run_checks(tmp_path)
+    doc009 = next(r for r in results if r.check_id == "DOC-009")
+    assert not doc009.passed
+    assert ".cursor/rules" in doc009.detail
+
+
 def test_consumer_profile_skips_doc_facts(tmp_path: Path) -> None:
     _copy_minimal_kit(tmp_path)
     (tmp_path / ".ai_infra" / "docs" / "handoff" / "IMPLEMENTATION-STATUS.md").unlink()
@@ -69,6 +104,9 @@ def _copy_minimal_kit(target: Path) -> None:
         "AGENTS.md",
         ".ai_infra/docs/architecture/workflow-architecture.md",
         ".ai_infra/docs/handoff/IMPLEMENTATION-STATUS.md",
+        ".ai_infra/docs/handoff/repository-map.md",
+        ".ai_infra/docs/handoff/PLUGIN-ARCHITECTURE.md",
+        "overlays/README.md",
         ".ai_infra/docs/operations/gate-matrix.md",
         ".ai_infra/scripts/pr/prepare.py",
         ".ai_infra/templates/local-workspace/exemplars",

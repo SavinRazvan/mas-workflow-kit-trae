@@ -376,6 +376,37 @@ def _check_int014(root: Path) -> CheckResult:
     )
 
 
+def _check_int015(us_module: Any, root: Path) -> CheckResult:
+    path = us_module.github_collaboration_path(root)
+    if not path.is_file():
+        return CheckResult(
+            check_id="INT-015",
+            severity=Severity.P1,
+            passed=True,
+            detail="skipped — no local github.collaboration.yaml",
+        )
+    cfg = us_module.load_github_collaboration(root)
+    if not cfg:
+        return CheckResult(
+            check_id="INT-015",
+            severity=Severity.P0,
+            passed=False,
+            detail="github.collaboration.yaml present but invalid or empty",
+        )
+    version = cfg.get("version")
+    passed = version == 1
+    return CheckResult(
+        check_id="INT-015",
+        severity=Severity.P0,
+        passed=passed,
+        detail=(
+            "github.collaboration.yaml version: 1"
+            if passed
+            else f"version must be 1 (got {version!r})"
+        ),
+    )
+
+
 def run_checks(root: Path | None = None) -> list[CheckResult]:
     project_root = (root or Path.cwd()).resolve()
     paths = _paths(project_root)
@@ -402,6 +433,7 @@ def run_checks(root: Path | None = None) -> list[CheckResult]:
         _check_int012(project_root),
         _check_int013(project_root),
         _check_int014(project_root),
+        _check_int015(us, project_root),
     ]
 
 

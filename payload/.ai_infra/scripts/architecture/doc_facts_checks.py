@@ -1,7 +1,7 @@
 """
 File: doc_facts_checks.py
 Path: .ai_infra/scripts/architecture/doc_facts_checks.py
-Role: Individual DOC-001…007 checks for canonical doc vs repo fact parity.
+Role: Individual DOC-001…009 checks for canonical doc vs repo fact parity.
 Used By:
  - .ai_infra/scripts/architecture/check_doc_facts.py
 Depends On:
@@ -395,6 +395,101 @@ def check_doc007_trae_workflow_type_gate(paths: DocFactsPaths) -> CheckResult:
     )
 
 
+HANDOFF_TEST_COUNT_RELPATHS = (
+    ".ai_infra/docs/handoff/repository-map.md",
+    ".ai_infra/docs/handoff/PLUGIN-ARCHITECTURE.md",
+)
+
+
+def _parse_handoff_test_count(text: str) -> int | None:
+    patterns = (
+        r"tests/modules/[^\n]*\((\d+)\)",
+        r"(\d+)\s+pytest",
+        r"(\d+)\s+tests",
+    )
+    for pattern in patterns:
+        match = re.search(pattern, text, flags=re.IGNORECASE)
+        if match:
+            return int(match.group(1))
+    return None
+
+
+def check_doc008_handoff_test_parity(paths: DocFactsPaths) -> CheckResult:
+    """Handoff megadocs test counts must match pytest --collect-only (extends DOC-006 scope)."""
+    if not is_kit_dev(paths.root):
+        return CheckResult(
+            check_id="DOC-008",
+            severity=Severity.P2,
+            passed=True,
+            detail="consumer profile — DOC-008 skipped",
+        )
+    actual = _collect_pytest_count(paths.root)
+    if actual < 0:
+        return CheckResult(
+            check_id="DOC-008",
+            severity=Severity.P2,
+            passed=False,
+            detail="pytest --collect-only failed",
+        )
+    errors: list[str] = []
+    for rel in HANDOFF_TEST_COUNT_RELPATHS:
+        full = paths.root / rel
+        text = _read(full)
+        doc_count = _parse_handoff_test_count(text)
+        if doc_count is None:
+            errors.append(f"{rel}: no test count found")
+        elif doc_count != actual:
+            errors.append(f"{rel}: doc={doc_count} pytest={actual}")
+    passed = not errors
+    return CheckResult(
+        check_id="DOC-008",
+        severity=Severity.P2,
+        passed=passed,
+        detail="handoff megadoc test counts match" if passed else "; ".join(errors),
+    )
+
+
+def check_doc009_overlays_trae_paths(paths: DocFactsPaths) -> CheckResult:
+    """overlays/README.md must Trae-align install paths (.trae/rules/, not .cursor/rules/)."""
+    if not is_kit_dev(paths.root):
+        return CheckResult(
+            check_id="DOC-009",
+            severity=Severity.P2,
+            passed=True,
+            detail="consumer profile — DOC-009 skipped",
+        )
+    overlay_readme = paths.root / "overlays" / "README.md"
+    text = _read(overlay_readme)
+    if not overlay_readme.is_file():
+        return CheckResult(
+            check_id="DOC-009",
+            severity=Severity.P2,
+            passed=True,
+            detail="overlays/README.md absent — skipped",
+        )
+    has_trae = ".trae/rules" in text
+    cursor_install = re.search(
+        r"install\s*→\s*target\s*[`']?\.cursor/rules/",
+        text,
+        flags=re.IGNORECASE,
+    ) or re.search(
+        r"cp\s+overlays/rules/\*\.mdc\s+/path/to/project/\.cursor/rules/",
+        text,
+    )
+    passed = has_trae and cursor_install is None
+    parts: list[str] = []
+    if not has_trae:
+        parts.append("overlays/README.md missing .trae/rules reference")
+    if cursor_install:
+        parts.append("overlays/README.md still instructs .cursor/rules/ install")
+    return CheckResult(
+        check_id="DOC-009",
+        severity=Severity.P2,
+        passed=passed,
+        detail="overlays README Trae-aligned" if passed else "; ".join(parts),
+    )
+
+
 KIT_DEV_CHECKS = (
     check_doc001_agent_roster,
     check_doc002_status_agent_count,
@@ -403,4 +498,6 @@ KIT_DEV_CHECKS = (
     check_doc005_prepare_gate_facts,
     check_doc006_implementation_test_count,
     check_doc007_trae_workflow_type_gate,
+    check_doc008_handoff_test_parity,
+    check_doc009_overlays_trae_paths,
 )

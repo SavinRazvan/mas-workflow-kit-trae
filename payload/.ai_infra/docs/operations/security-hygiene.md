@@ -24,7 +24,11 @@ CI runs **`pip-audit`** after installing `.[dev,mcp]`. Fix or pin advisories bef
 
 - **Never commit** `.trae/mcp.user.json` or API keys — gitignored by activate/scaffold.
 - User MCP registry: [ADR-004](../decisions/ADR-004-user-mcp-registry.md).
-- `workflow_mcp` server invokes **subprocess** to kit scripts — treat MCP callers as trusted maintainers on local machines.
+- `workflow_mcp` server invokes **subprocess** to kit scripts only — no arbitrary shell from MCP tool handlers. Treat MCP callers as trusted maintainers on local machines; keep registry entries limited to documented kit script entrypoints.
+
+## Dependabot
+
+`.github/dependabot.yml` opens weekly **pip** and monthly **GitHub Actions** update PRs. Review advisories with `pip-audit` before merging.
 
 ## User settings schema
 

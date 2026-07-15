@@ -15,8 +15,8 @@ Notes:
 
 # Implementation status (MAS Workflow Kit)
 
-**Last updated:** 2026-07-13 (Trae hygiene — IMPLEMENTATION-STATUS Trae table)  
-**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit-trae`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 496
+**Last updated:** 2026-07-15 (SLICE-HANDOFF-DOC-SYNC — verify-all steps, DOC-008, coverage refresh)  
+**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit-trae`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 501
 
 ## Shipped (confirmed in repo)
 
@@ -30,8 +30,8 @@ Notes:
 | PR scripts + prepare gates | Pattern A — **2** universal; **4** on kit-dev (drift + doc facts) | `.ai_infra/scripts/pr/prepare.py` |
 | Governance + debrand scanners | CI-ready | `.ai_infra/scripts/architecture/` |
 | Workflow drift validate | ADR-007 | `.ai_infra/scripts/workflow/check_drift.py` |
-| Doc facts validate | DOC-001…007 | `.ai_infra/scripts/architecture/check_doc_facts.py` |
-| Verify-all matrix | Maintainer preflight | `.ai_infra/scripts/architecture/verify_all.py` |
+| Doc facts validate | DOC-001…009 | `.ai_infra/scripts/architecture/check_doc_facts.py` |
+| Verify-all matrix | 11 steps (+ optional ci-seed): sync-plugin → gates → drift → integrate → check-plugin → check-payload-git → contract-json-sync → type-check → trae-parity → health → contributors | `.ai_infra/scripts/architecture/verify_all.py` |
 | Anchoring | session-pointer, change-index | `.local/.../current/` |
 | MCP tools + resources | 20 tools + 6 resources | `.ai_infra/mcp_servers/workflow_mcp/` |
 | Install scaffold + contract | `install-contract.json`; idempotent trackers/`AGENTS.md`/`pages.json` on re-activate | `.ai_infra/scripts/install/scaffold.py` |
@@ -43,13 +43,14 @@ Notes:
 | User MCP registry | ADR-004 | `.trae/mcp.registry.yaml.example`, `mcp_manage.py` |
 | Cursor Marketplace plugin | **N/A Trae edition** — upstream [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit) | see [ADR-009](../decisions/ADR-009-trae-only-edition.md) |
 | Kit version on install | `kit_version` 0.4.0 | `.ai_infra/manifest.yaml`, `.ai_infra/.kit-version` |
-| Tests | 496 | `tests/modules/` |
+| Tests | 501 | `tests/modules/` |
 
 ## Coverage scope (shipped source)
 
 `pytest --cov=.ai_infra --cov=trae_workflow` measures the **import surface** of the
-installable kit (CLI, scripts invoked in-process, MCP server). As of 2026-07-08: **44 files,
-3588 statements, 100%** when the full suite passes (`generate_coverage_index.py` and
+installable kit (CLI, scripts invoked in-process, MCP server). As of 2026-07-15: **49 files,
+4012 statements, 89.23%** when the full suite passes (`make coverage-index`; see
+`.local/index-and-planning/current/coverage-index.md`). `generate_coverage_index.py` and
 `migrate_local_workspace_layout.py` are maintainer tooling — omitted from `--cov` per
 `pyproject.toml`). Subprocess-only maintainer scanners
 (`check_governance_consistency.py`, `check_debrand.py`, `check_consumer_purity.py`,
@@ -66,8 +67,10 @@ make gates
 make drift-validate
 make doc-validate
 make verify-all
+make check-payload-git
 make install-dry-run
 make check-plugin
+make smoke-consumer   # manual pre-release (not in CI; see Makefile smoke_marketplace.sh)
 trae-workflow activate --directory .
 trae-workflow health
 trae-workflow mcp validate

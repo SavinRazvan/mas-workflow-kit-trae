@@ -87,6 +87,10 @@ def run_verify_all(root: Path, py: str) -> list[StepResult]:
             ),
             ("check-plugin", [py, str(release / "sync_plugin_bundle.py"), "--check"]),
             (
+                "check-payload-git",
+                [py, str(release / "sync_plugin_bundle.py"), "--check-git"],
+            ),
+            (
                 "contract-json-sync",
                 [
                     py,

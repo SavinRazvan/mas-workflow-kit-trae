@@ -48,6 +48,8 @@ Edit `.local/user_settings/github.collaboration.yaml`, then:
 python3 -m trae_workflow contributors validate
 ```
 
+**Minimal consumer layout:** see [`examples/consumer-minimal/`](../../../examples/consumer-minimal/) for a reference project tree after activate.
+
 ## 2. Trae settings
 
 1. Open the **project folder** in Trae.
@@ -118,7 +120,7 @@ Maintainers: `make sync-plugin` refreshes `payload/.trae/` from committed `.trae
 | Integration | `python3 -m trae_workflow integrate validate --directory .` |
 | MCP | `python3 -m trae_workflow mcp validate --directory .` |
 | Full gates | `make gates` |
-| Verify-all | `make verify-all` (includes contract-json-sync) |
+| Verify-all | `make verify-all` — maintainer matrix (11 steps; see [gate-matrix.md](gate-matrix.md)), includes `check-payload-git` and `contract-json-sync` |
 | Acceptance spike | `.local/workflow-artifacts/acceptance/trae-ide-spike.md` |
 
 ## Troubleshooting
