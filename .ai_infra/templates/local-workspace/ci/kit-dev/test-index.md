@@ -64,4 +64,4 @@
   - Coverage status: `healthy`
   - Notes: CI workspace seed
 
-**Total:** 516 pytest (kit-dev)
+**Total:** 606 pytest (kit-dev)
