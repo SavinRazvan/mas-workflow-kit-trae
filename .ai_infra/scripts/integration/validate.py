@@ -36,10 +36,6 @@ for _candidate in (Path(__file__).resolve(), *Path(__file__).resolve().parents):
         break
 
 from paths import ai_infra_dir
-
-_AI_INFRA_PKG = Path(__file__).resolve().parents[2]
-if str(_AI_INFRA_PKG) not in sys.path:
-    sys.path.insert(0, str(_AI_INFRA_PKG))
 from ide_contract_paths import TRAE, agents_dir, rules_dir, skills_dir  # noqa: E402
 
 from checks import (
