@@ -15,7 +15,7 @@ from __future__ import annotations
 import importlib.util
 from pathlib import Path
 
-_CLI = Path(__file__).resolve().parent.parent / ".ai_infra" / "install" / "trae_workflow" / "cli.py"
+_CLI = Path(__file__).resolve().parent.parent.parent / ".ai_infra" / "install" / "trae_workflow" / "cli.py"
 _spec = importlib.util.spec_from_file_location("trae_workflow_cli", _CLI)
 assert _spec is not None and _spec.loader is not None
 _mod = importlib.util.module_from_spec(_spec)

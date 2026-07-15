@@ -15,8 +15,8 @@ Notes:
 
 # Implementation status (MAS Workflow Kit)
 
-**Last updated:** 2026-07-15 (SLICE-HANDOFF-DOC-SYNC — verify-all steps, DOC-008, coverage refresh)  
-**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit-trae`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 501
+**Last updated:** 2026-07-15 (SLICE-COVERAGE-LIFT + EA-017 CI smoke-consumer)  
+**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit-trae`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 516
 
 ## Shipped (confirmed in repo)
 
@@ -43,13 +43,13 @@ Notes:
 | User MCP registry | ADR-004 | `.trae/mcp.registry.yaml.example`, `mcp_manage.py` |
 | Cursor Marketplace plugin | **N/A Trae edition** — upstream [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit) | see [ADR-009](../decisions/ADR-009-trae-only-edition.md) |
 | Kit version on install | `kit_version` 0.4.0 | `.ai_infra/manifest.yaml`, `.ai_infra/.kit-version` |
-| Tests | 501 | `tests/modules/` |
+| Tests | 516 | `tests/modules/` |
 
 ## Coverage scope (shipped source)
 
 `pytest --cov=.ai_infra --cov=trae_workflow` measures the **import surface** of the
 installable kit (CLI, scripts invoked in-process, MCP server). As of 2026-07-15: **49 files,
-4012 statements, 89.23%** when the full suite passes (`make coverage-index`; see
+4012 statements, 90.90%** when the full suite passes (`make coverage-index`; see
 `.local/index-and-planning/current/coverage-index.md`). `generate_coverage_index.py` and
 `migrate_local_workspace_layout.py` are maintainer tooling — omitted from `--cov` per
 `pyproject.toml`). Subprocess-only maintainer scanners
@@ -70,7 +70,7 @@ make verify-all
 make check-payload-git
 make install-dry-run
 make check-plugin
-make smoke-consumer   # manual pre-release (not in CI; see Makefile smoke_marketplace.sh)
+make smoke-consumer   # CI kit-quality.yml + manual pre-release (smoke_marketplace.sh)
 trae-workflow activate --directory .
 trae-workflow health
 trae-workflow mcp validate
