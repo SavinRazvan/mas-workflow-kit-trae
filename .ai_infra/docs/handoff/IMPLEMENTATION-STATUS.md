@@ -16,7 +16,7 @@ Notes:
 # Implementation status (MAS Workflow Kit)
 
 **Last updated:** 2026-07-13 (Trae hygiene — IMPLEMENTATION-STATUS Trae table)  
-**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit-trae`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 496
+**Product:** MAS Workflow Kit for Trae (`mas-workflow-kit-trae`) · CLI: `trae-workflow` 0.4.0 · **Tests:** 499
 
 ## Shipped (confirmed in repo)
 
@@ -43,7 +43,7 @@ Notes:
 | User MCP registry | ADR-004 | `.trae/mcp.registry.yaml.example`, `mcp_manage.py` |
 | Cursor Marketplace plugin | **N/A Trae edition** — upstream [mas-workflow-kit](https://github.com/SavinRazvan/mas-workflow-kit) | see [ADR-009](../decisions/ADR-009-trae-only-edition.md) |
 | Kit version on install | `kit_version` 0.4.0 | `.ai_infra/manifest.yaml`, `.ai_infra/.kit-version` |
-| Tests | 496 | `tests/modules/` |
+| Tests | 499 | `tests/modules/` |
 
 ## Coverage scope (shipped source)
 
